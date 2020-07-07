@@ -1908,17 +1908,44 @@ module.exports = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
 //
 //
 //
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      url: 'https://app.mswdb.com/sis/beta/'
+      url: 'https://app.mswdb.com/sis/beta/',
+      timer: ''
     };
+  },
+  // Fetches posts when the component is created.
+  created: function created() {
+    //this.fetchURL();
+    this.timer = setInterval(this.fetchURL, 12000);
+  },
+  methods: {
+    fetchURL: function fetchURL() {
+      var _this = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("http://sm.test/request").then(function (response) {
+        console.log(response.data);
+        _this.url = response.data;
+      })["catch"](function (e) {
+        _this.errors.push(e);
+      });
+    },
+    cancelAutoUpdate: function cancelAutoUpdate() {
+      clearInterval(this.timer);
+    }
+  },
+  beforeDestroy: function beforeDestroy() {
+    clearInterval(this.timer);
   }
 });
 
