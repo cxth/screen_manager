@@ -22,16 +22,16 @@
     </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test</title>
+    <title>Test Frame</title>
 </head>
 <body>
 <!-- 
 https://app.mswdb.com/sis/beta/
 {{ $schedule->url }}
 -->
-<div class="container">
-  <iframe class="responsive-iframe" src=""></iframe>
+<div id="app">
+    <frame-component></frame-component>
 </div>
-</iframe>
+<script src="{{ mix('js/app.js') }}" defer></script>
 </body>
 </html>

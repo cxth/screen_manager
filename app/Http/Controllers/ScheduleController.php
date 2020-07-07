@@ -22,6 +22,21 @@ class ScheduleController extends Controller
         return view('page', compact('schedule'));
     }
 
+
+    /**
+     * Get latest URL from AJAX request.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getUrl()
+    {
+        $schedule = Schedule::latest('show_datetime')->first();
+        echo "<pre>";
+        print_r($schedule->url);
+        echo "</pre>";
+    }
+
+
     /**
      * Show the form for creating a new resource.
      *

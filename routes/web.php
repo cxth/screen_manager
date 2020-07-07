@@ -19,3 +19,5 @@ Route::get('/', function () {
 
 
 Route::get('/','ScheduleController@index');
+
+Route::get('/request','ScheduleController@getUrl');
