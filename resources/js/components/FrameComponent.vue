@@ -24,7 +24,7 @@ export default {
 
     methods: {
         fetchURL() {
-            axios.get(`http://sm.test/request`)
+            axios.get(`http://sm.mswdb.com/request`)
             .then(response => {
                 console.log(response.data);
                 this.url = response.data
