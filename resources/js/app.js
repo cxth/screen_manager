@@ -8,6 +8,16 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+// declare global variable here
+Vue.mixin({
+    data: function() {
+        return {
+            siteURL:'http://sm.local'
+        }
+    }
+})
+
+
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue

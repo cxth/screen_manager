@@ -17,15 +17,15 @@ export default {
     
     // Fetches posts when the component is created.
     created() {
-
-        //this.fetchURL();
-        this.timer = setInterval(this.fetchURL, 300000) //5 minutes
+        this.timer = setInterval(this.fetchURL, 12000)
+        //console.log('global var: ' + `${ this.siteURL }/request`);
         // 12000 seconds
+        // 300000 5 minutes
     },
 
     methods: {
         fetchURL() {
-            axios.get(`http://sm.local/request`)
+            axios.get(`${ this.siteURL }/request`)
             .then(response => {
                 console.log(response.data);
                 this.url = response.data

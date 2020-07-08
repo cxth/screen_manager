@@ -1926,15 +1926,15 @@ __webpack_require__.r(__webpack_exports__);
   },
   // Fetches posts when the component is created.
   created: function created() {
-    //this.fetchURL();
-    this.timer = setInterval(this.fetchURL, 300000); //5 minutes
+    this.timer = setInterval(this.fetchURL, 12000); //console.log('global var: ' + `${ this.siteURL }/request`);
     // 12000 seconds
+    // 300000 5 minutes
   },
   methods: {
     fetchURL: function fetchURL() {
       var _this = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("http://sm.local/request").then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/request")).then(function (response) {
         console.log(response.data);
         _this.url = response.data;
       })["catch"](function (e) {
@@ -49682,7 +49682,15 @@ module.exports = function(module) {
  */
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
-window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
+window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js"); // declare global variable here
+
+Vue.mixin({
+  data: function data() {
+    return {
+      siteURL: 'http://sm.local'
+    };
+  }
+});
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
