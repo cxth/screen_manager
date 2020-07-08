@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSchedulesTable extends Migration
+class CreateGroupScreensTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,18 +13,13 @@ class CreateSchedulesTable extends Migration
      */
     public function up()
     {
-        Schema::create('schedules', function (Blueprint $table) {
+        Schema::create('group_screens', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('name', 100);
+            $table->string('icon', 500)->nullable();
             $table->string('screen_id')->index();
-            $table->integer('group_screen_id')->unsigned()->nullable();
-            $table->integer('link_id')->unsigned();
-            $table->string('url', 2083)->nullable();
-            $table->dateTime('show_datetime');
-            $table->dateTime('expire_datetime')->nullable();
             $table->timestamps();
         });
-
-        
     }
 
     /**
@@ -34,6 +29,6 @@ class CreateSchedulesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('schedules');
+        Schema::dropIfExists('group_screens');
     }
 }
