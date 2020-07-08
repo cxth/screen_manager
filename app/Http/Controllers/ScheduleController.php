@@ -32,10 +32,6 @@ class ScheduleController extends Controller
     {
         $schedule = Schedule::latest('show_datetime')->first();
         return $schedule->url;
-        
-        // echo "<pre>";
-        // print_r($schedule->url);
-        // echo "</pre>";
     }
 
 

@@ -1927,13 +1927,14 @@ __webpack_require__.r(__webpack_exports__);
   // Fetches posts when the component is created.
   created: function created() {
     //this.fetchURL();
-    this.timer = setInterval(this.fetchURL, 12000);
+    this.timer = setInterval(this.fetchURL, 300000); //5 minutes
+    // 12000 seconds
   },
   methods: {
     fetchURL: function fetchURL() {
       var _this = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("http://sm.test/request").then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("http://sm.local/request").then(function (response) {
         console.log(response.data);
         _this.url = response.data;
       })["catch"](function (e) {

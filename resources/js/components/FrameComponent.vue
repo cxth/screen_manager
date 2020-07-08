@@ -19,12 +19,13 @@ export default {
     created() {
 
         //this.fetchURL();
-        this.timer = setInterval(this.fetchURL, 12000)
+        this.timer = setInterval(this.fetchURL, 300000) //5 minutes
+        // 12000 seconds
     },
 
     methods: {
         fetchURL() {
-            axios.get(`http://sm.test/request`)
+            axios.get(`http://sm.local/request`)
             .then(response => {
                 console.log(response.data);
                 this.url = response.data
