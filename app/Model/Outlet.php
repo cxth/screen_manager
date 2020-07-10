@@ -14,7 +14,8 @@ class Outlet extends Model
 
     public function screen()
     {
-        return $this->belongsToMany(Screen::class);
+        return $this->hasMany(Screen::class);
+        
     }
 
     public function schedule()

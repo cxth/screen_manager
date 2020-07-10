@@ -13,7 +13,7 @@ class CreateMediaAssetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('media_assets', function (Blueprint $table) {
+        Schema::create('media__assets', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->string('name', 100);
             $table->string('icon', 500)->nullable();
@@ -29,6 +29,6 @@ class CreateMediaAssetsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('media_assets');
+        Schema::dropIfExists('media__assets');
     }
 }

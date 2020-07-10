@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Model\Media_Asset;
 use Illuminate\Http\Request;
+use App\Http\Resources\MediaAssetResource;
+use Symfony\Component\HttpFoundation\Response;
 
 class MediaAssetController extends Controller
 {
@@ -14,7 +16,7 @@ class MediaAssetController extends Controller
      */
     public function index()
     {
-        //
+        return MediaAssetResource::collection(Media_Asset::all());
     }
 
     /**
@@ -35,7 +37,8 @@ class MediaAssetController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Media_Asset::create($request->all());
+        return response('Saved', Response::HTTP_CREATED);
     }
 
     /**
@@ -44,9 +47,10 @@ class MediaAssetController extends Controller
      * @param  \App\Model\Media_Asset  $media_Asset
      * @return \Illuminate\Http\Response
      */
-    public function show(Media_Asset $media_Asset)
+    public function show(Media_Asset $medium)
     {
-        //
+        //return $medium;
+        return new MediaAssetResource($medium);
     }
 
     /**
@@ -67,9 +71,10 @@ class MediaAssetController extends Controller
      * @param  \App\Model\Media_Asset  $media_Asset
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Media_Asset $media_Asset)
+    public function update(Request $request, Media_Asset $medium)
     {
-        //
+        $medium->update($request->all());
+        return response("updated", Response::HTTP_ACCEPTED);
     }
 
     /**
@@ -78,8 +83,9 @@ class MediaAssetController extends Controller
      * @param  \App\Model\Media_Asset  $media_Asset
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Media_Asset $media_Asset)
+    public function destroy(Media_Asset $medium)
     {
-        //
+        $medium->delete();
+        return response(null, Response::HTTP_NO_CONTENT);
     }
 }

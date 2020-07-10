@@ -13,11 +13,11 @@ class CreateGroupScreensTable extends Migration
      */
     public function up()
     {
-        Schema::create('group_screens', function (Blueprint $table) {
+        Schema::create('group__screens', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 100);
             $table->string('icon', 500)->nullable();
-            $table->string('screen_id')->index();
+            //$table->string('screen_id')->index();
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateGroupScreensTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('group_screens');
+        Schema::dropIfExists('group__screens');
     }
 }

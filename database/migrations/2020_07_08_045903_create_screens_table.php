@@ -15,7 +15,9 @@ class CreateScreensTable extends Migration
     {
         Schema::create('screens', function (Blueprint $table) {
             $table->string('id')->unique();
+            //$table->primary('id'); 
             $table->unsignedBigInteger('outlet_id'); // FK
+            $table->integer('group__screen_id')->nullable(); 
             $table->text('description')->nullable();
             $table->string('brand', 50)->nullable();
             $table->string('resolution', 50)->nullable();

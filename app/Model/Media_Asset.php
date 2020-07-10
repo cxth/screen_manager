@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class Media_Asset extends Model
 {
     protected $fillable = [
-        'id','name','icon','created_at','updated_at'   
+        'id','name','icon','description','created_at','updated_at'   
     ];
 
     public function link()
     {
-        return $this->belongsTo(Link::class);
+        return $this->hasMany(Link::class);
     }
 
     public function schedule()

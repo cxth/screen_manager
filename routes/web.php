@@ -18,6 +18,7 @@ Route::get('/', function () {
 });
 
 
-Route::get('/','ScheduleController@index');
-
+// Web Route
+Route::get('/','ScheduleController@default');
 Route::get('/request','ScheduleController@getUrl');
+Route::get('/test','ScheduleController@test');

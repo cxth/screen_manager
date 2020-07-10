@@ -15,14 +15,14 @@ class CreateLinksTable extends Migration
     {
         Schema::create('links', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('media_asset_id');
+            $table->unsignedBigInteger('media__asset_id');
             $table->string('name', 200);
             $table->string('url', 2083)->nullable();
-            $table->text('description');
+            $table->text('description')->nullable();
             $table->timestamps();
 
             // Foreign KEY!!!
-            $table->foreign('media_asset_id')->references('id')->on('media_assets');
+            $table->foreign('media__asset_id')->references('id')->on('media__assets');
         });
     }
 

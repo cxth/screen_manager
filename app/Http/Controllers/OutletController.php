@@ -4,17 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Model\Outlet;
 use Illuminate\Http\Request;
+use App\Http\Resources\OutletResource;
+use Symfony\Component\HttpFoundation\Response;
 
 class OutletController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the outlets.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        //
+        return OutletResource::collection(Outlet::all());
     }
 
     /**
@@ -35,7 +37,8 @@ class OutletController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        Outlet::create($request->all());
+        return response('Saved', Response::HTTP_CREATED);
     }
 
     /**
@@ -46,7 +49,7 @@ class OutletController extends Controller
      */
     public function show(Outlet $outlet)
     {
-        //
+        return new OutletResource($outlet);
     }
 
     /**
@@ -69,7 +72,8 @@ class OutletController extends Controller
      */
     public function update(Request $request, Outlet $outlet)
     {
-        //
+        $outlet->update($request->all());
+        return response("updated", Response::HTTP_ACCEPTED);
     }
 
     /**
@@ -80,6 +84,7 @@ class OutletController extends Controller
      */
     public function destroy(Outlet $outlet)
     {
-        //
+        $outlet->delete();
+        return response(null, Response::HTTP_NO_CONTENT);
     }
 }

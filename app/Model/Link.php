@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 class Link extends Model
 {
     protected $fillable = [
-        'id','media_asset_id','name','url','description','created_at','updated_at'   
+        'id','media__asset_id','name','url','description'   
     ];
 
     public function media_asset()
