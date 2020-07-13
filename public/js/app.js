@@ -1916,7 +1916,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -1928,13 +1927,14 @@ __webpack_require__.r(__webpack_exports__);
   // Fetches posts when the component is created.
   created: function created() {
     //this.fetchURL();
-    this.timer = setInterval(this.fetchURL, 30000);
+    this.timer = setInterval(this.fetchURL, 20000);
   },
   methods: {
     fetchURL: function fetchURL() {
       var _this = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("http://sm.mswdb.com/request").then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("http://sm.mswdb.com/request") //axios.get(`http://sm.local/request`)
+      .then(function (response) {
         console.log(response.data);
         _this.url = response.data;
       })["catch"](function (e) {
@@ -37502,7 +37502,7 @@ var render = function() {
         id: "video",
         src: _vm.url,
         frameborder: "0",
-        allowfullscreen: ""
+        allow: "autoplay; fullscreen"
       }
     })
   ])

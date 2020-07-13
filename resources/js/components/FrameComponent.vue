@@ -1,7 +1,6 @@
 <template>
   <div class="container">
-    <iframe id="video" class="responsive-iframe" :src="url" frameborder="0"
- allowfullscreen></iframe>
+    <iframe id="video" class="responsive-iframe" :src="url" frameborder="0" allow="autoplay; fullscreen"></iframe>
   </div>
 </template>
 
@@ -20,12 +19,13 @@ export default {
     created() {
 
         //this.fetchURL();
-        this.timer = setInterval(this.fetchURL, 30000)
+        this.timer = setInterval(this.fetchURL, 20000)
     },
 
     methods: {
         fetchURL() {
             axios.get(`http://sm.mswdb.com/request`)
+            //axios.get(`http://sm.local/request`)
             .then(response => {
                 console.log(response.data);
                 this.url = response.data
