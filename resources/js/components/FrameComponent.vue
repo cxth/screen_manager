@@ -19,7 +19,7 @@ export default {
     created() {
 
         //this.fetchURL();
-        this.timer = setInterval(this.fetchURL, 12000)
+        this.timer = setInterval(this.fetchURL, 30000)
     },
 
     methods: {

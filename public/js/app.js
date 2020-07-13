@@ -1927,7 +1927,7 @@ __webpack_require__.r(__webpack_exports__);
   // Fetches posts when the component is created.
   created: function created() {
     //this.fetchURL();
-    this.timer = setInterval(this.fetchURL, 12000);
+    this.timer = setInterval(this.fetchURL, 30000);
   },
   methods: {
     fetchURL: function fetchURL() {
@@ -49837,8 +49837,8 @@ __webpack_require__.r(__webpack_exports__);
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /home/mswdbcom/public_html/app/screenmanager/dev/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /home/mswdbcom/public_html/app/screenmanager/dev/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! D:\Programs\App\laragon\www\sm\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! D:\Programs\App\laragon\www\sm\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
