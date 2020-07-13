@@ -22,11 +22,11 @@ class ScheduleResource extends JsonResource
         
         return [
             $outlet->name => [
-                'id' => $this->id,
+                'schedule_id' => $this->id,
                 'screen_id' => $this->screen_id,
                 'outlet_id' => $outlet->id,
                 'outlet' => $outlet->name,
-                'group_screen_id' => $this->group_screen_id,
+                'group_screen_id' => $this->group__screen_id,
                 'link_id' => $this->link_id,
                 'url' => $this->url,
                 'show_datetime' => $this->show_datetime,
@@ -35,24 +35,24 @@ class ScheduleResource extends JsonResource
         ];
     }
 
-    public function with($request)
-    {
-        $screen = Screen::find($this->screen_id);
-        $outlet = $screen->outlet; 
+    // public function with($request)
+    // {
+    //     $screen = Screen::find($this->screen_id);
+    //     $outlet = $screen->outlet; 
         
         
-        return [
-            $outlet->name => [
-                'id' => $this->id,
-                'screen_id' => $this->screen_id,
-                'outlet_id' => $outlet->id,
-                'outlet' => $outlet->name,
-                'group_screen_id' => $this->group_screen_id,
-                'link_id' => $this->link_id,
-                'url' => $this->url,
-                'show_datetime' => $this->show_datetime,
-                'expire_datetime' => $this->expire_datetime
-            ] 
-        ];
-    }
+    //     return [
+    //         $outlet->name => [
+    //             'id' => $this->id,
+    //             'screen_id' => $this->screen_id,
+    //             'outlet_id' => $outlet->id,
+    //             'outlet' => $outlet->name,
+    //             'group_screen_id' => $this->group_screen_id,
+    //             'link_id' => $this->link_id,
+    //             'url' => $this->url,
+    //             'show_datetime' => $this->show_datetime,
+    //             'expire_datetime' => $this->expire_datetime
+    //         ] 
+    //     ];
+    // }
 }

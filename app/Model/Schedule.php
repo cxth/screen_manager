@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 class Schedule extends Model
 {
     protected $fillable = [
-        'screen_id','group_screen_id','link_id','url','show_datetime','expire_datetime','created_at','updated_at'];
+        'screen_id','group__screen_id','link_id','url','show_datetime','expire_datetime','created_at','updated_at'];
 
     public function screen()
     {

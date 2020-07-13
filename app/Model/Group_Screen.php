@@ -18,7 +18,8 @@ class Group_Screen extends Model
 
     public function schedule()
     {
-        return $this->belongsToMany(Schedule::class);
+        //return $this->belongsToMany(Schedule::class);
+        return $this->hasMany(Schedule::class); // OKAY on schedule per group
     }
 
     

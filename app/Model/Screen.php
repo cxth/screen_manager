@@ -24,6 +24,7 @@ class Screen extends Model
 
     public function schedule()
     {
-        return $this->belongsToMany(Schedule::class);
+        //return $this->belongsToMany(Schedule::class);
+        return $this->hasMany(Schedule::class); // Success on schedule per screen
     }
 }

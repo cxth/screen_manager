@@ -49,5 +49,8 @@ Route::get('/schedule/group/{group}','ScheduleController@showGroup');
 Route::get('/schedule/link/{link}','ScheduleController@showLink');
 Route::post('/schedule/screen/{screen}','ScheduleController@onScreen');
 Route::post('/schedule/group/{group}','ScheduleController@onGroup');
+Route::delete('/schedule/{schedule}','ScheduleController@destroy');
+
+Route::get('/schedule/now/{screen}','ScheduleController@nowShowing');
 
 
