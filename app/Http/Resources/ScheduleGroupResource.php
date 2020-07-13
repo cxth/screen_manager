@@ -2,10 +2,18 @@
 
 namespace App\Http\Resources;
 
+use App\Model\Schedule;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ScheduleGroupResource extends JsonResource
 {
+    
+    function __construct(Schedule $model)
+    {
+        parent::__construct($model);
+    }
+    
+    
     /**
      * Transform the resource into an array.
      *
@@ -17,7 +25,6 @@ class ScheduleGroupResource extends JsonResource
         return [
             'id' => $this->id,
             'screen_id' => $this->screen_id,
-               
             'group_screen_id' => $this->group__screen_id,
             'link_id' => $this->link_id,
             'url' => $this->url,

@@ -54,7 +54,7 @@ class ScheduleController extends Controller
             ->first();
     
         return [$result];
-        //return ScheduleResource::collection($result);
+        //return ScheduleGroupResource::collection($result);
     }
     
     

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use App\Model\Outlet;
 use App\Model\Screen;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\ScreenResource;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -41,6 +43,18 @@ class ScreenController extends Controller
     {
         Screen::create($request->all());
         return response('Saved', Response::HTTP_CREATED);
+
+        //create login account
+        //  User::updateOrCreate(
+        //     ['id' => 9000],
+        //     [
+        //         'id' => 9000,
+        //         'first_name' => 'Admin',
+        //         'last_name' => 'Superuser',
+        //         'email' => 'mswdbadmin@gmail.com',
+        //         'password' => Hash::make('password9000'),
+        //     ]
+        // );
     }
 
     /**
