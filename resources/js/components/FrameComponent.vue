@@ -1,6 +1,7 @@
 <template>
   <div class="container">
-    <iframe class="responsive-iframe" :src="url"></iframe>
+    <iframe id="video" class="responsive-iframe" :src="url" frameborder="0"
+ allowfullscreen></iframe>
   </div>
 </template>
 
