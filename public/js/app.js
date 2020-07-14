@@ -94038,7 +94038,7 @@ var opts = {}; //export default new Vuetify(opts)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('frame-component', function () {
-  return __webpack_require__.e(/*! import() */ 2).then(__webpack_require__.bind(null, /*! ./components/FrameComponent */ "./resources/js/components/FrameComponent.vue"));
+  return __webpack_require__.e(/*! import() */ 1).then(__webpack_require__.bind(null, /*! ./components/FrameComponent */ "./resources/js/components/FrameComponent.vue"));
 });
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.component('admin-component', function () {
   return __webpack_require__.e(/*! import() */ 0).then(__webpack_require__.bind(null, /*! ./components/AdminComponent */ "./resources/js/components/AdminComponent.vue"));

@@ -22,7 +22,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::apiResource('/outlet','OutletController');
 Route::apiResource('/{outlet}/screen','ScreenController');
+
+Route::get('/media/all','MediaAssetController@listAll');
 Route::apiResource('/media','MediaAssetController');
+
+Route::get('/screen/all','ScreenController@listAll');
+
 
 //Route::apiResource('/m/{medium}/link','LinkController');
 Route::get('/m/{medium}/link','LinkController@index');

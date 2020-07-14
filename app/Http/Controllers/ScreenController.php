@@ -12,6 +12,20 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ScreenController extends Controller
 {
+    
+    /**
+     * Display all listing of the screens
+     *
+     * @return \Illuminate\Http\Response
+     * @url /api/screen/all
+     */
+    public function listAll()
+    {
+        $result = Screen::all();
+        return ScreenResource::collection($result);
+    }
+    
+    
     /**
      * Display a listing of the screens
      *

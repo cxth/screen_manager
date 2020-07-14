@@ -9,6 +9,22 @@ use Symfony\Component\HttpFoundation\Response;
 
 class MediaAssetController extends Controller
 {
+    
+    
+    /**
+     * Display all listing of the media group with links
+     *
+     * @return \Illuminate\Http\Response
+     * @url /api/media/all
+     */
+    public function listAll()
+    {
+        $result = Media_Asset::all();
+        //$result = Media_Asset::find(1)->link;
+        //dd($result);
+        return MediaAssetResource::collection($result);
+    }
+    
     /**
      * Display a listing of the resource.
      *

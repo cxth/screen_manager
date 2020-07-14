@@ -9,6 +9,8 @@
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 //
 //
 //
@@ -79,17 +81,153 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
     source: String
   },
   data: function data() {
     return {
-      drawer: null
+      test: 'TEST',
+      outlets: null,
+      drawer: null,
+      drawerRight: null,
+      screen: 1,
+      screens: [{
+        text: 'Real-Time',
+        icon: 'mdi-clock'
+      }, {
+        text: 'Audience',
+        icon: 'mdi-account'
+      }, {
+        text: 'Conversions',
+        icon: 'mdi-flag'
+      }]
     };
   },
   created: function created() {
     this.$vuetify.theme.dark = true;
+    this.getOutlets();
+  },
+  methods: {
+    getOutlets: function getOutlets() {
+      var _this = this;
+
+      //axios.get(`http://sm.local/api/schedule`)
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("http://sm.local/api/screen/all").then(function (response) {
+        var combined = {};
+        response.data.forEach(function (arrayItem) {
+          if (!(Object.keys(arrayItem) in combined)) {
+            combined[Object.keys(arrayItem)] = Object.values(arrayItem);
+          } else {
+            combined[Object.keys(arrayItem)].push(Object.values(arrayItem)[0]);
+          }
+        });
+        _this.outlets = combined;
+        console.log(_this.outlets); //this.screens[0].text = 'sample';
+        //console.log(Object.keys(this.outlet[0]));
+      })["catch"](function (e) {
+        _this.errors.push(e);
+      });
+      console.log('testing');
+    },
+    greet: function greet(event) {
+      // `event` is the native DOM event
+      if (event) {
+        alert(event.currentTarget.id);
+      }
+    }
   }
 });
 
@@ -117,7 +255,164 @@ var render = function() {
       _c(
         "v-navigation-drawer",
         {
-          attrs: { app: "", clipped: "" },
+          attrs: { app: "", clipped: "", right: "" },
+          model: {
+            value: _vm.drawerRight,
+            callback: function($$v) {
+              _vm.drawerRight = $$v
+            },
+            expression: "drawerRight"
+          }
+        },
+        [
+          _c(
+            "v-list-item",
+            { attrs: { link: "" } },
+            [
+              _c(
+                "v-list-item-action",
+                [_c("v-icon", [_vm._v("mdi-folder-multiple-image")])],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-list-item-content",
+                [_c("v-list-item-title", [_vm._v("Media Assets")])],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "v-list",
+            { attrs: { dense: "" } },
+            [
+              _c(
+                "v-list-item",
+                { attrs: { link: "" } },
+                [
+                  _c(
+                    "v-expansion-panels",
+                    _vm._l(5, function(item, i) {
+                      return _c(
+                        "v-expansion-panel",
+                        { key: i },
+                        [
+                          _c("v-expansion-panel-header", [_vm._v("Item")]),
+                          _vm._v(" "),
+                          _c(
+                            "v-expansion-panel-content",
+                            [
+                              _c(
+                                "v-list",
+                                { attrs: { dense: "" } },
+                                [
+                                  _c(
+                                    "v-list-item-group",
+                                    {
+                                      attrs: { color: "primary" },
+                                      model: {
+                                        value: _vm.screen,
+                                        callback: function($$v) {
+                                          _vm.screen = $$v
+                                        },
+                                        expression: "screen"
+                                      }
+                                    },
+                                    _vm._l(_vm.screens, function(screen, i) {
+                                      return _c(
+                                        "v-list-item",
+                                        { key: i },
+                                        [
+                                          _c(
+                                            "v-list-item-icon",
+                                            [
+                                              _c("v-icon", {
+                                                domProps: {
+                                                  textContent: _vm._s(
+                                                    screen.icon
+                                                  )
+                                                }
+                                              })
+                                            ],
+                                            1
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "v-list-item-content",
+                                            [
+                                              _c("v-list-item-title", {
+                                                domProps: {
+                                                  textContent: _vm._s(
+                                                    screen.text
+                                                  )
+                                                }
+                                              })
+                                            ],
+                                            1
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    }),
+                                    1
+                                  )
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    }),
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-app-bar",
+        { attrs: { app: "", "clipped-right": "", dark: "" } },
+        [
+          _c("v-app-bar-nav-icon", {
+            on: {
+              click: function($event) {
+                $event.stopPropagation()
+                _vm.drawer = !_vm.drawer
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c("v-toolbar-title", [_vm._v("Screen Manager")]),
+          _vm._v(" "),
+          _c("v-spacer"),
+          _vm._v(" "),
+          _c("v-app-bar-nav-icon", {
+            on: {
+              click: function($event) {
+                $event.stopPropagation()
+                _vm.drawerRight = !_vm.drawerRight
+              }
+            }
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-navigation-drawer",
+        {
+          attrs: { app: "" },
           model: {
             value: _vm.drawer,
             callback: function($$v) {
@@ -128,6 +423,21 @@ var render = function() {
         },
         [
           _c(
+            "v-list-item",
+            { attrs: { link: "" } },
+            [
+              _c("v-list-item-action", [_c("v-icon", [_vm._v("mdi-home")])], 1),
+              _vm._v(" "),
+              _c(
+                "v-list-item-content",
+                [_c("v-list-item-title", [_vm._v("Outlets")])],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
             "v-list",
             { attrs: { dense: "" } },
             [
@@ -136,14 +446,85 @@ var render = function() {
                 { attrs: { link: "" } },
                 [
                   _c(
-                    "v-list-item-action",
-                    [_c("v-icon", [_vm._v("mdi-view-dashboard")])],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "v-list-item-content",
-                    [_c("v-list-item-title", [_vm._v("Dashboard")])],
+                    "v-expansion-panels",
+                    _vm._l(_vm.outlets, function(item, name) {
+                      return _c(
+                        "v-expansion-panel",
+                        { key: name },
+                        [
+                          _c("v-expansion-panel-header", [
+                            _vm._v(_vm._s(name))
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "v-expansion-panel-content",
+                            [
+                              _c(
+                                "v-list",
+                                { attrs: { dense: "" } },
+                                [
+                                  _c(
+                                    "v-list-item-group",
+                                    {
+                                      attrs: { color: "primary" },
+                                      model: {
+                                        value: _vm.screen,
+                                        callback: function($$v) {
+                                          _vm.screen = $$v
+                                        },
+                                        expression: "screen"
+                                      }
+                                    },
+                                    _vm._l(item, function(screen, screen_i) {
+                                      return _c(
+                                        "v-list-item",
+                                        {
+                                          key: screen_i,
+                                          attrs: { id: screen.id },
+                                          on: { click: _vm.greet }
+                                        },
+                                        [
+                                          _c(
+                                            "v-list-item-icon",
+                                            [
+                                              _c("v-icon", {
+                                                domProps: {
+                                                  textContent: _vm._s(
+                                                    screen.admin_icon
+                                                  )
+                                                }
+                                              })
+                                            ],
+                                            1
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "v-list-item-content",
+                                            [
+                                              _c("v-list-item-title", {
+                                                domProps: {
+                                                  textContent: _vm._s(screen.id)
+                                                }
+                                              })
+                                            ],
+                                            1
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    }),
+                                    1
+                                  )
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    }),
                     1
                   )
                 ],
@@ -176,24 +557,6 @@ var render = function() {
       ),
       _vm._v(" "),
       _c(
-        "v-app-bar",
-        { attrs: { app: "", "clipped-left": "" } },
-        [
-          _c("v-app-bar-nav-icon", {
-            on: {
-              click: function($event) {
-                $event.stopPropagation()
-                _vm.drawer = !_vm.drawer
-              }
-            }
-          }),
-          _vm._v(" "),
-          _c("v-toolbar-title", [_vm._v("Application")])
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
         "v-main",
         [
           _c(
@@ -202,7 +565,7 @@ var render = function() {
             [
               _c(
                 "v-row",
-                { attrs: { align: "center", justify: "center" } },
+                { attrs: { justify: "center", align: "center" } },
                 [
                   _c(
                     "v-col",
@@ -258,9 +621,18 @@ var render = function() {
         1
       ),
       _vm._v(" "),
-      _c("v-footer", { attrs: { app: "" } }, [
-        _c("span", [_vm._v("© " + _vm._s(new Date().getFullYear()))])
-      ])
+      _c(
+        "v-footer",
+        { staticClass: "white--text", attrs: { app: "" } },
+        [
+          _c("span", [_vm._v("Vuetify")]),
+          _vm._v(" "),
+          _c("v-spacer"),
+          _vm._v(" "),
+          _c("span", [_vm._v("© " + _vm._s(new Date().getFullYear()))])
+        ],
+        1
+      )
     ],
     1
   )

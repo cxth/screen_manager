@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Model\Outlet;
 use Illuminate\Http\Request;
 use App\Http\Resources\OutletResource;
+use App\Model\Screen;
 use Symfony\Component\HttpFoundation\Response;
 
 class OutletController extends Controller
