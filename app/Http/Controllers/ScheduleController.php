@@ -279,4 +279,16 @@ class ScheduleController extends Controller
         $schedule->delete();
         return response(null, Response::HTTP_NO_CONTENT);
     }
+
+
+     /**
+     * Admin Page.
+     *
+     * @return \Illuminate\Http\Response
+     * @url /admin
+     */
+    public function admin()
+    {
+        return view('admin');
+    }
 }

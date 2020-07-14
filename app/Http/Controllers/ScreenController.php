@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 class ScreenController extends Controller
 {
     /**
-     * Display a listing of the screen.
+     * Display a listing of the screens
      *
      * @return \Illuminate\Http\Response
      */

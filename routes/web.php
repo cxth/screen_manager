@@ -19,6 +19,11 @@ Route::get('/', function () {
 
 
 // Web Route
-Route::get('/','ScheduleController@default');
-Route::get('/request','ScheduleController@getUrl');
+
+// Test routes
+Route::get('/','ScheduleController@default'); 
 Route::get('/test','ScheduleController@test');
+Route::get('/request','ScheduleController@getUrl');
+
+// Admin
+Route::get('/admin','ScheduleController@admin');
