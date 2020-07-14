@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <iframe class="responsive-iframe" :src="url"></iframe>
+    <iframe class="responsive-iframe" :src="url" frameborder="0" allow="autoplay; fullscreen"></iframe>
   </div>
 </template>
 

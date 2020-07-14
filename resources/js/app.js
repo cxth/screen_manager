@@ -6,6 +6,10 @@
 
 require('./bootstrap');
 
+import Vue from 'vue'
+import Vuetify from 'vuetify'
+import 'vuetify/dist/vuetify.min.css'
+
 window.Vue = require('vue');
 
 // declare global variable here
@@ -17,6 +21,9 @@ Vue.mixin({
     }
 })
 
+Vue.use(Vuetify)
+const opts = {}
+//export default new Vuetify(opts)
 
 /**
  * The following block of code may be used to automatically register your
@@ -29,7 +36,11 @@ Vue.mixin({
 // const files = require.context('./', true, /\.vue$/i)
 // files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
 
-Vue.component('frame-component', require('./components/FrameComponent.vue').default);
+Vue.component('frame-component', () => import('./components/FrameComponent'));
+Vue.component('admin-component', () => import("./components/AdminComponent"));
+
+
+//import App from './App'
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -39,4 +50,5 @@ Vue.component('frame-component', require('./components/FrameComponent.vue').defa
 
 const app = new Vue({
     el: '#app',
-});
+    vuetify: new Vuetify()
+  });

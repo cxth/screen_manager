@@ -24,8 +24,9 @@ class ScheduleController extends Controller
     {
         $schedule = Schedule::latest('show_datetime')->first();
         echo "<pre>";
-        print_r($schedule->url);
+        //print_r($schedule->url);
         echo "</pre>";
+        //setcookie('cross-site-cookie', 'name', ['samesite' => 'None', 'secure' => true]);
         return view('page', compact('schedule'));
     }
 
@@ -289,6 +290,7 @@ class ScheduleController extends Controller
      */
     public function admin()
     {
+        setcookie('cross-site-cookie', 'name', ['samesite' => 'None', 'secure' => true]);
         return view('admin');
     }
 }
