@@ -227,6 +227,52 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -740,187 +786,360 @@ var render = function() {
               [
                 _c(
                   "v-row",
-                  { attrs: { justify: "center", align: "center" } },
+                  {
+                    staticClass: "mx-auto",
+                    attrs: { align: "center", justify: "center", width: "600" }
+                  },
                   [
                     _c(
                       "v-col",
-                      { staticClass: "shrink" },
                       [
                         _c(
                           "v-card",
-                          {
-                            staticClass: "mx-auto",
-                            attrs: { width: "600", height: "400", outlined: "" }
-                          },
                           [
                             _c(
-                              "v-row",
-                              { attrs: { "no-gutters": "" } },
+                              "v-tabs",
+                              { attrs: { left: "", dense: "" } },
                               [
                                 _c(
-                                  "v-col",
+                                  "v-tab",
                                   [
-                                    _c(
-                                      "v-list-item",
-                                      { attrs: { "three-line": "" } },
-                                      [
-                                        _c(
-                                          "v-list-item-content",
-                                          [
-                                            _c(
-                                              "div",
-                                              { staticClass: "overline mb-4" },
-                                              [_vm._v("ASSIGN SCREEN")]
-                                            ),
-                                            _vm._v(" "),
-                                            _c("v-list-item-subtitle", [
-                                              _vm._v(
-                                                _vm._s(_vm.selected_outlet)
-                                              )
-                                            ]),
-                                            _vm._v(" "),
-                                            _c(
-                                              "v-list-item-title",
-                                              { staticClass: "headline mb-4" },
-                                              [
-                                                _vm._v(
-                                                  _vm._s(_vm.selected_screen)
-                                                )
-                                              ]
-                                            )
-                                          ],
-                                          1
-                                        )
-                                      ],
-                                      1
+                                    _c("v-icon", { attrs: { left: "" } }, [
+                                      _vm._v("mdi-play-box-outline")
+                                    ]),
+                                    _vm._v(
+                                      "\n                  SCREEN\n                "
                                     )
                                   ],
                                   1
                                 ),
                                 _vm._v(" "),
                                 _c(
-                                  "v-col",
+                                  "v-tab",
                                   [
-                                    _c(
-                                      "v-list-item",
-                                      { attrs: { "three-line": "" } },
-                                      [
-                                        _c(
-                                          "v-list-item-content",
-                                          [
-                                            _c(
-                                              "div",
-                                              { staticClass: "overline mb-4" },
-                                              [_vm._v("ASSIGN CONTENT")]
-                                            ),
-                                            _vm._v(" "),
-                                            _c("v-list-item-subtitle", [
-                                              _vm._v(
-                                                _vm._s(_vm.selected_mediagroup)
-                                              )
-                                            ]),
-                                            _vm._v(" "),
-                                            _c(
-                                              "v-list-item-title",
-                                              { staticClass: "headline mb-4" },
-                                              [
-                                                _vm._v(
-                                                  _vm._s(_vm.selected_link_name)
-                                                )
-                                              ]
-                                            )
-                                          ],
-                                          1
-                                        )
-                                      ],
-                                      1
+                                    _c("v-icon", { attrs: { left: "" } }, [
+                                      _vm._v("mdi-calendar-clock")
+                                    ]),
+                                    _vm._v(
+                                      "\n                  SCHEDULE\n                "
                                     )
                                   ],
                                   1
                                 ),
                                 _vm._v(" "),
-                                _c("v-responsive", { attrs: { width: "100%" } })
-                              ],
-                              1
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "v-row",
-                              {
-                                attrs: {
-                                  "no-gutters": "",
-                                  align: "center",
-                                  justify: "center"
-                                }
-                              },
-                              [
                                 _c(
-                                  "v-col",
-                                  { attrs: { cols: "32", sm: "10" } },
-                                  [
-                                    _c("v-text-field", {
-                                      attrs: {
-                                        label: "or enter URL",
-                                        outlined: "",
-                                        dense: "",
-                                        disabled: !_vm.isFormValid
-                                      },
-                                      on: { keyup: _vm.disableMedia },
-                                      model: {
-                                        value: _vm.newURL,
-                                        callback: function($$v) {
-                                          _vm.newURL = $$v
-                                        },
-                                        expression: "newURL"
-                                      }
-                                    }),
-                                    _vm._v(" "),
-                                    _c("v-text-field", {
-                                      attrs: {
-                                        label: "URL Name",
-                                        outlined: "",
-                                        dense: ""
-                                      },
-                                      model: {
-                                        value: _vm.newURL_name,
-                                        callback: function($$v) {
-                                          _vm.newURL_name = $$v
-                                        },
-                                        expression: "newURL_name"
-                                      }
-                                    })
-                                  ],
-                                  1
-                                )
-                              ],
-                              1
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "v-row",
-                              {
-                                attrs: {
-                                  "no-gutters": "",
-                                  align: "center",
-                                  justify: "center"
-                                }
-                              },
-                              [
-                                _c(
-                                  "v-col",
-                                  { attrs: { cols: "12", sm: "2" } },
+                                  "v-tab-item",
                                   [
                                     _c(
-                                      "v-btn",
+                                      "v-row",
                                       {
                                         attrs: {
-                                          rounded: "",
-                                          color: "primary",
-                                          dark: ""
-                                        },
-                                        on: { click: _vm.addSched }
+                                          justify: "center",
+                                          align: "center",
+                                          pb: "3"
+                                        }
                                       },
-                                      [_vm._v("SAVE")]
+                                      [
+                                        _c(
+                                          "v-col",
+                                          { staticClass: "shrink" },
+                                          [
+                                            _c(
+                                              "v-card",
+                                              {
+                                                staticClass: "mx-auto",
+                                                attrs: {
+                                                  width: "500",
+                                                  height: "400",
+                                                  outlined: ""
+                                                }
+                                              },
+                                              [
+                                                _c(
+                                                  "v-row",
+                                                  {
+                                                    attrs: { "no-gutters": "" }
+                                                  },
+                                                  [
+                                                    _c(
+                                                      "v-col",
+                                                      [
+                                                        _c(
+                                                          "v-list-item",
+                                                          {
+                                                            attrs: {
+                                                              "three-line": ""
+                                                            }
+                                                          },
+                                                          [
+                                                            _c(
+                                                              "v-list-item-content",
+                                                              [
+                                                                _c(
+                                                                  "div",
+                                                                  {
+                                                                    staticClass:
+                                                                      "overline mb-4"
+                                                                  },
+                                                                  [
+                                                                    _vm._v(
+                                                                      "ASSIGN SCREEN"
+                                                                    )
+                                                                  ]
+                                                                ),
+                                                                _vm._v(" "),
+                                                                _c(
+                                                                  "v-list-item-subtitle",
+                                                                  [
+                                                                    _vm._v(
+                                                                      _vm._s(
+                                                                        _vm.selected_outlet
+                                                                      )
+                                                                    )
+                                                                  ]
+                                                                ),
+                                                                _vm._v(" "),
+                                                                _c(
+                                                                  "v-list-item-title",
+                                                                  {
+                                                                    staticClass:
+                                                                      "headline mb-4"
+                                                                  },
+                                                                  [
+                                                                    _vm._v(
+                                                                      _vm._s(
+                                                                        _vm.selected_screen
+                                                                      )
+                                                                    )
+                                                                  ]
+                                                                )
+                                                              ],
+                                                              1
+                                                            )
+                                                          ],
+                                                          1
+                                                        )
+                                                      ],
+                                                      1
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _c(
+                                                      "v-col",
+                                                      [
+                                                        _c(
+                                                          "v-list-item",
+                                                          {
+                                                            attrs: {
+                                                              "three-line": ""
+                                                            }
+                                                          },
+                                                          [
+                                                            _c(
+                                                              "v-list-item-content",
+                                                              [
+                                                                _c(
+                                                                  "div",
+                                                                  {
+                                                                    staticClass:
+                                                                      "overline mb-4"
+                                                                  },
+                                                                  [
+                                                                    _vm._v(
+                                                                      "ASSIGN CONTENT"
+                                                                    )
+                                                                  ]
+                                                                ),
+                                                                _vm._v(" "),
+                                                                _c(
+                                                                  "v-list-item-subtitle",
+                                                                  [
+                                                                    _vm._v(
+                                                                      _vm._s(
+                                                                        _vm.selected_mediagroup
+                                                                      )
+                                                                    )
+                                                                  ]
+                                                                ),
+                                                                _vm._v(" "),
+                                                                _c(
+                                                                  "v-list-item-title",
+                                                                  {
+                                                                    staticClass:
+                                                                      "headline mb-4"
+                                                                  },
+                                                                  [
+                                                                    _vm._v(
+                                                                      _vm._s(
+                                                                        _vm.selected_link_name
+                                                                      )
+                                                                    )
+                                                                  ]
+                                                                )
+                                                              ],
+                                                              1
+                                                            )
+                                                          ],
+                                                          1
+                                                        )
+                                                      ],
+                                                      1
+                                                    ),
+                                                    _vm._v(" "),
+                                                    _c("v-responsive", {
+                                                      attrs: { width: "100%" }
+                                                    })
+                                                  ],
+                                                  1
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "v-row",
+                                                  {
+                                                    attrs: {
+                                                      "no-gutters": "",
+                                                      align: "center",
+                                                      justify: "center"
+                                                    }
+                                                  },
+                                                  [
+                                                    _c(
+                                                      "v-col",
+                                                      {
+                                                        attrs: {
+                                                          cols: "22",
+                                                          sm: "10"
+                                                        }
+                                                      },
+                                                      [
+                                                        _c("v-text-field", {
+                                                          attrs: {
+                                                            label:
+                                                              "or enter URL",
+                                                            outlined: "",
+                                                            dense: "",
+                                                            disabled: !_vm.isFormValid
+                                                          },
+                                                          on: {
+                                                            keyup:
+                                                              _vm.disableMedia
+                                                          },
+                                                          model: {
+                                                            value: _vm.newURL,
+                                                            callback: function(
+                                                              $$v
+                                                            ) {
+                                                              _vm.newURL = $$v
+                                                            },
+                                                            expression: "newURL"
+                                                          }
+                                                        }),
+                                                        _vm._v(" "),
+                                                        _c("v-text-field", {
+                                                          attrs: {
+                                                            label: "URL Name",
+                                                            outlined: "",
+                                                            dense: ""
+                                                          },
+                                                          model: {
+                                                            value:
+                                                              _vm.newURL_name,
+                                                            callback: function(
+                                                              $$v
+                                                            ) {
+                                                              _vm.newURL_name = $$v
+                                                            },
+                                                            expression:
+                                                              "newURL_name"
+                                                          }
+                                                        })
+                                                      ],
+                                                      1
+                                                    )
+                                                  ],
+                                                  1
+                                                ),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "v-row",
+                                                  {
+                                                    attrs: {
+                                                      "no-gutters": "",
+                                                      align: "center",
+                                                      justify: "center"
+                                                    }
+                                                  },
+                                                  [
+                                                    _c(
+                                                      "v-col",
+                                                      {
+                                                        attrs: {
+                                                          cols: "12",
+                                                          sm: "2"
+                                                        }
+                                                      },
+                                                      [
+                                                        _c(
+                                                          "v-btn",
+                                                          {
+                                                            attrs: {
+                                                              rounded: "",
+                                                              color: "primary",
+                                                              dark: ""
+                                                            },
+                                                            on: {
+                                                              click:
+                                                                _vm.addSched
+                                                            }
+                                                          },
+                                                          [_vm._v("SAVE")]
+                                                        )
+                                                      ],
+                                                      1
+                                                    )
+                                                  ],
+                                                  1
+                                                )
+                                              ],
+                                              1
+                                            )
+                                          ],
+                                          1
+                                        )
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "v-tab-item",
+                                  [
+                                    _c(
+                                      "v-card",
+                                      { attrs: { flat: "" } },
+                                      [
+                                        _c("v-card-text", [
+                                          _c("p", [
+                                            _vm._v(
+                                              "\n                        Morbi nec metus. Suspendisse faucibus, nunc et pellentesque egestas, lacus ante convallis tellus, vitae \n                      "
+                                            )
+                                          ]),
+                                          _vm._v(" "),
+                                          _c("p", [
+                                            _vm._v(
+                                              "\n                        Suspendisse feugiat. Suspendisse faucibus, nunc et pellentesque egestas, lacus ante convallis tellus, \n                      "
+                                            )
+                                          ]),
+                                          _vm._v(" "),
+                                          _c("p", { staticClass: "mb-0" }, [
+                                            _vm._v(
+                                              "\n                        Donec venenatis vulputate lorem. Aenean viverra rhoncus pede. In dui magna, posuere eget, vestibulum et, tempor auctor, justo. \n                      "
+                                            )
+                                          ])
+                                        ])
+                                      ],
+                                      1
                                     )
                                   ],
                                   1

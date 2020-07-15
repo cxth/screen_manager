@@ -115,79 +115,123 @@
         fluid
       >
        <template>
-        <v-row
-          justify="center"
-          align="center"
-        >
-          <v-col class="shrink">
-              <v-card
-                  class="mx-auto"
-                  width="600"
-                  height="400"
-                  outlined
-                >
-                  <v-row no-gutters>
-                   
-                      <v-col>
-                        <v-list-item three-line>
-                          <v-list-item-content>
-                            <div class="overline mb-4">ASSIGN SCREEN</div>
-                            <v-list-item-subtitle>{{ selected_outlet }}</v-list-item-subtitle>
-                            <v-list-item-title class="headline mb-4">{{ selected_screen }}</v-list-item-title>
-                          </v-list-item-content>
-                        </v-list-item>
-                      </v-col>
-                      <v-col>
-                        <v-list-item three-line>
-                          <v-list-item-content>
-                            <div class="overline mb-4">ASSIGN CONTENT</div>
-                            <v-list-item-subtitle>{{ selected_mediagroup }}</v-list-item-subtitle>
-                            <v-list-item-title class="headline mb-4">{{ selected_link_name }}</v-list-item-title>
-                          </v-list-item-content>
-                        </v-list-item>
-                      </v-col>
-                      <v-responsive
-                        width="100%"
-                      ></v-responsive>
-                   
-                  </v-row>
-                  <v-row no-gutters 
-                      align="center"
-                      justify="center"
-                  >
-                     <v-col cols="32" sm="10">
-                        <v-text-field
-                          label="or enter URL"
-                          outlined
-                          dense
-                          @keyup="disableMedia"
-                          v-model="newURL"
-                          :disabled="!isFormValid"
-                        ></v-text-field>
+          <v-row 
+            align="center"
+            justify="center"
+            class="mx-auto"
+            width="600"
+          >
+            <v-col>
 
+              <v-card>
+                <v-tabs left dense>
+                  <v-tab>
+                    <v-icon left>mdi-play-box-outline</v-icon>
+                    SCREEN
+                  </v-tab>
+                  <v-tab>
+                    <v-icon left>mdi-calendar-clock</v-icon>
+                    SCHEDULE
+                  </v-tab>
+
+                  <v-tab-item>
+                    <v-row
+                      justify="center"
+                      align="center"
+                      pb="3"
+                    >
+                      <v-col class="shrink">
+                        <v-card
+                            class="mx-auto"
+                            width="500"
+                            height="400"
+                            outlined
+                          >
+                            <v-row no-gutters>
+                            
+                                <v-col>
+                                  <v-list-item three-line>
+                                    <v-list-item-content>
+                                      <div class="overline mb-4">ASSIGN SCREEN</div>
+                                      <v-list-item-subtitle>{{ selected_outlet }}</v-list-item-subtitle>
+                                      <v-list-item-title class="headline mb-4">{{ selected_screen }}</v-list-item-title>
+                                    </v-list-item-content>
+                                  </v-list-item>
+                                </v-col>
+                                <v-col>
+                                  <v-list-item three-line>
+                                    <v-list-item-content>
+                                      <div class="overline mb-4">ASSIGN CONTENT</div>
+                                      <v-list-item-subtitle>{{ selected_mediagroup }}</v-list-item-subtitle>
+                                      <v-list-item-title class="headline mb-4">{{ selected_link_name }}</v-list-item-title>
+                                    </v-list-item-content>
+                                  </v-list-item>
+                                </v-col>
+                                <v-responsive
+                                  width="100%"
+                                ></v-responsive>
+                            
+                            </v-row>
+                            <v-row no-gutters 
+                                align="center"
+                                justify="center"
+                            >
+                              <v-col cols="22" sm="10">
+                                  <v-text-field
+                                    label="or enter URL"
+                                    outlined
+                                    dense
+                                    @keyup="disableMedia"
+                                    v-model="newURL"
+                                    :disabled="!isFormValid"
+                                  ></v-text-field>
+
+                              
+                                  <v-text-field
+                                    label="URL Name"
+                                    outlined
+                                    dense
+                                    v-model="newURL_name"
+                                  ></v-text-field>
+
+                                </v-col>
+                            </v-row>
+                            <v-row no-gutters 
+                                align="center"
+                                justify="center"
+                            >
+                              <v-col cols="12" sm="2">
+                                  <v-btn rounded color="primary" dark @click="addSched">SAVE</v-btn>
+                                </v-col>
+                            </v-row>
+                          </v-card>
+                      </v-col>
+                    </v-row>
                     
-                        <v-text-field
-                          label="URL Name"
-                          outlined
-                          dense
-                          v-model="newURL_name"
-                        ></v-text-field>
+                  </v-tab-item>
+                  <v-tab-item>
+                    <v-card flat>
+                      <v-card-text>
+                        <p>
+                          Morbi nec metus. Suspendisse faucibus, nunc et pellentesque egestas, lacus ante convallis tellus, vitae 
+                        </p>
 
-                      </v-col>
-                  </v-row>
-                  <v-row no-gutters 
-                      align="center"
-                      justify="center"
-                  >
-                     <v-col cols="12" sm="2">
-                        <v-btn rounded color="primary" dark @click="addSched">SAVE</v-btn>
-                      </v-col>
-                  </v-row>
-                </v-card>
+                        <p>
+                          Suspendisse feugiat. Suspendisse faucibus, nunc et pellentesque egestas, lacus ante convallis tellus, 
+                        </p>
 
-          </v-col>
-        </v-row>
-         </template>
+                        <p class="mb-0">
+                          Donec venenatis vulputate lorem. Aenean viverra rhoncus pede. In dui magna, posuere eget, vestibulum et, tempor auctor, justo. 
+                        </p>
+                      </v-card-text>
+                    </v-card>
+                  </v-tab-item>
+                </v-tabs>
+              </v-card> 
+
+            </v-col>
+          </v-row>
+        </template>
       </v-container>
     </v-main>
 
@@ -201,6 +245,8 @@
     </v-footer>
   </v-app>
 </template>
+
+
 
 <script>
 import axios from 'axios';
