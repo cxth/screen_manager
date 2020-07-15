@@ -14,5 +14,6 @@
   </div>
     
 <script src="{{mix('js/app.js')}}" defer></script>
+<script src="https://momentjs.com/downloads/moment.min.js"></script>
 </body>
 </html>

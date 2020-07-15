@@ -14,12 +14,16 @@ class LinkResource extends JsonResource
      */
     public function toArray($request)
     {
+        $id = "link" . $this->id;
+        
         return [
-            'id' => $this->id,
-            'media_asset_id' => $this->media__asset_id,
-            'name' => $this->name,
-            'url' => $this->url,
-            'description' => $this->description
+           // $id => [
+                'id' => $this->id,
+                'media_asset_id' => $this->media__asset_id,
+                'name' => $this->name,
+                'url' => $this->url,
+                'description' => $this->description
+           // ]
         ];
     }
 }

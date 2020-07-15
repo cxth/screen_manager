@@ -19,6 +19,8 @@ class ScreenResource extends JsonResource
             Screen::find($this->id)->outlet->name => [
                 'id' => $this->id,
                 'outlet_id' => $this->outlet_id,
+                'outlet_name' => Screen::find($this->id)->outlet->name,
+                //'outlet_name' => 'TESSSST',
                 'group_screens_id' => $this->group__screen_id,
                 'description' => $this->description,
                 'brand' => $this->brand,

@@ -18,7 +18,6 @@ class LinkController extends Controller
      */
     public function showAll()
     {
-        //return Link::all();
         return LinkResource::collection(Link::all());
     }
     
