@@ -227,26 +227,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -254,7 +234,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   },
   data: function data() {
     return {
-      test: 'TEST',
       selected_outlet: null,
       selected_screen: null,
       selected_mediagroup: null,
@@ -264,20 +243,15 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       outlets: null,
       media_assets: null,
       links: null,
+      // custom URL
+      newURL: null,
+      newURL_name: null,
+      isFormValid: true,
+      // Layout
       drawer: null,
       drawerRight: null,
       screen: 1,
-      screenm: null,
-      screens: [{
-        text: 'Real-Time',
-        icon: 'mdi-clock'
-      }, {
-        text: 'Audience',
-        icon: 'mdi-account'
-      }, {
-        text: 'Conversions',
-        icon: 'mdi-flag'
-      }]
+      screenm: null
     };
   },
   created: function created() {
@@ -293,16 +267,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/screen/all")).then(function (response) {
         var combined = {};
         response.data.forEach(function (arrayItem) {
-          if (!(Object.keys(arrayItem) in combined)) {
-            combined[Object.keys(arrayItem)] = Object.values(arrayItem);
-          } else {
-            combined[Object.keys(arrayItem)].push(Object.values(arrayItem)[0]);
-          }
+          if (!(Object.keys(arrayItem) in combined)) combined[Object.keys(arrayItem)] = Object.values(arrayItem);
+          combined[Object.keys(arrayItem)].push(Object.values(arrayItem)[0]);
         });
         _this.outlets = combined;
-        console.log('outlets obj');
-        console.log(_this.outlets); //this.screens[0].text = 'sample';
-        //console.log(Object.keys(this.outlet[0]));
       })["catch"](function (e) {
         _this.errors.push(e);
       });
@@ -311,10 +279,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       var _this2 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/media/all")).then(function (response) {
+        // DON'T TOUCH
         _this2.media_assets = response.data;
-        console.log('media obj');
-        console.log(_this2.media_assets); // test
-
         localStorage.name = 'Cxian';
       })["catch"](function (e) {
         _this2.errors.push(e);
@@ -324,11 +290,12 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       var _this3 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/l")).then(function (response) {
-        //this.links = this.trimObj(response.data);
-        _this3.links = response.data;
-        console.log('link');
-        console.log(_this3.links[0]); //console.log('link Arr');
-        //console.log(this.toArray(this.links));
+        var newlinks = {};
+        response.data.forEach(function (arrayItem) {
+          newlinks[arrayItem.id] = arrayItem;
+        });
+        _this3.links = newlinks;
+        console.log(_this3.links[14].url);
       })["catch"](function (e) {
         console.log('links not working');
 
@@ -339,7 +306,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       // `event` is the native DOM event
       if (event) {
         var i = event.currentTarget.id.split('.');
-        console.log(event.currentTarget.id);
         this.selected_outlet = i[0];
         this.selected_screen = i[1];
       }
@@ -347,37 +313,95 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     linkSelect: function linkSelect(event) {
       // `event` is the native DOM event
       if (event) {
+        //console.log(event.currentTarget.id);
         var i = event.currentTarget.id.split('.');
-        console.log(event.currentTarget.id);
         this.selected_mediagroup = i[0];
         this.selected_link = i[1];
-        this.selected_link_name = this.links[this.selected_link - 1].description;
-        this.selected_link_url = this.links[this.selected_link - 1].url; //this.selected_link = this.links[this.selected_link - 1].description;
-        //var myURL = this.links[this.selected_link - 1].url;
-        //console.log('selected url');
-        //console.log(myURL);
-        //alert(event.currentTarget.id)
+        this.selected_link_name = this.links[this.selected_link].name;
+        this.selected_link_url = this.links[this.selected_link].url;
+        console.log(this.selected_link_name);
+        console.log(this.selected_link_url); // clear custom URL
+
+        this.newURL = null;
+        this.newURL_name = null;
+        this.isFormValid = false;
       }
     },
-    addSched: function addSched(event) {
+    addLink: function addLink(event) {
       var _this4 = this;
 
-      var myURL = this.links[this.selected_link - 1].url;
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
         method: 'post',
-        url: "".concat(this.siteURL, "/api/schedule/screen/").concat(this.selected_screen),
+        url: "".concat(this.siteURL, "/api/l"),
         data: {
+          media__asset_id: 100,
+          name: this.newURL_name,
+          url: this.newURL
+        }
+      }).then(function (response) {
+        console.log(response.data);
+        alert("link save");
+      })["catch"](function (e) {
+        _this4.errors.push(e);
+      });
+    },
+    addSched: function addSched(event) {
+      var _this5 = this;
+
+      console.log(this.newURL);
+      console.log(this.newURL_name); // @todo: clean data validation
+
+      if (this.selected_screen == null) {
+        alert('no screen selected');
+        return;
+      }
+
+      if (!this.newURL || !this.newURL_name) {
+        alert('Please complete URL fields');
+        return;
+      }
+
+      if (this.selected_link == null) {
+        // @TODO: validate URL, name
+        var newURL_id = this.addLink();
+
+        if (newURL_id == "") {
+          return;
+        } // @TODO check failure here
+
+
+        var mydata = {
+          screen_id: this.selected_screen,
+          link_id: newURL_id,
+          url: this.newURL,
+          show_datetime: this.now()
+        };
+      } else {
+        var mydata = {
           screen_id: this.selected_screen,
           link_id: this.selected_link,
           url: this.selected_link_url,
           show_datetime: this.now()
-        }
+        };
+      }
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default()({
+        method: 'post',
+        url: "".concat(this.siteURL, "/api/schedule/screen/").concat(this.selected_screen),
+        data: mydata
       }).then(function (response) {
         console.log(response);
-        alert("schedule save");
+        alert("schedule save"); // @TODO: clear forms on save
       })["catch"](function (e) {
-        _this4.errors.push(e);
+        _this5.errors.push(e);
       });
+    },
+    disableMedia: function disableMedia(event) {
+      //alert('something');
+      this.selected_mediagroup = null;
+      this.selected_link = null;
+      this.selected_link_name = null;
+      this.selected_link_url = null;
     },
     // Helpers
     now: function now() {
@@ -500,9 +524,7 @@ var render = function() {
                                             [
                                               _c("v-list-item-title", {
                                                 domProps: {
-                                                  textContent: _vm._s(
-                                                    link.description
-                                                  )
+                                                  textContent: _vm._s(link.name)
                                                 }
                                               })
                                             ],
@@ -715,72 +737,56 @@ var render = function() {
             "v-container",
             { staticClass: "fill-height", attrs: { fluid: "" } },
             [
-              _c(
-                "v-row",
-                { attrs: { justify: "center", align: "center" } },
-                [
-                  _c(
-                    "v-col",
-                    { staticClass: "shrink" },
-                    [
-                      _c(
-                        "v-card",
-                        {
-                          staticClass: "mx-auto",
-                          attrs: { width: "600", height: "300", outlined: "" }
-                        },
-                        [
-                          _c(
-                            "v-row",
-                            { attrs: { "no-gutters": "" } },
-                            [
+              [
+                _c(
+                  "v-row",
+                  { attrs: { justify: "center", align: "center" } },
+                  [
+                    _c(
+                      "v-col",
+                      { staticClass: "shrink" },
+                      [
+                        _c(
+                          "v-card",
+                          {
+                            staticClass: "mx-auto",
+                            attrs: { width: "600", height: "400", outlined: "" }
+                          },
+                          [
+                            _c(
+                              "v-row",
+                              { attrs: { "no-gutters": "" } },
                               [
                                 _c(
                                   "v-col",
                                   [
                                     _c(
-                                      "v-card",
-                                      {
-                                        staticClass: "pa-2",
-                                        attrs: { outlined: "", tile: "" }
-                                      },
+                                      "v-list-item",
+                                      { attrs: { "three-line": "" } },
                                       [
                                         _c(
-                                          "v-list-item",
-                                          { attrs: { "two-line": "" } },
+                                          "v-list-item-content",
                                           [
                                             _c(
-                                              "v-list-item-content",
+                                              "div",
+                                              { staticClass: "overline mb-4" },
+                                              [_vm._v("ASSIGN SCREEN")]
+                                            ),
+                                            _vm._v(" "),
+                                            _c("v-list-item-subtitle", [
+                                              _vm._v(
+                                                _vm._s(_vm.selected_outlet)
+                                              )
+                                            ]),
+                                            _vm._v(" "),
+                                            _c(
+                                              "v-list-item-title",
+                                              { staticClass: "headline mb-4" },
                                               [
-                                                _c(
-                                                  "div",
-                                                  {
-                                                    staticClass: "overline mb-4"
-                                                  },
-                                                  [_vm._v("ASSIGN SCREEN")]
-                                                ),
-                                                _vm._v(" "),
-                                                _c("v-list-item-subtitle", [
-                                                  _vm._v(
-                                                    _vm._s(_vm.selected_outlet)
-                                                  )
-                                                ]),
-                                                _vm._v(" "),
-                                                _c(
-                                                  "v-list-item-title",
-                                                  {
-                                                    staticClass: "headline mb-4"
-                                                  },
-                                                  [
-                                                    _vm._v(
-                                                      _vm._s(
-                                                        _vm.selected_screen
-                                                      )
-                                                    )
-                                                  ]
+                                                _vm._v(
+                                                  _vm._s(_vm.selected_screen)
                                                 )
-                                              ],
-                                              1
+                                              ]
                                             )
                                           ],
                                           1
@@ -796,50 +802,32 @@ var render = function() {
                                   "v-col",
                                   [
                                     _c(
-                                      "v-card",
-                                      {
-                                        staticClass: "pa-2",
-                                        attrs: { outlined: "", tile: "" }
-                                      },
+                                      "v-list-item",
+                                      { attrs: { "three-line": "" } },
                                       [
                                         _c(
-                                          "v-list-item",
-                                          { attrs: { "two-line": "" } },
+                                          "v-list-item-content",
                                           [
                                             _c(
-                                              "v-list-item-content",
+                                              "div",
+                                              { staticClass: "overline mb-4" },
+                                              [_vm._v("ASSIGN CONTENT")]
+                                            ),
+                                            _vm._v(" "),
+                                            _c("v-list-item-subtitle", [
+                                              _vm._v(
+                                                _vm._s(_vm.selected_mediagroup)
+                                              )
+                                            ]),
+                                            _vm._v(" "),
+                                            _c(
+                                              "v-list-item-title",
+                                              { staticClass: "headline mb-4" },
                                               [
-                                                _c(
-                                                  "div",
-                                                  {
-                                                    staticClass: "overline mb-4"
-                                                  },
-                                                  [_vm._v("ASSIGN CONTENT")]
-                                                ),
-                                                _vm._v(" "),
-                                                _c("v-list-item-subtitle", [
-                                                  _vm._v(
-                                                    _vm._s(
-                                                      _vm.selected_mediagroup
-                                                    )
-                                                  )
-                                                ]),
-                                                _vm._v(" "),
-                                                _c(
-                                                  "v-list-item-title",
-                                                  {
-                                                    staticClass: "headline mb-4"
-                                                  },
-                                                  [
-                                                    _vm._v(
-                                                      _vm._s(
-                                                        _vm.selected_link_name
-                                                      )
-                                                    )
-                                                  ]
+                                                _vm._v(
+                                                  _vm._s(_vm.selected_link_name)
                                                 )
-                                              ],
-                                              1
+                                              ]
                                             )
                                           ],
                                           1
@@ -852,42 +840,106 @@ var render = function() {
                                 ),
                                 _vm._v(" "),
                                 _c("v-responsive", { attrs: { width: "100%" } })
-                              ]
-                            ],
-                            2
-                          ),
-                          _vm._v(" "),
-                          _c("v-divider"),
-                          _vm._v(" "),
-                          _c(
-                            "v-card-actions",
-                            [
-                              _c(
-                                "v-btn",
-                                {
-                                  attrs: {
-                                    rounded: "",
-                                    color: "primary",
-                                    dark: ""
-                                  },
-                                  on: { click: _vm.addSched }
-                                },
-                                [_vm._v("SAVE")]
-                              )
-                            ],
-                            1
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              )
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-row",
+                              {
+                                attrs: {
+                                  "no-gutters": "",
+                                  align: "center",
+                                  justify: "center"
+                                }
+                              },
+                              [
+                                _c(
+                                  "v-col",
+                                  { attrs: { cols: "32", sm: "10" } },
+                                  [
+                                    _c("v-text-field", {
+                                      attrs: {
+                                        label: "or enter URL",
+                                        outlined: "",
+                                        dense: "",
+                                        disabled: !_vm.isFormValid
+                                      },
+                                      on: { keyup: _vm.disableMedia },
+                                      model: {
+                                        value: _vm.newURL,
+                                        callback: function($$v) {
+                                          _vm.newURL = $$v
+                                        },
+                                        expression: "newURL"
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("v-text-field", {
+                                      attrs: {
+                                        label: "URL Name",
+                                        outlined: "",
+                                        dense: ""
+                                      },
+                                      model: {
+                                        value: _vm.newURL_name,
+                                        callback: function($$v) {
+                                          _vm.newURL_name = $$v
+                                        },
+                                        expression: "newURL_name"
+                                      }
+                                    })
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-row",
+                              {
+                                attrs: {
+                                  "no-gutters": "",
+                                  align: "center",
+                                  justify: "center"
+                                }
+                              },
+                              [
+                                _c(
+                                  "v-col",
+                                  { attrs: { cols: "12", sm: "2" } },
+                                  [
+                                    _c(
+                                      "v-btn",
+                                      {
+                                        attrs: {
+                                          rounded: "",
+                                          color: "primary",
+                                          dark: ""
+                                        },
+                                        on: { click: _vm.addSched }
+                                      },
+                                      [_vm._v("SAVE")]
+                                    )
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                )
+              ]
             ],
-            1
+            2
           )
         ],
         1

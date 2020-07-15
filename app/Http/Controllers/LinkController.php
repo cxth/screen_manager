@@ -51,8 +51,8 @@ class LinkController extends Controller
      */
     public function store(Request $request)
     {
-        Link::create($request->all());
-        return response('Saved', Response::HTTP_CREATED);
+        $link = Link::create($request->all());
+        return response($link->id, Response::HTTP_CREATED);
     }
 
     /**

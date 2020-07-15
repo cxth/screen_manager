@@ -22,12 +22,8 @@
               :key="i"
             >
               <v-expansion-panel-header>{{ asset.name }}</v-expansion-panel-header>
-              <!-- <v-expansion-panel-content>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-              </v-expansion-panel-content> -->
               <v-expansion-panel-content>
                 <v-list dense>
-                  <!-- <v-subheader>REPORTS</v-subheader> -->
                   <v-list-item-group v-model="screen" color="primary">
                     <v-list-item
                       v-for="(link, i) in asset.links"
@@ -35,11 +31,8 @@
                       v-on:click="linkSelect"
                       :id="asset.name + '.' + link.id"
                     >
-                      <!-- <v-list-item-icon>
-                        <v-icon v-text="screen.icon"></v-icon>
-                      </v-list-item-icon> -->
                       <v-list-item-content>
-                        <v-list-item-title v-text="link.description"></v-list-item-title>
+                        <v-list-item-title v-text="link.name"></v-list-item-title>
                       </v-list-item-content>
                     </v-list-item>
                   </v-list-item-group>
@@ -82,12 +75,8 @@
               :key="name"
             >
               <v-expansion-panel-header>{{ name }}</v-expansion-panel-header>
-              <!-- <v-expansion-panel-content>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-              </v-expansion-panel-content> -->
               <v-expansion-panel-content>
                 <v-list dense>
-                  <!-- <v-subheader>REPORTS</v-subheader> -->
                   <!-- <v-list-item-group v-model="screenm" color="primary"> -->
                   <v-list-item-group color="primary">
                     <v-list-item
@@ -125,89 +114,80 @@
         class="fill-height"
         fluid
       >
+       <template>
         <v-row
           justify="center"
           align="center"
         >
           <v-col class="shrink">
-
-            <!-- <v-tooltip right>
-              <template v-slot:activator="{ on }">
-                <v-btn
-                  :href="source"
-                  icon
-                  large
-                  target="_blank"
-                  v-on="on"
-                >
-                  <v-icon large>mdi-code-tags</v-icon>
-                </v-btn>
-              </template>
-              <span>Source</span>
-            </v-tooltip> -->
-
               <v-card
                   class="mx-auto"
                   width="600"
-                  height="300"
+                  height="400"
                   outlined
                 >
-
                   <v-row no-gutters>
-                    <template>
+                   
                       <v-col>
-                        <v-card
-                          class="pa-2"
-                          outlined
-                          tile
-                        >
-                          
-                        <v-list-item two-line>
+                        <v-list-item three-line>
                           <v-list-item-content>
                             <div class="overline mb-4">ASSIGN SCREEN</div>
                             <v-list-item-subtitle>{{ selected_outlet }}</v-list-item-subtitle>
                             <v-list-item-title class="headline mb-4">{{ selected_screen }}</v-list-item-title>
                           </v-list-item-content>
-                          <!-- <v-list-item-avatar
-                            tile
-                            size="80"
-                            color="grey"
-                          ></v-list-item-avatar> -->
                         </v-list-item>
-
-                        </v-card>
                       </v-col>
                       <v-col>
-                        <v-card
-                          class="pa-2"
-                          outlined
-                          tile
-                        >
-                          
-                        <v-list-item two-line>
+                        <v-list-item three-line>
                           <v-list-item-content>
                             <div class="overline mb-4">ASSIGN CONTENT</div>
                             <v-list-item-subtitle>{{ selected_mediagroup }}</v-list-item-subtitle>
                             <v-list-item-title class="headline mb-4">{{ selected_link_name }}</v-list-item-title>
                           </v-list-item-content>
                         </v-list-item>
-
-                        </v-card>
                       </v-col>
                       <v-responsive
-
                         width="100%"
                       ></v-responsive>
-                    </template>
+                   
                   </v-row>
-                  <v-divider></v-divider>
-                  <v-card-actions> 
-                      <v-btn rounded color="primary" dark @click="addSched">SAVE</v-btn>
-                  </v-card-actions>
+                  <v-row no-gutters 
+                      align="center"
+                      justify="center"
+                  >
+                     <v-col cols="32" sm="10">
+                        <v-text-field
+                          label="or enter URL"
+                          outlined
+                          dense
+                          @keyup="disableMedia"
+                          v-model="newURL"
+                          :disabled="!isFormValid"
+                        ></v-text-field>
+
+                    
+                        <v-text-field
+                          label="URL Name"
+                          outlined
+                          dense
+                          v-model="newURL_name"
+                        ></v-text-field>
+
+                      </v-col>
+                  </v-row>
+                  <v-row no-gutters 
+                      align="center"
+                      justify="center"
+                  >
+                     <v-col cols="12" sm="2">
+                        <v-btn rounded color="primary" dark @click="addSched">SAVE</v-btn>
+                      </v-col>
+                  </v-row>
                 </v-card>
 
           </v-col>
         </v-row>
+         </template>
       </v-container>
     </v-main>
 
@@ -230,7 +210,6 @@ import axios from 'axios';
       source: String,
     },
     data: () => ({
-      test: 'TEST',
       selected_outlet: null,
       selected_screen: null,
       selected_mediagroup: null,
@@ -241,16 +220,17 @@ import axios from 'axios';
       outlets: null,
       media_assets: null,
       links: null,
+
+      // custom URL
+      newURL: null,
+      newURL_name: null,
+      isFormValid: true,
+
+      // Layout
       drawer: null,
       drawerRight: null,
       screen: 1,
-      screenm: null,
-      screens: [
-        { text: 'Real-Time', icon: 'mdi-clock' },
-        { text: 'Audience', icon: 'mdi-account' },
-        { text: 'Conversions', icon: 'mdi-flag' },
-      ],
-      
+      screenm: null,      
     }),
     
     created () {
@@ -260,6 +240,7 @@ import axios from 'axios';
       this.getLinks()
     },
     methods: {
+
       getOutlets() {
           axios.get(`${ this.siteURL }/api/screen/all`)
           .then(response => {
@@ -267,21 +248,11 @@ import axios from 'axios';
               let combined = {};
               response.data.forEach(function (arrayItem) {
                 if (!(Object.keys(arrayItem) in combined))
-                {
                     combined[Object.keys(arrayItem)] = Object.values(arrayItem);
-                }
-                else
-                {
-                    combined[Object.keys(arrayItem)].push(Object.values(arrayItem)[0]);
-                }
+                combined[Object.keys(arrayItem)].push(Object.values(arrayItem)[0]);
               });
-
               this.outlets = combined;
-              console.log('outlets obj');
-              console.log(this.outlets);
-              
-              //this.screens[0].text = 'sample';
-              //console.log(Object.keys(this.outlet[0]));
+        
           })
           .catch(e => {
               this.errors.push(e)
@@ -292,11 +263,8 @@ import axios from 'axios';
         axios.get(`${ this.siteURL }/api/media/all`)
           .then(response => {
           
+              // DON'T TOUCH
               this.media_assets = response.data;
-              console.log('media obj');
-              console.log(this.media_assets);
-
-              // test
               localStorage.name = 'Cxian';
 
           })
@@ -308,12 +276,14 @@ import axios from 'axios';
       getLinks() {
         axios.get(`${ this.siteURL }/api/l`)
           .then(response => {
-              //this.links = this.trimObj(response.data);
-              this.links = response.data;
-              console.log('link');
-              console.log(this.links[0]);
-              //console.log('link Arr');
-              //console.log(this.toArray(this.links));
+            
+              let newlinks = {};
+              response.data.forEach(function (arrayItem) {
+                newlinks[arrayItem.id] = arrayItem;
+              });
+              this.links = newlinks;
+
+              console.log(this.links[14].url);
 
           })
           .catch(e => {
@@ -326,7 +296,6 @@ import axios from 'axios';
         // `event` is the native DOM event
         if (event) {
           var i = event.currentTarget.id.split('.');
-          console.log(event.currentTarget.id);
           this.selected_outlet = i[0];
           this.selected_screen = i[1];
         }
@@ -335,45 +304,109 @@ import axios from 'axios';
       linkSelect: function (event) {
         // `event` is the native DOM event
         if (event) {
+          //console.log(event.currentTarget.id);
           var i = event.currentTarget.id.split('.');
-          console.log(event.currentTarget.id);
           this.selected_mediagroup = i[0];
-
           this.selected_link = i[1];
-          this.selected_link_name = this.links[this.selected_link - 1].description;
-          this.selected_link_url = this.links[this.selected_link - 1].url;
-          
-          //this.selected_link = this.links[this.selected_link - 1].description;
-          //var myURL = this.links[this.selected_link - 1].url;
-          //console.log('selected url');
-          //console.log(myURL);
-          
-          //alert(event.currentTarget.id)
+          this.selected_link_name = this.links[this.selected_link].name;
+          this.selected_link_url = this.links[this.selected_link].url;
+          console.log(this.selected_link_name);
+          console.log(this.selected_link_url);
+
+          // clear custom URL
+          this.newURL = null;
+          this.newURL_name = null;
+          this.isFormValid = false;
         }
+      },
+
+      addLink: function(event) {
+
+        axios({
+            method: 'post',
+            url: `${ this.siteURL }/api/l`,
+            data: {
+              media__asset_id: 100,
+              name: this.newURL_name,
+              url: this.newURL
+            }
+        }).then(response => {
+
+              console.log(response.data);
+              alert("link save");
+          })
+          .catch(e => {
+              this.errors.push(e)
+          });
+
       },
 
       addSched: function(event) {
 
-        var myURL = this.links[this.selected_link - 1].url;
+        console.log(this.newURL);
+        console.log(this.newURL_name);
+        // @todo: clean data validation
+        if (this.selected_screen == null)
+        {
+          alert('no screen selected');
+          return;
+        }
+        if (!(this.newURL) || !(this.newURL_name))
+        {
+          alert('Please complete URL fields');
+          return;
+        }
 
-        axios({
-          method: 'post',
-          url: `${ this.siteURL }/api/schedule/screen/${ this.selected_screen }`,
-          data: {
-            screen_id: this.selected_screen,
-            link_id: this.selected_link,
-            url: this.selected_link_url,
-            show_datetime: this.now()
+
+        if (this.selected_link == null)
+        {
+          // @TODO: validate URL, name
+          var newURL_id = this.addLink();
+          if (newURL_id == "")
+          {
+            return;
           }
-        }).then(response => {
+
+          // @TODO check failure here
+          var mydata = {
+              screen_id: this.selected_screen,
+              link_id: newURL_id,
+              url: this.newURL,
+              show_datetime: this.now()
+          }
+        }
+        else
+        {
+          var mydata = {
+              screen_id: this.selected_screen,
+              link_id: this.selected_link,
+              url: this.selected_link_url,
+              show_datetime: this.now()
+          }
+        }
         
+        axios({
+            method: 'post',
+            url: `${ this.siteURL }/api/schedule/screen/${ this.selected_screen }`,
+            data: mydata
+        }).then(response => {
               console.log(response);
               alert("schedule save");
+              // @TODO: clear forms on save
           })
           .catch(e => {
               this.errors.push(e)
           });
         
+      },
+
+
+      disableMedia: function(event) {
+        //alert('something');
+        this.selected_mediagroup = null;
+        this.selected_link = null;
+        this.selected_link_name = null;
+        this.selected_link_url = null;
       },
 
       // Helpers
