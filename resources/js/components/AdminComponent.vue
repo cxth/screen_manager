@@ -211,19 +211,29 @@
                   </v-tab-item>
                   <v-tab-item>
                     <v-card flat>
-                      <v-card-text>
-                        <p>
-                          Morbi nec metus. Suspendisse faucibus, nunc et pellentesque egestas, lacus ante convallis tellus, vitae 
-                        </p>
+                      
+                      <template>
+                      <v-row>
+                        <v-col
+                          align="center"
+                          justify="center"
+                        >
+                          <v-sheet height="400" width="500">
+                            <v-calendar
+                              ref="calendar"
+                              v-model="todayx"
+                              :now="todayx"
+                              :value="todayx"
+                              :events="events"
+                              color="primary"
+                              type="day"
+                              @click:events="(event)=>dateClick(event,true)"
+                            ></v-calendar>
+                          </v-sheet>
+                        </v-col>
+                      </v-row>
+                      </template>
 
-                        <p>
-                          Suspendisse feugiat. Suspendisse faucibus, nunc et pellentesque egestas, lacus ante convallis tellus, 
-                        </p>
-
-                        <p class="mb-0">
-                          Donec venenatis vulputate lorem. Aenean viverra rhoncus pede. In dui magna, posuere eget, vestibulum et, tempor auctor, justo. 
-                        </p>
-                      </v-card-text>
                     </v-card>
                   </v-tab-item>
                 </v-tabs>
@@ -258,6 +268,7 @@ import axios from 'axios';
     data: () => ({
       selected_outlet: null,
       selected_screen: null,
+      selected_screen_schedule: null,
       selected_mediagroup: null,
       selected_link: null,
       selected_link_name: null,
@@ -276,8 +287,28 @@ import axios from 'axios';
       drawer: null,
       drawerRight: null,
       screen: 1,
-      screenm: null,      
+      screenm: null,     
+      
+      // Schedule
+      todayx: '2020-07-16',
+      events: [
+        {
+          name: 'Weekly Meeting',
+          start: '2020-07-16 09:00',
+          end: '2020-07-16 10:00'
+          // YYYY-MM-DD  YYYY-MM-DD hh:mm
+        },
+        {
+          name: 'UK GH',
+          start: '2020-07-16 14:30',
+          end: '2020-07-16 18:30'
+        },
+      ],
+
     }),
+    mounted () {
+      //this.$refs.calendar.scrollToTime('08:00')
+    },
     
     created () {
       this.$vuetify.theme.dark = true;
@@ -286,6 +317,9 @@ import axios from 'axios';
       this.getLinks()
     },
     methods: {
+      dateClick: function() {
+        alert('yes');
+      },
 
       getOutlets() {
           axios.get(`${ this.siteURL }/api/screen/all`)
@@ -329,8 +363,6 @@ import axios from 'axios';
               });
               this.links = newlinks;
 
-              console.log(this.links[14].url);
-
           })
           .catch(e => {
               console.log('links not working');
@@ -338,19 +370,41 @@ import axios from 'axios';
           })
       },
 
+      getScreenSched: function() {
+        axios({
+            method: 'get',
+            url: `${ this.siteURL }/api/schedule/ss/${ this.selected_screen }`,
+        }).then(response => {
+            //console.log('schedule for screen ' + this.selected_screen);
+            //console.log(response.data);
+            if (response.data)
+            {
+              this.selected_screen_schedule = response.data;
+              this.events = this.eventsFormat()
+            }
+
+          })
+          .catch(e => {
+              this.errors.push(e)
+          });
+      },
+
       outletSelect: function (event) {
-        // `event` is the native DOM event
         if (event) {
           var i = event.currentTarget.id.split('.');
           this.selected_outlet = i[0];
           this.selected_screen = i[1];
+
+          this.getScreenSched()
         }
+
       },
 
       linkSelect: function (event) {
         // `event` is the native DOM event
         if (event) {
           //console.log(event.currentTarget.id);
+          // for UI ------------
           var i = event.currentTarget.id.split('.');
           this.selected_mediagroup = i[0];
           this.selected_link = i[1];
@@ -359,7 +413,7 @@ import axios from 'axios';
           console.log(this.selected_link_name);
           console.log(this.selected_link_url);
 
-          // clear custom URL
+          // clear custom URL ---------
           this.newURL = null;
           this.newURL_name = null;
           this.isFormValid = false;
@@ -397,15 +451,16 @@ import axios from 'axios';
           alert('no screen selected');
           return;
         }
-        if (!(this.newURL) || !(this.newURL_name))
-        {
-          alert('Please complete URL fields');
-          return;
-        }
-
-
+        
         if (this.selected_link == null)
         {
+          // check URL & name
+          if (!(this.newURL) || !(this.newURL_name))
+          {
+            alert('Please complete URL fields');
+            return;
+          }
+        
           // @TODO: validate URL, name
           var newURL_id = this.addLink();
           if (newURL_id == "")
@@ -418,7 +473,7 @@ import axios from 'axios';
               screen_id: this.selected_screen,
               link_id: newURL_id,
               url: this.newURL,
-              show_datetime: this.now()
+              show_datetime: this.momentNow()
           }
         }
         else
@@ -427,7 +482,7 @@ import axios from 'axios';
               screen_id: this.selected_screen,
               link_id: this.selected_link,
               url: this.selected_link_url,
-              show_datetime: this.now()
+              show_datetime: this.momentNow()
           }
         }
         
@@ -439,13 +494,15 @@ import axios from 'axios';
               console.log(response);
               alert("schedule save");
               // @TODO: clear forms on save
+
+              // refresh schedule
+              this.getScreenSched()
           })
           .catch(e => {
               this.errors.push(e)
           });
         
       },
-
 
       disableMedia: function(event) {
         //alert('something');
@@ -455,8 +512,8 @@ import axios from 'axios';
         this.selected_link_url = null;
       },
 
-      // Helpers
-      now: function() {
+      // Helpers =================
+      momentNow: function() {
         return moment().format('YYYY-MM-DD HH:mm:ss');
       },
       trimObj: function(objArr) {
@@ -465,9 +522,57 @@ import axios from 'axios';
       toArray: function(obj) {
         //return Object.keys(obj).map((key) => [obj[key]]);
         return Object.entries(obj);
+      },
+      eventsFormat: function() {
 
+        let esched = [];
+        this.selected_screen_schedule.forEach(function (val, key, map) {
+            var event_name = val[Object.keys(val)].link_name
+            var event_start = val[Object.keys(val)].show_datetime
+            var event_end = val[Object.keys(val)].expire_datetime
+            var entry = {
+              name: event_name,
+              start: event_start,
+              end: event_end
+            }
+            if (event_end == null)
+            {
+              delete entry.end;
+            }
+            esched.push(entry);
+        });
+
+        return esched;
       }
+
+
+
 
     }
   }
 </script>
+
+<style scoped>
+  .my-event {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    border-radius: 2px;
+    background-color: #1867c0;
+    color: #ffffff;
+    border: 1px solid #1867c0;
+    font-size: 12px;
+    padding: 3px;
+    cursor: pointer;
+    margin-bottom: 1px;
+    left: 4px;
+    margin-right: 8px;
+    position: relative;
+  }
+
+  .my-event.with-time {
+    position: absolute;
+    right: 4px;
+    margin-right: 0px;
+  }
+</style>

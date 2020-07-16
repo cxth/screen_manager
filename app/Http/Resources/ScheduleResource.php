@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 
+use App\Model\Link;
 use App\Model\Screen;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -28,6 +29,7 @@ class ScheduleResource extends JsonResource
                 'outlet' => $outlet->name,
                 'group_screen_id' => $this->group__screen_id,
                 'link_id' => $this->link_id,
+                'link_name' => Link::find($this->link_id)->name,
                 'url' => $this->url,
                 'show_datetime' => $this->show_datetime,
                 'expire_datetime' => $this->expire_datetime
