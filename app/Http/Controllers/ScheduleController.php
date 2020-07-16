@@ -9,6 +9,7 @@ use App\Model\Screen;
 use App\Model\Schedule;
 use App\Model\Group_Screen;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\ScheduleResource;
 use App\Http\Resources\ScheduleGroupResource;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,7 +24,8 @@ class ScheduleController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        // disabled due to Admin API not accessible
+        //$this->middleware('auth');
     }
     
     
@@ -33,12 +35,41 @@ class ScheduleController extends Controller
      */
     public function default()
     {
-        $schedule = Schedule::latest('show_datetime')->first();
-        echo "<pre>";
-        //print_r($schedule->url);
-        echo "</pre>";
+        if (!Auth::user())
+        {
+            return redirect('/login');
+        }
+        if (Auth::user()->username == "admin")
+        {
+            return redirect('/admin');
+        }
+        echo "<pre></pre>";
         //setcookie('cross-site-cookie', 'name', ['samesite' => 'None', 'secure' => true]);
-        return view('page', compact('schedule'));
+        return view('page');
+    }
+
+    /**
+     * Get latest URL from AJAX request in client Front-end.
+     *
+     * @return \Illuminate\Http\Response
+     * @TODO for deletion
+     */
+    public function getUrl()
+    {
+        if (!Auth::user())
+        {
+            return redirect('/login');
+        }
+        
+        $screen = Screen::find(Auth::user()->username);
+        //$screen = Screen::find('CFANGSS03');
+        if (!$screen)
+        {
+            return response(null, Response::HTTP_NO_CONTENT);
+        }
+
+        $schedule = $this->nowShowing($screen);
+        return $schedule;
     }
 
     /**
@@ -64,9 +95,7 @@ class ScheduleController extends Controller
             ->whereTime('show_datetime', '<', Carbon::now())
             ->orderBy('show_datetime', 'desc')
             ->first();
-    
-        return [$result];
-        //return ScheduleGroupResource::collection($result);
+        return $result;
     }
     
     
@@ -209,21 +238,6 @@ class ScheduleController extends Controller
         
     }
 
-   
-
-    /**
-     * Get latest URL from AJAX request.
-     *
-     * @return \Illuminate\Http\Response
-     * @TODO for deletion
-     */
-    public function getUrl()
-    {
-        $schedule = Schedule::latest('show_datetime')->first();
-        return $schedule->url;
-    }
-
-
     /**
      * Show the form for creating a new resource.
      *
@@ -301,6 +315,14 @@ class ScheduleController extends Controller
      */
     public function admin()
     {
+        if (!Auth::user())
+        {
+            return redirect('/login');
+        }
+        if (Auth::user()->username != "admin")
+        {
+            return redirect('/');
+        }
         setcookie('cross-site-cookie', 'name', ['samesite' => 'None', 'secure' => true]);
         return view('admin');
     }

@@ -10,7 +10,9 @@ import axios from 'axios';
 export default {
     data: function() {
             return {
-                url: 'https://app.mswdb.com/sis/beta/',
+                // Default site for testing
+                //url: 'https://app.mswdb.com/sis/beta/',
+                url: 'https://api.mswodds.com/live/stg/view.php?sport=tennis',
                 timer: ''
             } 
         },
@@ -27,11 +29,24 @@ export default {
         fetchURL() {
             axios.get(`${ this.siteURL }/request`)
             .then(response => {
-                console.log(response.data);
-                this.url = response.data
+                if (!(response.data)) 
+                {
+                    axios.get(`${ this.siteURL }/logout`)
+                        .then(response => {
+                            location.reload();
+                        })
+                        .catch(e => {
+                            this.errors.push(e)
+                        })
+                }
+                console.log('welcome ' + response.data.screen_id);
+                console.log('showing: ' + response.data.show_datetime + ' url: ' + response.data.url);
+                this.url = response.data.url
             })
             .catch(e => {
-                this.errors.push(e)
+                //this.errors.push(e)
+                console.log('im error');
+                location.reload();
             })
         },
         cancelAutoUpdate() { clearInterval(this.timer) }

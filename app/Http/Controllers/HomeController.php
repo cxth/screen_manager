@@ -30,6 +30,7 @@ class HomeController extends Controller
     public function logout()
     {
         Auth::logout();
-        //return ['logginout'];
+        //sleep(5);
+        //return redirect('/login'); 
     }
 }

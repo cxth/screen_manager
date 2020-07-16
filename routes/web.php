@@ -15,18 +15,21 @@ use Illuminate\Support\Facades\Artisan;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 
 // Web Route
+Route::get('/','ScheduleController@default'); 
 Route::get('/logout','HomeController@logout');
 
-// Test routes
-Route::get('/','ScheduleController@default'); 
-Route::get('/test','ScheduleController@test');
+// AJAX
 Route::get('/request','ScheduleController@getUrl');
+
+// Test routes
+Route::get('/test','ScheduleController@test');
+
 
 // Admin
 Route::get('/admin','ScheduleController@admin');

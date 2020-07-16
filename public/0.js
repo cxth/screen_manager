@@ -351,8 +351,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/screen/all")).then(function (response) {
         var combined = {};
         response.data.forEach(function (arrayItem) {
-          if (!(Object.keys(arrayItem) in combined)) combined[Object.keys(arrayItem)] = Object.values(arrayItem);
-          combined[Object.keys(arrayItem)].push(Object.values(arrayItem)[0]);
+          if (!(Object.keys(arrayItem) in combined)) {
+            combined[Object.keys(arrayItem)] = Object.values(arrayItem);
+          } else {
+            combined[Object.keys(arrayItem)].push(Object.values(arrayItem)[0]);
+          }
         });
         _this.outlets = combined;
       })["catch"](function (e) {
@@ -407,7 +410,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         var i = event.currentTarget.id.split('.');
         this.selected_outlet = i[0];
         this.selected_screen = i[1];
-        this.getScreenSched();
+        this.getScreenSched(); // reset media
+        // not working
+        //this.disableMedia()
       }
     },
     linkSelect: function linkSelect(event) {

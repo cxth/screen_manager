@@ -25,10 +25,6 @@
     <title>Test Frame</title>
 </head>
 <body>
-<!-- 
-https://app.mswdb.com/sis/beta/
-{{ $schedule->url }}
--->
 <div id="app">
     <frame-component></frame-component>
 </div>

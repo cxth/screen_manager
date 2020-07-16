@@ -334,15 +334,16 @@ import axios from 'axios';
       getOutlets() {
           axios.get(`${ this.siteURL }/api/screen/all`)
           .then(response => {
-            
               let combined = {};
               response.data.forEach(function (arrayItem) {
-                if (!(Object.keys(arrayItem) in combined))
-                    combined[Object.keys(arrayItem)] = Object.values(arrayItem);
-                combined[Object.keys(arrayItem)].push(Object.values(arrayItem)[0]);
+                if (!(Object.keys(arrayItem) in combined)) {
+                  combined[Object.keys(arrayItem)] = Object.values(arrayItem);
+                }
+                else {
+                  combined[Object.keys(arrayItem)].push(Object.values(arrayItem)[0]);
+                }
               });
               this.outlets = combined;
-        
           })
           .catch(e => {
               this.errors.push(e)
@@ -406,6 +407,10 @@ import axios from 'axios';
           this.selected_screen = i[1];
 
           this.getScreenSched()
+
+          // reset media
+          // not working
+          //this.disableMedia()
         }
 
       },

@@ -21,7 +21,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
-      url: 'https://app.mswdb.com/sis/beta/',
+      // Default site for testing
+      //url: 'https://app.mswdb.com/sis/beta/',
+      url: 'https://api.mswodds.com/live/stg/view.php?sport=tennis',
       timer: ''
     };
   },
@@ -36,10 +38,21 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/request")).then(function (response) {
-        console.log(response.data);
-        _this.url = response.data;
+        if (!response.data) {
+          axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(_this.siteURL, "/logout")).then(function (response) {
+            location.reload();
+          })["catch"](function (e) {
+            _this.errors.push(e);
+          });
+        }
+
+        console.log('welcome ' + response.data.screen_id);
+        console.log('showing: ' + response.data.show_datetime + ' url: ' + response.data.url);
+        _this.url = response.data.url;
       })["catch"](function (e) {
-        _this.errors.push(e);
+        //this.errors.push(e)
+        console.log('im error');
+        location.reload();
       });
     },
     cancelAutoUpdate: function cancelAutoUpdate() {
