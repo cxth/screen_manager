@@ -94020,7 +94020,7 @@ window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.
 vue__WEBPACK_IMPORTED_MODULE_0___default.a.mixin({
   data: function data() {
     return {
-      siteURL: 'http://sm.local'
+      siteURL: 'http://sm.mswdb.com'
     };
   }
 });
