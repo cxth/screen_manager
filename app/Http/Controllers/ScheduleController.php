@@ -17,6 +17,17 @@ class ScheduleController extends Controller
 {
     
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
+    
+    /**
      * Default controller for front-end display
      * @TODO for deletion
      */

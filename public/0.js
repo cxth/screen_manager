@@ -283,6 +283,16 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -497,6 +507,17 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.selected_link = null;
       this.selected_link_name = null;
       this.selected_link_url = null;
+    },
+    logout: function logout() {
+      var _this7 = this;
+
+      if (confirm("Are you sure you like to logout?")) {
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/logout")).then(function (response) {
+          location.reload();
+        })["catch"](function (e) {
+          _this7.errors.push(e);
+        });
+      }
     },
     // Helpers =================
     momentNow: function momentNow() {
@@ -882,6 +903,25 @@ var render = function() {
                   _c(
                     "v-list-item-content",
                     [_c("v-list-item-title", [_vm._v("Settings")])],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-list-item",
+                { attrs: { link: "" }, on: { click: _vm.logout } },
+                [
+                  _c(
+                    "v-list-item-action",
+                    [_c("v-icon", [_vm._v("mdi-exit-to-app")])],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-list-item-content",
+                    [_c("v-list-item-title", [_vm._v("Logout")])],
                     1
                   )
                 ],

@@ -106,6 +106,16 @@
             <v-list-item-title>Settings</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+        <v-list-item link
+          v-on:click="logout"
+        >
+          <v-list-item-action>
+            <v-icon>mdi-exit-to-app</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Logout</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
@@ -510,6 +520,18 @@ import axios from 'axios';
         this.selected_link = null;
         this.selected_link_name = null;
         this.selected_link_url = null;
+      },
+
+      logout: function() {
+        if(confirm("Are you sure you like to logout?")){
+          axios.get(`${ this.siteURL }/logout`)
+            .then(response => {
+              location.reload();
+            })
+            .catch(e => {
+                this.errors.push(e)
+            })
+        }
       },
 
       // Helpers =================

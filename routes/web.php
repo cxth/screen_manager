@@ -1,6 +1,8 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +21,7 @@ Route::get('/', function () {
 
 
 // Web Route
+Route::get('/logout','HomeController@logout');
 
 // Test routes
 Route::get('/','ScheduleController@default'); 
@@ -27,3 +30,21 @@ Route::get('/request','ScheduleController@getUrl');
 
 // Admin
 Route::get('/admin','ScheduleController@admin');
+
+Auth::routes(['register' => false]);
+//Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('/clear-cache', function() {
+    $message = "";
+    Artisan::call('cache:clear');
+        $message .= " Cache is cleared <br/>";
+    Artisan::call('route:clear');
+        $message .= " Route is cleared <br/>";
+    Artisan::call('config:clear');
+        $message .= " Config is cleared <br/>";
+    Artisan::call('view:clear');
+        $message .= " View is cleared <br/>";
+    return $message;
+});
