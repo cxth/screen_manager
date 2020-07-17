@@ -22,8 +22,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       // Default site for testing
-      //url: 'https://app.mswdb.com/sis/beta/',
-      url: 'https://api.mswodds.com/live/stg/view.php?sport=tennis',
+      url: 'http://sm.local/img/default-maintenance.png',
       timer: ''
     };
   },
@@ -38,7 +37,11 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/request")).then(function (response) {
-        if (!response.data) {
+        //console.log(response.data);
+        var sched = response.data[0];
+
+        if (sched == "invalid-user") {
+          //console.log("im invalid user");
           axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(_this.siteURL, "/logout")).then(function (response) {
             location.reload();
           })["catch"](function (e) {
@@ -46,9 +49,16 @@ __webpack_require__.r(__webpack_exports__);
           });
         }
 
-        console.log('welcome ' + response.data.screen_id);
-        console.log('showing: ' + response.data.show_datetime + ' url: ' + response.data.url);
-        _this.url = response.data.url;
+        if (sched) {
+          console.log('welcome ' + sched.screen_id);
+          console.log('showing: ' + sched.show_datetime + ' - ' + sched.expire_datetime + ' url: (' + sched.id + ') ' + sched.url);
+
+          if (sched.url) {
+            _this.url = sched.url;
+          }
+        } else {
+          console.log('geturl is empty');
+        }
       })["catch"](function (e) {
         //this.errors.push(e)
         console.log('im error');
@@ -84,7 +94,13 @@ var render = function() {
   return _c("div", { staticClass: "container" }, [
     _c("iframe", {
       staticClass: "responsive-iframe",
-      attrs: { src: _vm.url, frameborder: "0", allow: "autoplay; fullscreen" }
+      attrs: {
+        src: _vm.url,
+        frameborder: "0",
+        allow: "autoplay; fullscreen",
+        id: "mswsm",
+        type: "text/html"
+      }
     })
   ])
 }

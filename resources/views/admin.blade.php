@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <title>
+    {{ config('app.env', '') }}
+    Admin &ndash;
+    {{ config('app.release', '') }}
+  </title>
   <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css?family=Material+Icons" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.x/css/materialdesignicons.min.css" rel="stylesheet">
@@ -14,6 +19,6 @@
   </div>
     
 <script src="{{mix('js/app.js')}}" defer></script>
-<script src="https://momentjs.com/downloads/moment.min.js"></script>
+<script src="./js/dayjs.min.js"></script>
 </body>
 </html>

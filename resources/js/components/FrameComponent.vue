@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <iframe class="responsive-iframe" :src="url" frameborder="0" allow="autoplay; fullscreen"></iframe>
+    <iframe class="responsive-iframe" :src="url" frameborder="0" allow="autoplay; fullscreen" id="mswsm" type="text/html"></iframe>
   </div>
 </template>
 
@@ -11,8 +11,7 @@ export default {
     data: function() {
             return {
                 // Default site for testing
-                //url: 'https://app.mswdb.com/sis/beta/',
-                url: 'https://api.mswodds.com/live/stg/view.php?sport=tennis',
+                url: 'http://sm.local/img/default-maintenance.png',
                 timer: ''
             } 
         },
@@ -29,8 +28,11 @@ export default {
         fetchURL() {
             axios.get(`${ this.siteURL }/request`)
             .then(response => {
-                if (!(response.data)) 
+                //console.log(response.data);
+                var sched = response.data[0];
+                if (sched == "invalid-user")
                 {
+                    //console.log("im invalid user");
                     axios.get(`${ this.siteURL }/logout`)
                         .then(response => {
                             location.reload();
@@ -39,9 +41,21 @@ export default {
                             this.errors.push(e)
                         })
                 }
-                console.log('welcome ' + response.data.screen_id);
-                console.log('showing: ' + response.data.show_datetime + ' url: ' + response.data.url);
-                this.url = response.data.url
+                if (sched) 
+                {
+                    console.log('welcome ' + sched.screen_id);
+                    console.log('showing: ' + sched.show_datetime + ' - ' + sched.expire_datetime
+                            + ' url: (' + sched.id + ') ' + sched.url);
+                    if (sched.url) 
+                    {
+                        this.url = sched.url
+                    }        
+                }
+                else
+                {
+                    console.log('geturl is empty');
+                }
+                
             })
             .catch(e => {
                 //this.errors.push(e)
