@@ -129,7 +129,6 @@
             align="center"
             justify="center"
             class="mx-auto"
-            width="600"
           >
             <v-col>
 
@@ -152,12 +151,15 @@
                     >
                       <v-col class="shrink">
                         <v-card
-                            class="mx-auto"
+                            class="mx-auto pb-10 mb-12"
+                            height="100%"
                             width="500"
-                            height="400"
                             outlined
                           >
-                            <v-row no-gutters>
+                            <v-row 
+                              no-gutters
+                              class="mb-5"
+                            >
                             
                                 <v-col>
                                   <v-list-item three-line>
@@ -186,7 +188,10 @@
                                 align="center"
                                 justify="center"
                             >
-                              <v-col cols="22" sm="10">
+                              <v-col 
+                                style="maxWidth: 300px"
+                                :fullscreen="$vuetify.breakpoint.mobile"
+                              >
                                   <v-text-field
                                     label="or enter URL"
                                     outlined
@@ -196,7 +201,6 @@
                                     :disabled="!isFormValid"
                                   ></v-text-field>
 
-                              
                                   <v-text-field
                                     label="URL Name"
                                     outlined
@@ -207,13 +211,16 @@
 
                                 </v-col>
                             </v-row>
-                            <v-row no-gutters 
+                            <v-row 
+                              no-gutters 
+                            >
+                              <v-col 
                                 align="center"
                                 justify="center"
-                            >
-                              <v-col cols="12" sm="2">
-                                  <v-btn rounded color="primary" dark @click="addSched">SAVE</v-btn>
-                                </v-col>
+                              >
+                                  <v-btn rounded color="primary" dark @click="addSched" class="mr-2">SAVE</v-btn>
+                                  <v-btn rounded color="primary" dark @click="disableMedia" class="ml-2">CLEAR</v-btn>
+                              </v-col>
                             </v-row>
                           </v-card>
                       </v-col>
@@ -229,7 +236,10 @@
                           align="center"
                           justify="center"
                         >
-                          <v-sheet height="400" width="500">
+                          <v-sheet 
+                             style="maxWidth: 500px"
+                            :fullscreen="$vuetify.breakpoint.mobile"
+                          >
                             <v-calendar
                               ref="calendar"
                               v-model="todayx"
@@ -238,7 +248,6 @@
                               :events="events"
                               color="primary"
                               type="day"
-                              @click:events="(event)=>dateClick(event,true)"
                             ></v-calendar>
                           </v-sheet>
                         </v-col>
@@ -399,12 +408,7 @@ import axios from 'axios';
           this.selected_screen = i[1];
 
           this.getScreenSched()
-
-          // reset media
-          // not working
-          //this.disableMedia()
         }
-
       },
 
       linkSelect: function (event) {
@@ -448,7 +452,6 @@ import axios from 'axios';
       },
 
       addSched: function(event) {
-
 
         console.log('selected link ');
         console.log(this.selected_link);
@@ -535,6 +538,7 @@ import axios from 'axios';
       // new URL keyup
       disableMedia: function(event) {
         //alert('something');
+        this.isFormValid = true
         this.selected_mediagroup = null;
         this.selected_link = null;
         this.selected_link_name = null;

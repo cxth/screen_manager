@@ -34,7 +34,7 @@ Route::get('/test','ScheduleController@test');
 // Admin
 Route::get('/admin','ScheduleController@admin');
 
-Auth::routes(['register' => false]);
+Auth::routes(['register' => false, 'reset' => false]);
 //Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
