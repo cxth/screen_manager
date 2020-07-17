@@ -320,17 +320,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       screen: 1,
       screenm: null,
       // Schedule
-      todayx: '2020-07-16',
-      events: [{
-        name: 'Weekly Meeting',
-        start: '2020-07-16 09:00',
-        end: '2020-07-16 10:00' // YYYY-MM-DD  YYYY-MM-DD hh:mm
-
-      }, {
-        name: 'UK GH',
-        start: '2020-07-16 14:30',
-        end: '2020-07-16 18:30'
-      }]
+      todayx: '2020-01-01',
+      events: []
     };
   },
   mounted: function mounted() {//this.$refs.calendar.scrollToTime('08:00')
@@ -340,6 +331,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     this.getOutlets();
     this.getMediaAssets();
     this.getLinks();
+    this.todayx = this.momentNow('date');
   },
   methods: {
     dateClick: function dateClick() {
@@ -525,8 +517,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       }
     },
     // Helpers =================
-    momentNow: function momentNow() {
-      return moment().format('YYYY-MM-DD HH:mm:ss');
+    momentNow: function momentNow(p) {
+      console.log('p: ' + p);
+
+      if (p) {
+        return dayjs().format('YYYY-MM-DD');
+      }
+
+      return dayjs().format('YYYY-MM-DD HH:mm:ss');
     },
     trimObj: function trimObj(objArr) {
       return Object.assign.apply(Object, [{}].concat(_toConsumableArray(objArr)));
@@ -761,7 +759,9 @@ var render = function() {
             }
           }),
           _vm._v(" "),
-          _c("v-toolbar-title", [_vm._v("Screen Manager")]),
+          _c("v-toolbar-title", { staticStyle: { color: "#FFA500" } }, [
+            _vm._v("Screen Manager")
+          ]),
           _vm._v(" "),
           _c("v-spacer"),
           _vm._v(" "),
@@ -1373,7 +1373,7 @@ var render = function() {
         "v-footer",
         { staticClass: "white--text", attrs: { app: "" } },
         [
-          _c("span", [_vm._v("Vuetify")]),
+          _c("span", [_vm._v("MSW")]),
           _vm._v(" "),
           _c("v-spacer"),
           _vm._v(" "),

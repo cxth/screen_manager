@@ -50,7 +50,7 @@
       dark
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title>Screen Manager</v-toolbar-title>
+      <v-toolbar-title style="color:#FFA500">Screen Manager</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-app-bar-nav-icon @click.stop="drawerRight = !drawerRight"></v-app-bar-nav-icon>
     </v-app-bar>
@@ -259,7 +259,7 @@
       app
       class="white--text"
     >
-      <span>Vuetify</span>
+      <span>MSW</span>
       <v-spacer></v-spacer>
       <span>&copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
@@ -300,20 +300,8 @@ import axios from 'axios';
       screenm: null,     
       
       // Schedule
-      todayx: '2020-07-16',
-      events: [
-        {
-          name: 'Weekly Meeting',
-          start: '2020-07-16 09:00',
-          end: '2020-07-16 10:00'
-          // YYYY-MM-DD  YYYY-MM-DD hh:mm
-        },
-        {
-          name: 'UK GH',
-          start: '2020-07-16 14:30',
-          end: '2020-07-16 18:30'
-        },
-      ],
+      todayx: '2020-01-01',
+      events: [],
 
     }),
     mounted () {
@@ -325,6 +313,7 @@ import axios from 'axios';
       this.getOutlets()
       this.getMediaAssets()
       this.getLinks()
+      this.todayx = this.momentNow('date');
     },
     methods: {
       dateClick: function() {
@@ -540,8 +529,13 @@ import axios from 'axios';
       },
 
       // Helpers =================
-      momentNow: function() {
-        return moment().format('YYYY-MM-DD HH:mm:ss');
+      momentNow: function(p) {
+        console.log('p: ' + p);
+        if (p) 
+        {
+          return dayjs().format('YYYY-MM-DD');
+        }
+        return dayjs().format('YYYY-MM-DD HH:mm:ss');
       },
       trimObj: function(objArr) {
         return Object.assign({}, ...objArr );

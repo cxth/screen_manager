@@ -29,8 +29,11 @@ export default {
         fetchURL() {
             axios.get(`${ this.siteURL }/request`)
             .then(response => {
-                if (!(response.data)) 
+                //console.log(response.data);
+                var sched = response.data[0];
+                if (sched == "invalid-user")
                 {
+                    //console.log("im invalid user");
                     axios.get(`${ this.siteURL }/logout`)
                         .then(response => {
                             location.reload();
@@ -39,9 +42,21 @@ export default {
                             this.errors.push(e)
                         })
                 }
-                console.log('welcome ' + response.data.screen_id);
-                console.log('showing: ' + response.data.show_datetime + ' url: ' + response.data.url);
-                this.url = response.data.url
+                if (sched) 
+                {
+                    console.log('welcome ' + sched.screen_id);
+                    console.log('showing: ' + sched.show_datetime + ' - ' + sched.expire_datetime
+                            + ' url: (' + sched.id + ') ' + sched.url);
+                    if (sched.url) 
+                    {
+                        this.url = sched.url
+                    }        
+                }
+                else
+                {
+                    console.log('geturl is empty');
+                }
+                
             })
             .catch(e => {
                 //this.errors.push(e)

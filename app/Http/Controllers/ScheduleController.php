@@ -9,6 +9,7 @@ use App\Model\Screen;
 use App\Model\Schedule;
 use App\Model\Group_Screen;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\ScheduleResource;
 use App\Http\Resources\ScheduleGroupResource;
@@ -60,15 +61,20 @@ class ScheduleController extends Controller
         {
             return redirect('/login');
         }
-        
         $screen = Screen::find(Auth::user()->username);
+
         //$screen = Screen::find('CFANGSS03');
         if (!$screen)
         {
-            return response(null, Response::HTTP_NO_CONTENT);
+            return ["invalid-user"];
         }
 
         $schedule = $this->nowShowing($screen);
+        //var_dump($schedule->isEmpty());
+        if ($schedule->isEmpty()) {
+            // @TODO: default image or URL here
+        }
+        
         return $schedule;
     }
 
@@ -91,10 +97,14 @@ class ScheduleController extends Controller
      */
     public function nowShowing(Screen $screen)
     {
-        $result = $screen->schedule()
-            ->whereTime('show_datetime', '<', Carbon::now())
-            ->orderBy('show_datetime', 'desc')
-            ->first();
+        $arr = [$screen->id];
+        $result = DB::table('schedules')
+            ->whereRaw('screen_id = ?
+                        AND show_datetime < NOW() 
+                        AND (expire_datetime > NOW() 
+                        OR expire_datetime is NULL) 
+                        ORDER BY show_datetime DESC', $arr)
+                        ->get();
         return $result;
     }
     
@@ -136,7 +146,7 @@ class ScheduleController extends Controller
 
 
     /**
-     * Display a listing of todays schedule for selected screen.
+     * Display a listing of todays schedule by ADMIN API.
      *
      * @url api/schedule/ss/CFANGSS03
      * @return \Illuminate\Http\Response
