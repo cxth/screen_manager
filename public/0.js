@@ -294,6 +294,31 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -336,8 +361,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     this.todayx = this.momentNow('date');
   },
   methods: {
-    dateClick: function dateClick() {
-      alert('yes');
+    openLink: function openLink(link) {
+      window.open("".concat(this.siteURL, "/admin/").concat(link));
     },
     getOutlets: function getOutlets() {
       var _this = this;
@@ -405,9 +430,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         var i = event.currentTarget.id.split('.');
         this.selected_outlet = i[0];
         this.selected_screen = i[1];
-        this.getScreenSched(); // reset media
-        // not working
-        //this.disableMedia()
+        this.getScreenSched();
       }
     },
     linkSelect: function linkSelect(event) {
@@ -525,6 +548,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     // new URL keyup
     disableMedia: function disableMedia(event) {
       //alert('something');
+      this.isFormValid = true;
       this.selected_mediagroup = null;
       this.selected_link = null;
       this.selected_link_name = null;
@@ -803,7 +827,7 @@ var render = function() {
       _c(
         "v-navigation-drawer",
         {
-          attrs: { app: "" },
+          attrs: { app: "", width: 270 },
           model: {
             value: _vm.drawer,
             callback: function($$v) {
@@ -872,20 +896,6 @@ var render = function() {
                                         },
                                         [
                                           _c(
-                                            "v-list-item-icon",
-                                            [
-                                              _c("v-icon", {
-                                                domProps: {
-                                                  textContent: _vm._s(
-                                                    screen.admin_icon
-                                                  )
-                                                }
-                                              })
-                                            ],
-                                            1
-                                          ),
-                                          _vm._v(" "),
-                                          _c(
                                             "v-list-item-content",
                                             [
                                               _c("v-list-item-title", {
@@ -897,6 +907,64 @@ var render = function() {
                                               })
                                             ],
                                             1
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "v-tooltip",
+                                            {
+                                              attrs: { right: "" },
+                                              scopedSlots: _vm._u(
+                                                [
+                                                  {
+                                                    key: "activator",
+                                                    fn: function(ref) {
+                                                      var on = ref.on
+                                                      var attrs = ref.attrs
+                                                      return [
+                                                        _c(
+                                                          "v-list-item-icon",
+                                                          _vm._g(
+                                                            _vm._b(
+                                                              {
+                                                                staticClass:
+                                                                  "ml-5",
+                                                                on: {
+                                                                  click: function(
+                                                                    $event
+                                                                  ) {
+                                                                    return _vm.openLink(
+                                                                      screen.id
+                                                                    )
+                                                                  }
+                                                                }
+                                                              },
+                                                              "v-list-item-icon",
+                                                              attrs,
+                                                              false
+                                                            ),
+                                                            on
+                                                          ),
+                                                          [
+                                                            _c("v-icon", [
+                                                              _vm._v("mdi-eye")
+                                                            ])
+                                                          ],
+                                                          1
+                                                        )
+                                                      ]
+                                                    }
+                                                  }
+                                                ],
+                                                null,
+                                                true
+                                              )
+                                            },
+                                            [
+                                              _vm._v(" "),
+                                              _c("span", [
+                                                _vm._v("click to visit screen")
+                                              ])
+                                            ]
                                           )
                                         ],
                                         1
@@ -976,7 +1044,7 @@ var render = function() {
                   "v-row",
                   {
                     staticClass: "mx-auto",
-                    attrs: { align: "center", justify: "center", width: "600" }
+                    attrs: { align: "center", justify: "center" }
                   },
                   [
                     _c(
@@ -1035,10 +1103,11 @@ var render = function() {
                                             _c(
                                               "v-card",
                                               {
-                                                staticClass: "mx-auto",
+                                                staticClass:
+                                                  "mx-auto pb-10 mb-12",
                                                 attrs: {
+                                                  height: "100%",
                                                   width: "500",
-                                                  height: "400",
                                                   outlined: ""
                                                 }
                                               },
@@ -1046,6 +1115,7 @@ var render = function() {
                                                 _c(
                                                   "v-row",
                                                   {
+                                                    staticClass: "mb-5",
                                                     attrs: { "no-gutters": "" }
                                                   },
                                                   [
@@ -1193,9 +1263,13 @@ var render = function() {
                                                     _c(
                                                       "v-col",
                                                       {
+                                                        staticStyle: {
+                                                          maxWidth: "300px"
+                                                        },
                                                         attrs: {
-                                                          cols: "22",
-                                                          sm: "10"
+                                                          fullscreen:
+                                                            _vm.$vuetify
+                                                              .breakpoint.mobile
                                                         }
                                                       },
                                                       [
@@ -1251,25 +1325,22 @@ var render = function() {
                                                 _c(
                                                   "v-row",
                                                   {
-                                                    attrs: {
-                                                      "no-gutters": "",
-                                                      align: "center",
-                                                      justify: "center"
-                                                    }
+                                                    attrs: { "no-gutters": "" }
                                                   },
                                                   [
                                                     _c(
                                                       "v-col",
                                                       {
                                                         attrs: {
-                                                          cols: "12",
-                                                          sm: "2"
+                                                          align: "center",
+                                                          justify: "center"
                                                         }
                                                       },
                                                       [
                                                         _c(
                                                           "v-btn",
                                                           {
+                                                            staticClass: "mr-2",
                                                             attrs: {
                                                               rounded: "",
                                                               color: "primary",
@@ -1281,6 +1352,23 @@ var render = function() {
                                                             }
                                                           },
                                                           [_vm._v("SAVE")]
+                                                        ),
+                                                        _vm._v(" "),
+                                                        _c(
+                                                          "v-btn",
+                                                          {
+                                                            staticClass: "ml-2",
+                                                            attrs: {
+                                                              rounded: "",
+                                                              color: "primary",
+                                                              dark: ""
+                                                            },
+                                                            on: {
+                                                              click:
+                                                                _vm.disableMedia
+                                                            }
+                                                          },
+                                                          [_vm._v("CLEAR")]
                                                         )
                                                       ],
                                                       1
@@ -1324,9 +1412,13 @@ var render = function() {
                                                   _c(
                                                     "v-sheet",
                                                     {
+                                                      staticStyle: {
+                                                        maxWidth: "500px"
+                                                      },
                                                       attrs: {
-                                                        height: "400",
-                                                        width: "500"
+                                                        fullscreen:
+                                                          _vm.$vuetify
+                                                            .breakpoint.mobile
                                                       }
                                                     },
                                                     [
@@ -1338,16 +1430,6 @@ var render = function() {
                                                           events: _vm.events,
                                                           color: "primary",
                                                           type: "day"
-                                                        },
-                                                        on: {
-                                                          "click:events": function(
-                                                            event
-                                                          ) {
-                                                            return _vm.dateClick(
-                                                              event,
-                                                              true
-                                                            )
-                                                          }
                                                         },
                                                         model: {
                                                           value: _vm.todayx,

@@ -40,7 +40,8 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
-        if ($user->username == "admin" || $user->username == "soc")
+        session(['uscreen' => null]);
+        if ($user->username == "admin")
         {
             return redirect('/admin');
         }
