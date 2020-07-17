@@ -89,7 +89,7 @@
                         <v-icon v-text="screen.admin_icon"></v-icon>
                       </v-list-item-icon>
                       <v-list-item-content>
-                        <v-list-item-title v-text="screen.id"></v-list-item-title>
+                        <v-list-item-title v-text="screen.description"></v-list-item-title>
                       </v-list-item-content>
                     </v-list-item>
                   </v-list-item-group>
@@ -201,6 +201,7 @@
                                     label="URL Name"
                                     outlined
                                     dense
+                                    :disabled="!isFormValid"
                                     v-model="newURL_name"
                                   ></v-text-field>
 
@@ -291,6 +292,7 @@ import axios from 'axios';
       // custom URL
       newURL: null,
       newURL_name: null,
+      newURL_id: null,
       isFormValid: true,
 
       // Layout
@@ -333,6 +335,7 @@ import axios from 'axios';
                 }
               });
               this.outlets = combined;
+              console.log(this.outlets);
           })
           .catch(e => {
               this.errors.push(e)
@@ -425,7 +428,7 @@ import axios from 'axios';
       },
 
       addLink: function(event) {
-
+        var newlink = null;
         axios({
             method: 'post',
             url: `${ this.siteURL }/api/l`,
@@ -435,20 +438,21 @@ import axios from 'axios';
               url: this.newURL
             }
         }).then(response => {
-
-              console.log(response.data);
               alert("link save");
+              console.log('the link id: ' + response.data)
+              this.newURL_id = response.data;
           })
           .catch(e => {
               this.errors.push(e)
           });
-
       },
 
       addSched: function(event) {
 
-        console.log(this.newURL);
-        console.log(this.newURL_name);
+
+        console.log('selected link ');
+        console.log(this.selected_link);
+        //return;
         // @todo: clean data validation
         if (this.selected_screen == null)
         {
@@ -466,22 +470,25 @@ import axios from 'axios';
           }
         
           // @TODO: validate URL, name
-          var newURL_id = this.addLink();
-          if (newURL_id == "")
-          {
-            return;
-          }
+          // this.addLink();
+          // if (this.newURL_id == null)
+          // {
+          //   console.log("im null?? " + this.newURL_id);
+          //   return;
+          // }
 
           // @TODO check failure here
+          console.log('im newing here');
           var mydata = {
               screen_id: this.selected_screen,
-              link_id: newURL_id,
+              link_name: this.newURL_name,
               url: this.newURL,
               show_datetime: this.momentNow()
           }
         }
         else
         {
+          console.log('im selected here');
           var mydata = {
               screen_id: this.selected_screen,
               link_id: this.selected_link,
@@ -490,6 +497,9 @@ import axios from 'axios';
           }
         }
         
+        console.log('final mydata ');
+        console.log(mydata);
+
         axios({
             method: 'post',
             url: `${ this.siteURL }/api/schedule/screen/${ this.selected_screen }`,
@@ -497,8 +507,11 @@ import axios from 'axios';
         }).then(response => {
               console.log(response);
               alert("schedule save");
+              // reset mydata
+              mydata = {}
+              // reset all data
+              this.resetData()
               // @TODO: clear forms on save
-
               // refresh schedule
               this.getScreenSched()
           })
@@ -508,6 +521,18 @@ import axios from 'axios';
         
       },
 
+      resetData: function() {
+        this.selected_link = null
+        this.selected_link_url = null
+        this.selected_link_name = null
+        this.selected_mediagroup = null;
+        this.newURL = null
+        this.newURL_name = null
+        this.newURL_id = null
+
+      },
+
+      // new URL keyup
       disableMedia: function(event) {
         //alert('something');
         this.selected_mediagroup = null;
@@ -530,7 +555,6 @@ import axios from 'axios';
 
       // Helpers =================
       momentNow: function(p) {
-        console.log('p: ' + p);
         if (p) 
         {
           return dayjs().format('YYYY-MM-DD');

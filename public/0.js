@@ -293,6 +293,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -313,6 +314,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       // custom URL
       newURL: null,
       newURL_name: null,
+      newURL_id: null,
       isFormValid: true,
       // Layout
       drawer: null,
@@ -350,6 +352,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           }
         });
         _this.outlets = combined;
+        console.log(_this.outlets);
       })["catch"](function (e) {
         _this.errors.push(e);
       });
@@ -428,6 +431,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     addLink: function addLink(event) {
       var _this5 = this;
 
+      var newlink = null;
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
         method: 'post',
         url: "".concat(this.siteURL, "/api/l"),
@@ -437,8 +441,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           url: this.newURL
         }
       }).then(function (response) {
-        console.log(response.data);
         alert("link save");
+        console.log('the link id: ' + response.data);
+        _this5.newURL_id = response.data;
       })["catch"](function (e) {
         _this5.errors.push(e);
       });
@@ -446,8 +451,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     addSched: function addSched(event) {
       var _this6 = this;
 
-      console.log(this.newURL);
-      console.log(this.newURL_name); // @todo: clean data validation
+      console.log('selected link ');
+      console.log(this.selected_link); //return;
+      // @todo: clean data validation
 
       if (this.selected_screen == null) {
         alert('no screen selected');
@@ -460,22 +466,24 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           alert('Please complete URL fields');
           return;
         } // @TODO: validate URL, name
+        // this.addLink();
+        // if (this.newURL_id == null)
+        // {
+        //   console.log("im null?? " + this.newURL_id);
+        //   return;
+        // }
+        // @TODO check failure here
 
 
-        var newURL_id = this.addLink();
-
-        if (newURL_id == "") {
-          return;
-        } // @TODO check failure here
-
-
+        console.log('im newing here');
         var mydata = {
           screen_id: this.selected_screen,
-          link_id: newURL_id,
+          link_name: this.newURL_name,
           url: this.newURL,
           show_datetime: this.momentNow()
         };
       } else {
+        console.log('im selected here');
         var mydata = {
           screen_id: this.selected_screen,
           link_id: this.selected_link,
@@ -484,20 +492,37 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         };
       }
 
+      console.log('final mydata ');
+      console.log(mydata);
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
         method: 'post',
         url: "".concat(this.siteURL, "/api/schedule/screen/").concat(this.selected_screen),
         data: mydata
       }).then(function (response) {
         console.log(response);
-        alert("schedule save"); // @TODO: clear forms on save
+        alert("schedule save"); // reset mydata
+
+        mydata = {}; // reset all data
+
+        _this6.resetData(); // @TODO: clear forms on save
         // refresh schedule
+
 
         _this6.getScreenSched();
       })["catch"](function (e) {
         _this6.errors.push(e);
       });
     },
+    resetData: function resetData() {
+      this.selected_link = null;
+      this.selected_link_url = null;
+      this.selected_link_name = null;
+      this.selected_mediagroup = null;
+      this.newURL = null;
+      this.newURL_name = null;
+      this.newURL_id = null;
+    },
+    // new URL keyup
     disableMedia: function disableMedia(event) {
       //alert('something');
       this.selected_mediagroup = null;
@@ -518,8 +543,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     },
     // Helpers =================
     momentNow: function momentNow(p) {
-      console.log('p: ' + p);
-
       if (p) {
         return dayjs().format('YYYY-MM-DD');
       }
@@ -867,7 +890,9 @@ var render = function() {
                                             [
                                               _c("v-list-item-title", {
                                                 domProps: {
-                                                  textContent: _vm._s(screen.id)
+                                                  textContent: _vm._s(
+                                                    screen.description
+                                                  )
                                                 }
                                               })
                                             ],
@@ -1201,7 +1226,8 @@ var render = function() {
                                                           attrs: {
                                                             label: "URL Name",
                                                             outlined: "",
-                                                            dense: ""
+                                                            dense: "",
+                                                            disabled: !_vm.isFormValid
                                                           },
                                                           model: {
                                                             value:

@@ -22,8 +22,7 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       // Default site for testing
-      //url: 'https://app.mswdb.com/sis/beta/',
-      url: 'https://api.mswodds.com/live/stg/view.php?sport=tennis',
+      url: 'http://sm.local/img/default-maintenance.png',
       timer: ''
     };
   },
@@ -95,7 +94,13 @@ var render = function() {
   return _c("div", { staticClass: "container" }, [
     _c("iframe", {
       staticClass: "responsive-iframe",
-      attrs: { src: _vm.url, frameborder: "0", allow: "autoplay; fullscreen" }
+      attrs: {
+        src: _vm.url,
+        frameborder: "0",
+        allow: "autoplay; fullscreen",
+        id: "mswsm",
+        type: "text/html"
+      }
     })
   ])
 }

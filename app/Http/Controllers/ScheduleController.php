@@ -11,6 +11,7 @@ use App\Model\Group_Screen;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\ScheduleResource;
 use App\Http\Resources\ScheduleGroupResource;
 use Symfony\Component\HttpFoundation\Response;
@@ -44,9 +45,10 @@ class ScheduleController extends Controller
         {
             return redirect('/admin');
         }
+        $data['user'] = Auth::user()->username;
         echo "<pre></pre>";
         //setcookie('cross-site-cookie', 'name', ['samesite' => 'None', 'secure' => true]);
-        return view('page');
+        return view('page', $data);
     }
 
     /**
@@ -83,12 +85,8 @@ class ScheduleController extends Controller
      */
     public function test()
     {
-        //$schedule = Schedule::all();
-        $screen = Screen::find('CFCEBSS01');
-        $test = $screen->outlet;
-
-        //$test = Screen::where('outlet_id')
-        dd($test->name);
+        //$pp = Hash::make('password??');
+        //dd($pp);
     }
 
 
@@ -201,13 +199,14 @@ class ScheduleController extends Controller
      */
     public function onScreen(Request $request, Screen $screen)
     {            
-        // if link_id is NULL insert into `links` table
+        //if link_id is NULL insert into `links` table
+        // dont remove this -- for foreign key check
         if (!$request->link_id)
         {
             $link = Link::create(
                 [
                     'media__asset_id' => 100,
-                    'name' => 'custom URL',
+                    'name' => $request->link_name,
                     'url' => $request->url
                 ]
             );

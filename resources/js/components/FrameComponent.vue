@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <iframe class="responsive-iframe" :src="url" frameborder="0" allow="autoplay; fullscreen"></iframe>
+    <iframe class="responsive-iframe" :src="url" frameborder="0" allow="autoplay; fullscreen" id="mswsm" type="text/html"></iframe>
   </div>
 </template>
 
@@ -11,8 +11,7 @@ export default {
     data: function() {
             return {
                 // Default site for testing
-                //url: 'https://app.mswdb.com/sis/beta/',
-                url: 'https://api.mswodds.com/live/stg/view.php?sport=tennis',
+                url: 'http://sm.local/img/default-maintenance.png',
                 timer: ''
             } 
         },
