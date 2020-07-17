@@ -64,6 +64,13 @@ class ScheduleController extends Controller
             return redirect('/login');
         }
         $screen = Screen::find(Auth::user()->username);
+        
+        // view screen from admin 
+        $uscreen = session('uscreen');
+        if (Auth::user()->username == 'admin' && $uscreen != null)
+        {
+            $screen = Screen::find($uscreen);
+        }
 
         //$screen = Screen::find('CFANGSS03');
         if (!$screen)
@@ -87,6 +94,26 @@ class ScheduleController extends Controller
     {
         //$pp = Hash::make('password??');
         //dd($pp);
+    }
+
+
+    /**
+     * Test controller
+     */
+    public function viewScreen($screen)
+    {
+        if (!Auth::user())
+        {
+            return redirect('/login');
+        }
+        if (Auth::user()->username != "admin")
+        {
+            return redirect('/');
+        }
+        session(['uscreen' => $screen]);
+        $data['user'] = $screen;
+        echo "<pre></pre>";
+        return view('page', $data);
     }
 
 

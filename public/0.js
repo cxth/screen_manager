@@ -303,6 +303,22 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -345,8 +361,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     this.todayx = this.momentNow('date');
   },
   methods: {
-    dateClick: function dateClick() {
-      alert('yes');
+    openLink: function openLink(link) {
+      window.open("".concat(this.siteURL, "/admin/").concat(link));
     },
     getOutlets: function getOutlets() {
       var _this = this;
@@ -811,7 +827,7 @@ var render = function() {
       _c(
         "v-navigation-drawer",
         {
-          attrs: { app: "" },
+          attrs: { app: "", width: 270 },
           model: {
             value: _vm.drawer,
             callback: function($$v) {
@@ -880,20 +896,6 @@ var render = function() {
                                         },
                                         [
                                           _c(
-                                            "v-list-item-icon",
-                                            [
-                                              _c("v-icon", {
-                                                domProps: {
-                                                  textContent: _vm._s(
-                                                    screen.admin_icon
-                                                  )
-                                                }
-                                              })
-                                            ],
-                                            1
-                                          ),
-                                          _vm._v(" "),
-                                          _c(
                                             "v-list-item-content",
                                             [
                                               _c("v-list-item-title", {
@@ -905,6 +907,64 @@ var render = function() {
                                               })
                                             ],
                                             1
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "v-tooltip",
+                                            {
+                                              attrs: { right: "" },
+                                              scopedSlots: _vm._u(
+                                                [
+                                                  {
+                                                    key: "activator",
+                                                    fn: function(ref) {
+                                                      var on = ref.on
+                                                      var attrs = ref.attrs
+                                                      return [
+                                                        _c(
+                                                          "v-list-item-icon",
+                                                          _vm._g(
+                                                            _vm._b(
+                                                              {
+                                                                staticClass:
+                                                                  "ml-5",
+                                                                on: {
+                                                                  click: function(
+                                                                    $event
+                                                                  ) {
+                                                                    return _vm.openLink(
+                                                                      screen.id
+                                                                    )
+                                                                  }
+                                                                }
+                                                              },
+                                                              "v-list-item-icon",
+                                                              attrs,
+                                                              false
+                                                            ),
+                                                            on
+                                                          ),
+                                                          [
+                                                            _c("v-icon", [
+                                                              _vm._v("mdi-eye")
+                                                            ])
+                                                          ],
+                                                          1
+                                                        )
+                                                      ]
+                                                    }
+                                                  }
+                                                ],
+                                                null,
+                                                true
+                                              )
+                                            },
+                                            [
+                                              _vm._v(" "),
+                                              _c("span", [
+                                                _vm._v("click to visit screen")
+                                              ])
+                                            ]
                                           )
                                         ],
                                         1

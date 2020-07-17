@@ -58,6 +58,7 @@
     <v-navigation-drawer
       v-model="drawer"
       app  
+      :width="270"
     >
       <v-list-item link>
         <v-list-item-action>
@@ -85,12 +86,27 @@
                       v-on:click="outletSelect"
                       :id="screen.outlet_name + '.' + screen.id"
                     >
-                      <v-list-item-icon>
-                        <v-icon v-text="screen.admin_icon"></v-icon>
-                      </v-list-item-icon>
+                      <!-- <v-list-item-icon>
+                        <v-icon v-text="screen.admin_icon" ></v-icon>
+                      </v-list-item-icon> -->
                       <v-list-item-content>
                         <v-list-item-title v-text="screen.description"></v-list-item-title>
                       </v-list-item-content>
+
+                      <v-tooltip right>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-list-item-icon 
+                            class="ml-5"
+                            v-bind="attrs"
+                            v-on="on"
+                            v-on:click="openLink(screen.id)"
+                          >
+                            <v-icon>mdi-eye</v-icon>
+                          </v-list-item-icon>
+                        </template>
+                        <span>click to visit screen</span>
+                      </v-tooltip>
+                    
                     </v-list-item>
                   </v-list-item-group>
                 </v-list>
@@ -327,8 +343,8 @@ import axios from 'axios';
       this.todayx = this.momentNow('date');
     },
     methods: {
-      dateClick: function() {
-        alert('yes');
+      openLink: function(link) {
+        window.open(`${ this.siteURL }/admin/${ link }`);
       },
 
       getOutlets() {

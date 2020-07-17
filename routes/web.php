@@ -33,6 +33,7 @@ Route::get('/test','ScheduleController@test');
 
 // Admin
 Route::get('/admin','ScheduleController@admin');
+Route::get('/admin/{screen}','ScheduleController@viewScreen');
 
 Auth::routes(['register' => false, 'reset' => false]);
 //Auth::routes();
