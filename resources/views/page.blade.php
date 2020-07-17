@@ -30,7 +30,7 @@
     </title>
 </head>
 <body>
-<div id="app">
+<div id="app" style="background:#000">
     <frame-component></frame-component>
 </div>
 <script src="{{ mix('js/app.js') }}" defer></script>
