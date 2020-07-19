@@ -114,14 +114,14 @@
             </v-expansion-panel>
           </v-expansion-panels>
         </v-list-item>
-        <v-list-item link>
+        <!-- <v-list-item link>
           <v-list-item-action>
             <v-icon>mdi-cog</v-icon>
           </v-list-item-action>
           <v-list-item-content>
             <v-list-item-title>Settings</v-list-item-title>
           </v-list-item-content>
-        </v-list-item>
+        </v-list-item> -->
         <v-list-item link
           v-on:click="logout"
         >
@@ -137,7 +137,9 @@
 
     <v-main>
       <v-container
-        class="fill-height"
+        class="align-start 
+               fill-height
+               justify-space-between"
         fluid
       >
        <template>
@@ -180,7 +182,7 @@
                                 <v-col>
                                   <v-list-item three-line>
                                     <v-list-item-content>
-                                      <div class="overline mb-4">ASSIGN SCREEN</div>
+                                      <div class="overline mb-4">SCREEN</div>
                                       <v-list-item-subtitle>{{ selected_outlet }}</v-list-item-subtitle>
                                       <v-list-item-title class="headline mb-4">{{ selected_screen }}</v-list-item-title>
                                     </v-list-item-content>
@@ -189,7 +191,7 @@
                                 <v-col>
                                   <v-list-item three-line>
                                     <v-list-item-content>
-                                      <div class="overline mb-4">ASSIGN CONTENT</div>
+                                      <div class="overline mb-4">CONTENT</div>
                                       <v-list-item-subtitle>{{ selected_mediagroup }}</v-list-item-subtitle>
                                       <v-list-item-title class="headline mb-4">{{ selected_link_name }}</v-list-item-title>
                                     </v-list-item-content>
@@ -205,11 +207,12 @@
                                 justify="center"
                             >
                               <v-col 
-                                style="maxWidth: 300px"
+                                style="maxWidth: 280px"
                                 :fullscreen="$vuetify.breakpoint.mobile"
                               >
                                   <v-text-field
                                     label="or enter URL"
+                                    type="url"
                                     outlined
                                     dense
                                     @keyup="disableMedia"
@@ -373,7 +376,7 @@ import axios from 'axios';
           
               // DON'T TOUCH
               this.media_assets = response.data;
-              localStorage.name = 'Cxian';
+              //localStorage.name = 'Cxian';
 
           })
           .catch(e => {
@@ -489,6 +492,7 @@ import axios from 'axios';
           }
         
           // @TODO: validate URL, name
+          // // disabled - controller will add the link
           // this.addLink();
           // if (this.newURL_id == null)
           // {
@@ -533,6 +537,8 @@ import axios from 'axios';
               // @TODO: clear forms on save
               // refresh schedule
               this.getScreenSched()
+              // refresh media assets
+              this.getMediaAssets()
           })
           .catch(e => {
               this.errors.push(e)

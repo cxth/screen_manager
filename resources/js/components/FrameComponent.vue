@@ -10,8 +10,8 @@ import axios from 'axios';
 export default {
     data: function() {
             return {
-                // Default site for testing
-                url: 'http://sm.local/img/default-maintenance.png',
+                // temp site for testing 
+                url: `${ this.siteURL }/img/default-maintenance.png`,
                 timer: ''
             } 
         },

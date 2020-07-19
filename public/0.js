@@ -319,6 +319,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -387,8 +390,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/media/all")).then(function (response) {
         // DON'T TOUCH
-        _this2.media_assets = response.data;
-        localStorage.name = 'Cxian';
+        _this2.media_assets = response.data; //localStorage.name = 'Cxian';
       })["catch"](function (e) {
         _this2.errors.push(e);
       });
@@ -489,6 +491,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           alert('Please complete URL fields');
           return;
         } // @TODO: validate URL, name
+        // // disabled - controller will add the link
         // this.addLink();
         // if (this.newURL_id == null)
         // {
@@ -531,7 +534,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         // refresh schedule
 
 
-        _this6.getScreenSched();
+        _this6.getScreenSched(); // refresh media assets
+
+
+        _this6.getMediaAssets();
       })["catch"](function (e) {
         _this6.errors.push(e);
       });
@@ -990,25 +996,6 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "v-list-item",
-                { attrs: { link: "" } },
-                [
-                  _c(
-                    "v-list-item-action",
-                    [_c("v-icon", [_vm._v("mdi-cog")])],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "v-list-item-content",
-                    [_c("v-list-item-title", [_vm._v("Settings")])],
-                    1
-                  )
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "v-list-item",
                 { attrs: { link: "" }, on: { click: _vm.logout } },
                 [
                   _c(
@@ -1037,7 +1024,11 @@ var render = function() {
         [
           _c(
             "v-container",
-            { staticClass: "fill-height", attrs: { fluid: "" } },
+            {
+              staticClass:
+                "align-start \n             fill-height\n             justify-space-between",
+              attrs: { fluid: "" }
+            },
             [
               [
                 _c(
@@ -1141,7 +1132,7 @@ var render = function() {
                                                                   },
                                                                   [
                                                                     _vm._v(
-                                                                      "ASSIGN SCREEN"
+                                                                      "SCREEN"
                                                                     )
                                                                   ]
                                                                 ),
@@ -1203,7 +1194,7 @@ var render = function() {
                                                                   },
                                                                   [
                                                                     _vm._v(
-                                                                      "ASSIGN CONTENT"
+                                                                      "CONTENT"
                                                                     )
                                                                   ]
                                                                 ),
@@ -1264,7 +1255,7 @@ var render = function() {
                                                       "v-col",
                                                       {
                                                         staticStyle: {
-                                                          maxWidth: "300px"
+                                                          maxWidth: "280px"
                                                         },
                                                         attrs: {
                                                           fullscreen:
@@ -1277,6 +1268,7 @@ var render = function() {
                                                           attrs: {
                                                             label:
                                                               "or enter URL",
+                                                            type: "url",
                                                             outlined: "",
                                                             dense: "",
                                                             disabled: !_vm.isFormValid

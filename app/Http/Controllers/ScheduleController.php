@@ -98,7 +98,8 @@ class ScheduleController extends Controller
 
 
     /**
-     * Test controller
+     * View client screen
+     * @url /admin/screen/{screen}
      */
     public function viewScreen($screen)
     {
