@@ -11,7 +11,7 @@ export default {
     data: function() {
             return {
                 // temp site for testing 
-                url: `${ this.siteURL }/img/default-maintenance.png`,
+                url: `../img/default-maintenance.png`,
                 timer: ''
             } 
         },
