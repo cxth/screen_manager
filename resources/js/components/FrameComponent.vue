@@ -11,6 +11,7 @@ export default {
     data: function() {
             return {
                 // temp site for testing 
+                url_id: null,
                 url: `../img/default-maintenance.png`,
                 timer: ''
             } 
@@ -18,6 +19,7 @@ export default {
     
     // Fetches posts when the component is created.
     created() {
+        this.fetchURL()
         this.timer = setInterval(this.fetchURL, 12000)
         //console.log('global var: ' + `${ this.siteURL }/request`);
         // 12000 seconds
@@ -46,9 +48,14 @@ export default {
                     console.log('welcome ' + sched.screen_id);
                     console.log('showing: ' + sched.show_datetime + ' - ' + sched.expire_datetime
                             + ' url: (' + sched.id + ') ' + sched.url);
-                    if (sched.url) 
+                    if (sched.id && sched.id != this.url_id) 
                     {
+                        this.url_id = sched.id
                         this.url = sched.url
+                    }
+                    else
+                    {
+                        console.log(`(${ sched.id }) no change in content`);
                     }        
                 }
                 else
