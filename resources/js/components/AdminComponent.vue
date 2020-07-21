@@ -69,7 +69,9 @@
         </v-list-item-content>
       </v-list-item>
       <v-list dense>
-        <v-list-item link>
+        <v-list-item link
+          v-on:click="outletSelect"
+        >
           <v-expansion-panels>
             <v-expansion-panel
               v-for="(item,name) in outlets"
@@ -80,10 +82,32 @@
                 <v-list dense>
                   <!-- <v-list-item-group v-model="screenm" color="primary"> -->
                   <v-list-item-group color="primary">
+
+                    <v-list-item>
+                      <v-list-item-content>
+                        <v-text-field
+                          class="ma-0 pa-0"
+                          placeholder="Screen Name"
+                          outlined
+                          dense
+                          v-model="newScreen"
+                        ></v-text-field>
+                        <v-btn 
+                          x-small 
+                          color="secondary" 
+                          dark
+                          :id="item[0].outlet_id+'.'+item[0].outlet_intid+'.new'"
+                          v-on:click="addNewScreen"
+                        >
+                          Add Screen
+                        </v-btn>
+                      </v-list-item-content>
+                    </v-list-item>
+
                     <v-list-item
                       v-for="(screen, screen_i) in item"
                       :key="screen_i"
-                      v-on:click="outletSelect"
+                      v-on:click="screenSelect"
                       :id="screen.outlet_name + '.' + screen.id"
                     >
                       <!-- <v-list-item-icon>
@@ -386,6 +410,7 @@ import axios from 'axios';
       newURL_name: null,
       newURL_id: null,
       isFormValid: true,
+      newScreen: null,
 
       // Layout
       drawer: null,
@@ -401,7 +426,14 @@ import axios from 'axios';
     mounted () {
       //this.$refs.calendar.scrollToTime('08:00')
     },
-    
+    computed: {
+      // outlets() {
+      //   return {
+      //     test: "aaaa"
+      //   }
+      // }
+    },
+
     created () {
       this.$vuetify.theme.dark = true;
       this.getOutlets()
@@ -410,6 +442,7 @@ import axios from 'axios';
       this.todayx = this.momentNow('date');
     },
     methods: {
+
       openLink: function(link) {
         window.open(`${ this.siteURL }/admin/${ link }`);
       },
@@ -502,6 +535,11 @@ import axios from 'axios';
       },
 
       outletSelect: function (event) {
+        console.log('outlet select');
+        this.newScreen = "";
+      },
+
+      screenSelect: function (event) {
         if (event) {
           var i = event.currentTarget.id.split('.');
           this.selected_outlet = i[0];
@@ -530,6 +568,31 @@ import axios from 'axios';
           this.newURL_name = null;
           this.isFormValid = false;
         }
+      },
+
+      addNewScreen: function(event) {
+        console.log('adding new screen');
+        //console.log(this.newScreen);
+        //console.log(event.currentTarget.id);
+        var i = event.currentTarget.id.split('.');
+        axios({
+            method: 'post',
+            url: `${ this.siteURL }/api/${ i[0] }/screen`,
+            data: {
+              outlet_id: i[0],
+              outlet_intid: i[1],
+              screen_description: this.newScreen
+            }
+        }).then(response => {
+              
+            if (response.data == "Saved")
+            {
+              this.getOutlets()
+            }
+          })
+          .catch(e => {
+              this.errors.push(e)
+          });
       },
 
       addLink: function(event) {

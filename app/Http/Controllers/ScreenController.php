@@ -6,8 +6,10 @@ use App\User;
 use App\Model\Outlet;
 use App\Model\Screen;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\ScreenResource;
+use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\Response;
 
 class ScreenController extends Controller
@@ -55,20 +57,37 @@ class ScreenController extends Controller
      */
     public function store(Request $request)
     {
-        Screen::create($request->all());
-        return response('Saved', Response::HTTP_CREATED);
+        //return $request;
+        // get latest screen count
+        $screen = DB::table('screens')
+                     ->select(DB::raw('count(*) as count'))
+                     ->where('outlet_id', '=', $request->outlet_id)
+                     ->first();
+      
+        $screen_counter = $screen->count + 1;
+        $oint_id = $request->outlet_intid;
+        $id = $oint_id.'SS'.$screen_counter;
+        $data = [
+          'id' => $id,
+          'outlet_id' => $request->outlet_id,
+          'description' => $request->screen_description,
+          'activation_date' => Carbon::today()
+        ];
+        //return $data;
+        $row = Screen::create($data);
 
         //create login account
-        //  User::updateOrCreate(
-        //     ['id' => 9000],
-        //     [
-        //         'id' => 9000,
-        //         'first_name' => 'Admin',
-        //         'last_name' => 'Superuser',
-        //         'email' => 'mswdbadmin@gmail.com',
-        //         'password' => Hash::make('password9000'),
-        //     ]
-        // );
+        $user = User::updateOrCreate(
+            ['username' => $row->id],
+            [
+              'username' => $row->id,  
+              'name' => $row->description,
+              'email' => $row->id.'@gmail.com',
+              'password' => Hash::make('password??'),
+            ]
+        );
+
+        return response('Saved', Response::HTTP_CREATED);
     }
 
     /**

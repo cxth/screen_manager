@@ -80,7 +80,11 @@ class ScheduleController extends Controller
      */
     public function test()
     {
-        
+        echo "<pre>";
+        print_r('HWweQhgLK0V+AmrWt9HrZA==');
+        echo "<br/>";
+        print_r($this->encryptText('AH-001SS4'));
+        echo "</pre>";
     }
 
     /**
@@ -90,7 +94,7 @@ class ScheduleController extends Controller
      */
     public function getScreenAutologin(Request $request)
     {
-      return $this->encryptText($request->screen_id) . "__" . $request->screen_id;
+      return urlencode($this->encryptText($request->screen_id) . "__" . $request->screen_id);
     }
 
     /**
@@ -112,6 +116,7 @@ class ScheduleController extends Controller
     public function clientLogin()
     {
       $request = $_REQUEST;
+      //dd($request['r']);
       if (!isset($request['r']))
       {
         return ['Invalid request parameter'];
@@ -128,6 +133,7 @@ class ScheduleController extends Controller
         $user = User::where('username', $param[1])->first();
         if ($user->id)
         {
+          Auth::logout();
           Auth::loginUsingId($user->id, true);
           return redirect('/');
         }

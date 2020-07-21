@@ -15,6 +15,7 @@ class CreateOutletsTable extends Migration
     {
         Schema::create('outlets', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('int_id', 100);
             $table->string('name', 100);
             $table->string('group', 100);
             $table->string('type', 100)->nullable();

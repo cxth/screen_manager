@@ -15,6 +15,10 @@ class Screen extends Model
 
     protected $primaryKey = 'id'; // or null
     public $incrementing = false;
+    protected $casts = [
+      'id' => 'string'
+    ];
+    protected $keyType = 'string';
 
     public function outlet()
     {

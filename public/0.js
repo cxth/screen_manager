@@ -384,6 +384,30 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -407,6 +431,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       newURL_name: null,
       newURL_id: null,
       isFormValid: true,
+      newScreen: null,
       // Layout
       drawer: null,
       drawerRight: null,
@@ -418,6 +443,12 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     };
   },
   mounted: function mounted() {//this.$refs.calendar.scrollToTime('08:00')
+  },
+  computed: {// outlets() {
+    //   return {
+    //     test: "aaaa"
+    //   }
+    // }
   },
   created: function created() {
     this.$vuetify.theme.dark = true;
@@ -508,6 +539,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       });
     },
     outletSelect: function outletSelect(event) {
+      console.log('outlet select');
+      this.newScreen = "";
+    },
+    screenSelect: function screenSelect(event) {
       if (event) {
         var i = event.currentTarget.id.split('.');
         this.selected_outlet = i[0];
@@ -534,8 +569,31 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         this.isFormValid = false;
       }
     },
-    addLink: function addLink(event) {
+    addNewScreen: function addNewScreen(event) {
       var _this6 = this;
+
+      console.log('adding new screen'); //console.log(this.newScreen);
+      //console.log(event.currentTarget.id);
+
+      var i = event.currentTarget.id.split('.');
+      axios__WEBPACK_IMPORTED_MODULE_0___default()({
+        method: 'post',
+        url: "".concat(this.siteURL, "/api/").concat(i[0], "/screen"),
+        data: {
+          outlet_id: i[0],
+          outlet_intid: i[1],
+          screen_description: this.newScreen
+        }
+      }).then(function (response) {
+        if (response.data == "Saved") {
+          _this6.getOutlets();
+        }
+      })["catch"](function (e) {
+        _this6.errors.push(e);
+      });
+    },
+    addLink: function addLink(event) {
+      var _this7 = this;
 
       var newlink = null;
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
@@ -549,13 +607,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       }).then(function (response) {
         alert("link save");
         console.log('the link id: ' + response.data);
-        _this6.newURL_id = response.data;
+        _this7.newURL_id = response.data;
       })["catch"](function (e) {
-        _this6.errors.push(e);
+        _this7.errors.push(e);
       });
     },
     addSched: function addSched(event) {
-      var _this7 = this;
+      var _this8 = this;
 
       console.log('selected link ');
       console.log(this.selected_link); //return;
@@ -600,16 +658,16 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
         mydata = {}; // reset all data
 
-        _this7.resetData(); // @TODO: clear forms on save
+        _this8.resetData(); // @TODO: clear forms on save
         // refresh schedule
 
 
-        _this7.getScreenSched(); // refresh media assets
+        _this8.getScreenSched(); // refresh media assets
 
 
-        _this7.getMediaAssets();
+        _this8.getMediaAssets();
       })["catch"](function (e) {
-        _this7.errors.push(e);
+        _this8.errors.push(e);
       });
     },
     resetData: function resetData() {
@@ -631,13 +689,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.selected_link_url = null;
     },
     logout: function logout() {
-      var _this8 = this;
+      var _this9 = this;
 
       if (confirm("Are you sure you like to logout?")) {
         axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/logout")).then(function (response) {
           location.reload();
         })["catch"](function (e) {
-          _this8.errors.push(e);
+          _this9.errors.push(e);
         });
       }
     },
@@ -934,7 +992,7 @@ var render = function() {
             [
               _c(
                 "v-list-item",
-                { attrs: { link: "" } },
+                { attrs: { link: "" }, on: { click: _vm.outletSelect } },
                 [
                   _c(
                     "v-expansion-panels",
@@ -957,96 +1015,154 @@ var render = function() {
                                   _c(
                                     "v-list-item-group",
                                     { attrs: { color: "primary" } },
-                                    _vm._l(item, function(screen, screen_i) {
-                                      return _c(
+                                    [
+                                      _c(
                                         "v-list-item",
-                                        {
-                                          key: screen_i,
-                                          attrs: {
-                                            id:
-                                              screen.outlet_name +
-                                              "." +
-                                              screen.id
-                                          },
-                                          on: { click: _vm.outletSelect }
-                                        },
                                         [
                                           _c(
                                             "v-list-item-content",
                                             [
-                                              _c("v-list-item-title", {
-                                                domProps: {
-                                                  textContent: _vm._s(
-                                                    screen.description
-                                                  )
+                                              _c("v-text-field", {
+                                                staticClass: "ma-0 pa-0",
+                                                attrs: {
+                                                  placeholder: "Screen Name",
+                                                  outlined: "",
+                                                  dense: ""
+                                                },
+                                                model: {
+                                                  value: _vm.newScreen,
+                                                  callback: function($$v) {
+                                                    _vm.newScreen = $$v
+                                                  },
+                                                  expression: "newScreen"
                                                 }
-                                              })
+                                              }),
+                                              _vm._v(" "),
+                                              _c(
+                                                "v-btn",
+                                                {
+                                                  attrs: {
+                                                    "x-small": "",
+                                                    color: "secondary",
+                                                    dark: "",
+                                                    id:
+                                                      item[0].outlet_id +
+                                                      "." +
+                                                      item[0].outlet_intid +
+                                                      ".new"
+                                                  },
+                                                  on: {
+                                                    click: _vm.addNewScreen
+                                                  }
+                                                },
+                                                [
+                                                  _vm._v(
+                                                    "\n                        Add Screen\n                      "
+                                                  )
+                                                ]
+                                              )
                                             ],
                                             1
-                                          ),
-                                          _vm._v(" "),
-                                          _c(
-                                            "v-tooltip",
-                                            {
-                                              attrs: { right: "" },
-                                              scopedSlots: _vm._u(
-                                                [
-                                                  {
-                                                    key: "activator",
-                                                    fn: function(ref) {
-                                                      var on = ref.on
-                                                      var attrs = ref.attrs
-                                                      return [
-                                                        _c(
-                                                          "v-list-item-icon",
-                                                          _vm._g(
-                                                            _vm._b(
-                                                              {
-                                                                staticClass:
-                                                                  "ml-5",
-                                                                on: {
-                                                                  click: function(
-                                                                    $event
-                                                                  ) {
-                                                                    return _vm.openLink(
-                                                                      screen.id
-                                                                    )
-                                                                  }
-                                                                }
-                                                              },
-                                                              "v-list-item-icon",
-                                                              attrs,
-                                                              false
-                                                            ),
-                                                            on
-                                                          ),
-                                                          [
-                                                            _c("v-icon", [
-                                                              _vm._v("mdi-eye")
-                                                            ])
-                                                          ],
-                                                          1
-                                                        )
-                                                      ]
-                                                    }
-                                                  }
-                                                ],
-                                                null,
-                                                true
-                                              )
-                                            },
-                                            [
-                                              _vm._v(" "),
-                                              _c("span", [
-                                                _vm._v("click to visit screen")
-                                              ])
-                                            ]
                                           )
                                         ],
                                         1
-                                      )
-                                    }),
-                                    1
+                                      ),
+                                      _vm._v(" "),
+                                      _vm._l(item, function(screen, screen_i) {
+                                        return _c(
+                                          "v-list-item",
+                                          {
+                                            key: screen_i,
+                                            attrs: {
+                                              id:
+                                                screen.outlet_name +
+                                                "." +
+                                                screen.id
+                                            },
+                                            on: { click: _vm.screenSelect }
+                                          },
+                                          [
+                                            _c(
+                                              "v-list-item-content",
+                                              [
+                                                _c("v-list-item-title", {
+                                                  domProps: {
+                                                    textContent: _vm._s(
+                                                      screen.description
+                                                    )
+                                                  }
+                                                })
+                                              ],
+                                              1
+                                            ),
+                                            _vm._v(" "),
+                                            _c(
+                                              "v-tooltip",
+                                              {
+                                                attrs: { right: "" },
+                                                scopedSlots: _vm._u(
+                                                  [
+                                                    {
+                                                      key: "activator",
+                                                      fn: function(ref) {
+                                                        var on = ref.on
+                                                        var attrs = ref.attrs
+                                                        return [
+                                                          _c(
+                                                            "v-list-item-icon",
+                                                            _vm._g(
+                                                              _vm._b(
+                                                                {
+                                                                  staticClass:
+                                                                    "ml-5",
+                                                                  on: {
+                                                                    click: function(
+                                                                      $event
+                                                                    ) {
+                                                                      return _vm.openLink(
+                                                                        screen.id
+                                                                      )
+                                                                    }
+                                                                  }
+                                                                },
+                                                                "v-list-item-icon",
+                                                                attrs,
+                                                                false
+                                                              ),
+                                                              on
+                                                            ),
+                                                            [
+                                                              _c("v-icon", [
+                                                                _vm._v(
+                                                                  "mdi-eye"
+                                                                )
+                                                              ])
+                                                            ],
+                                                            1
+                                                          )
+                                                        ]
+                                                      }
+                                                    }
+                                                  ],
+                                                  null,
+                                                  true
+                                                )
+                                              },
+                                              [
+                                                _vm._v(" "),
+                                                _c("span", [
+                                                  _vm._v(
+                                                    "click to visit screen"
+                                                  )
+                                                ])
+                                              ]
+                                            )
+                                          ],
+                                          1
+                                        )
+                                      })
+                                    ],
+                                    2
                                   )
                                 ],
                                 1
