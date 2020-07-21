@@ -22,13 +22,16 @@ use Illuminate\Support\Facades\Artisan;
 
 // Web Route
 Route::get('/','ScheduleController@default'); 
+// API use
 Route::get('/logout','HomeController@logout');
+Route::get('/bye','HomeController@bye');
 
 // AJAX
 Route::get('/request','ScheduleController@getUrl');
 
 // Test routes
 Route::get('/test','ScheduleController@test');
+Route::get('/client','ScheduleController@clientLogin');
 
 
 // Admin

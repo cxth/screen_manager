@@ -29,8 +29,18 @@ class HomeController extends Controller
 
     public function logout()
     {
-        Auth::logout();
-        //sleep(5);
-        //return redirect('/login'); 
+      Auth::logout();  
+    }
+
+    /**
+     * Show the application dashboard.
+     *
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function bye()
+    {
+      $this->logout();
+      sleep(2);
+      return redirect('/login'); 
     }
 }

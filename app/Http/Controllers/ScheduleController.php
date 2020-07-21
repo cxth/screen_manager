@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Carbon\Carbon;
 use App\Model\Link;
 use App\Model\Outlet;
@@ -11,29 +12,16 @@ use App\Model\Group_Screen;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\ScheduleResource;
-use App\Http\Resources\ScheduleGroupResource;
+//use App\Http\Resources\ScheduleGroupResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class ScheduleController extends Controller
 {
-    
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        // disabled due to Admin API not accessible
-        //$this->middleware('auth');
-    }
-    
-    
     /**
      * Default controller for front-end display
-     * @TODO for deletion
+     *
+     * @return client screen view
      */
     public function default()
     {
@@ -92,13 +80,59 @@ class ScheduleController extends Controller
      */
     public function test()
     {
-        //$pp = Hash::make('password??');
-        //dd($pp);
+        
+    }
+
+    /**
+     * Helper // encrypt string
+     * 
+     * @return string
+     */
+    private function encryptText($string)
+    {
+      return openssl_encrypt ($string, 'AES-128-CBC' , 'client', 0, $iv="abcdefghi1234567");
+    }
+
+    /**
+     * Auto-log client screen from url.
+     *
+     * @url /client?r=<encrypted_string>__<screen_id>
+     * @return /Auth::user()
+     */
+    public function clientLogin()
+    {
+      $request = $_REQUEST;
+      if (!isset($request['r']))
+      {
+        return ['Invalid request parameter'];
+      }
+      
+      $param = explode('__',$request['r']);
+      if (count($param) != 2)
+      {
+        return ['Invalid key parameter'];
+      }
+
+      if ($param[0] == $this->encryptText($param[1]))
+      {
+        $user = User::where('username', $param[1])->first();
+        if ($user->id)
+        {
+          Auth::loginUsingId($user->id, true);
+          return redirect('/');
+        }
+
+        //http://sm.local/client?r=BrCbp9TN/k72XHk6DHm/WQ==__AC-102SS1
+        //http://sm.local/client?r=BrCbp9TN/k72XHk6DHm/WQ==__AC-102SS1x
+      }
+      
+      return redirect('/bye');
     }
 
 
     /**
-     * View client screen
+     * View client screen from admin
+     * 
      * @url /admin/screen/{screen}
      */
     public function viewScreen($screen)
@@ -114,6 +148,7 @@ class ScheduleController extends Controller
         session(['uscreen' => $screen]);
         $data['user'] = $screen;
         echo "<pre></pre>";
+        // @goto 
         return view('page', $data);
     }
 
@@ -179,7 +214,6 @@ class ScheduleController extends Controller
      */
     public function showScreen(Screen $screen)
     {               
-        
         $result = $screen->schedule()
             ->whereDate('show_datetime', Carbon::today())
             ->orderBy('show_datetime', 'desc')
@@ -254,8 +288,7 @@ class ScheduleController extends Controller
      */
     public function onGroup(Request $request, Group_Screen $group)
     {            
-        
-        
+    
         $request['group__screen_id'] = intval($request->group__screen_id);
         $request['link_id'] = intval($request->link_id);
         if (!$request->link_id)
@@ -263,7 +296,7 @@ class ScheduleController extends Controller
             $link = Link::create(
                 [
                     'media__asset_id' => 100,
-                    'name' => 'custom URL',
+                    'name' => $request->link_name,
                     'url' => $request->url
                 ]
             );
