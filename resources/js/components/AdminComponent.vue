@@ -160,6 +160,10 @@
                     <v-icon left>mdi-calendar-clock</v-icon>
                     SCHEDULE
                   </v-tab>
+                  <v-tab>
+                    <v-icon left>mdi-key</v-icon>
+                    INFO
+                  </v-tab>
 
                   <v-tab-item>
                     <v-row
@@ -275,6 +279,64 @@
 
                     </v-card>
                   </v-tab-item>
+                  <v-tab-item>
+          
+                    <template>
+                      <v-container class="grey lighten-5">
+                        <v-row
+                          align="center"
+                          justify="center"
+                        >
+                          <v-col sm="9">
+                            <v-card
+                              class="pa-2"
+                              outlined
+                              tile
+                            >
+                              <div class="pa-4">
+                                <v-btn class="text-center" rounded color="primary" dark>Auto-Login URL</v-btn>
+                                <span class="font-weight-thin pl-3"> 
+                                <!-- http://sm.local/client?r=BrCbp9TN/k72XHk6DHm/WQ==__AC-102SS1 -->
+                                {{ screen_autologin }}
+                                </span>
+                              </div>
+                              
+                            </v-card>
+                            <!-- <v-row no-gutters>
+                              <v-col
+                                cols="8"
+                                sm="6"
+                              >
+                                <v-card
+                                  class="pa-2"
+                                  outlined
+                                  style="background-color: darkgrey;"
+                                  tile
+                                >
+                                  Level 2: .col-8 .col-sm-6
+                                </v-card>
+                              </v-col>
+                              <v-col
+                                cols="4"
+                                sm="6"
+                              >
+                                <v-card
+                                  class="pa-2"
+                                  outlined
+                                  style="background-color: darkgrey;"
+                                  tile
+                                >
+                                  Level 3: .col-4 .col-sm-6
+                                </v-card>
+                              </v-col>
+                            </v-row> -->
+                          </v-col>
+                        </v-row>
+                      </v-container>
+                    </template>
+
+                  </v-tab-item>
+
                 </v-tabs>
               </v-card> 
 
@@ -308,6 +370,8 @@ import axios from 'axios';
       selected_outlet: null,
       selected_screen: null,
       selected_screen_schedule: null,
+      screen_autologin: null,
+
       selected_mediagroup: null,
       selected_link: null,
       selected_link_name: null,
@@ -420,6 +484,23 @@ import axios from 'axios';
           });
       },
 
+      getScreenAutologin: function() {
+        console.log('getScreenAutologin');
+        axios({
+            method: 'post',
+            url: `${ this.siteURL }/api/screen/login`,
+            data: {
+              screen_id: this.selected_screen
+            }
+        }).then(response => {
+              console.log(response.data);
+              this.screen_autologin = `${ this.siteURL }/client?r=${ response.data }`;
+          })
+          .catch(e => {
+              this.errors.push(e)
+          });
+      },
+
       outletSelect: function (event) {
         if (event) {
           var i = event.currentTarget.id.split('.');
@@ -427,6 +508,7 @@ import axios from 'axios';
           this.selected_screen = i[1];
 
           this.getScreenSched()
+          this.getScreenAutologin()
         }
       },
 
@@ -491,17 +573,6 @@ import axios from 'axios';
             return;
           }
         
-          // @TODO: validate URL, name
-          // // disabled - controller will add the link
-          // this.addLink();
-          // if (this.newURL_id == null)
-          // {
-          //   console.log("im null?? " + this.newURL_id);
-          //   return;
-          // }
-
-          // @TODO check failure here
-          console.log('im newing here');
           var mydata = {
               screen_id: this.selected_screen,
               link_name: this.newURL_name,
@@ -511,7 +582,6 @@ import axios from 'axios';
         }
         else
         {
-          console.log('im selected here');
           var mydata = {
               screen_id: this.selected_screen,
               link_id: this.selected_link,

@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 class ScheduleController extends Controller
 {
     /**
-     * Default controller for front-end display
+     * Web // Default controller for front-end display
      *
      * @return client screen view
      */
@@ -40,7 +40,7 @@ class ScheduleController extends Controller
     }
 
     /**
-     * Get latest URL from AJAX request in client Front-end.
+     * API // Get latest URL from AJAX request in client Front-end.
      *
      * @return \Illuminate\Http\Response
      * @TODO for deletion
@@ -81,6 +81,16 @@ class ScheduleController extends Controller
     public function test()
     {
         
+    }
+
+    /**
+     * API // get encrypted string
+     * 
+     * @return string
+     */
+    public function getScreenAutologin(Request $request)
+    {
+      return $this->encryptText($request->screen_id) . "__" . $request->screen_id;
     }
 
     /**

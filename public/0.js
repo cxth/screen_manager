@@ -322,6 +322,68 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -332,6 +394,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       selected_outlet: null,
       selected_screen: null,
       selected_screen_schedule: null,
+      screen_autologin: null,
       selected_mediagroup: null,
       selected_link: null,
       selected_link_name: null,
@@ -427,12 +490,30 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         _this4.errors.push(e);
       });
     },
+    getScreenAutologin: function getScreenAutologin() {
+      var _this5 = this;
+
+      console.log('getScreenAutologin');
+      axios__WEBPACK_IMPORTED_MODULE_0___default()({
+        method: 'post',
+        url: "".concat(this.siteURL, "/api/screen/login"),
+        data: {
+          screen_id: this.selected_screen
+        }
+      }).then(function (response) {
+        console.log(response.data);
+        _this5.screen_autologin = "".concat(_this5.siteURL, "/client?r=").concat(response.data);
+      })["catch"](function (e) {
+        _this5.errors.push(e);
+      });
+    },
     outletSelect: function outletSelect(event) {
       if (event) {
         var i = event.currentTarget.id.split('.');
         this.selected_outlet = i[0];
         this.selected_screen = i[1];
         this.getScreenSched();
+        this.getScreenAutologin();
       }
     },
     linkSelect: function linkSelect(event) {
@@ -454,7 +535,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       }
     },
     addLink: function addLink(event) {
-      var _this5 = this;
+      var _this6 = this;
 
       var newlink = null;
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
@@ -468,13 +549,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       }).then(function (response) {
         alert("link save");
         console.log('the link id: ' + response.data);
-        _this5.newURL_id = response.data;
+        _this6.newURL_id = response.data;
       })["catch"](function (e) {
-        _this5.errors.push(e);
+        _this6.errors.push(e);
       });
     },
     addSched: function addSched(event) {
-      var _this6 = this;
+      var _this7 = this;
 
       console.log('selected link ');
       console.log(this.selected_link); //return;
@@ -490,18 +571,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         if (!this.newURL || !this.newURL_name) {
           alert('Please complete URL fields');
           return;
-        } // @TODO: validate URL, name
-        // // disabled - controller will add the link
-        // this.addLink();
-        // if (this.newURL_id == null)
-        // {
-        //   console.log("im null?? " + this.newURL_id);
-        //   return;
-        // }
-        // @TODO check failure here
+        }
 
-
-        console.log('im newing here');
         var mydata = {
           screen_id: this.selected_screen,
           link_name: this.newURL_name,
@@ -509,7 +580,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           show_datetime: this.momentNow()
         };
       } else {
-        console.log('im selected here');
         var mydata = {
           screen_id: this.selected_screen,
           link_id: this.selected_link,
@@ -530,16 +600,16 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
         mydata = {}; // reset all data
 
-        _this6.resetData(); // @TODO: clear forms on save
+        _this7.resetData(); // @TODO: clear forms on save
         // refresh schedule
 
 
-        _this6.getScreenSched(); // refresh media assets
+        _this7.getScreenSched(); // refresh media assets
 
 
-        _this6.getMediaAssets();
+        _this7.getMediaAssets();
       })["catch"](function (e) {
-        _this6.errors.push(e);
+        _this7.errors.push(e);
       });
     },
     resetData: function resetData() {
@@ -561,13 +631,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.selected_link_url = null;
     },
     logout: function logout() {
-      var _this7 = this;
+      var _this8 = this;
 
       if (confirm("Are you sure you like to logout?")) {
         axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/logout")).then(function (response) {
           location.reload();
         })["catch"](function (e) {
-          _this7.errors.push(e);
+          _this8.errors.push(e);
         });
       }
     },
@@ -1075,6 +1145,19 @@ var render = function() {
                                 ),
                                 _vm._v(" "),
                                 _c(
+                                  "v-tab",
+                                  [
+                                    _c("v-icon", { attrs: { left: "" } }, [
+                                      _vm._v("mdi-key")
+                                    ]),
+                                    _vm._v(
+                                      "\n                  INFO\n                "
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
                                   "v-tab-item",
                                   [
                                     _c(
@@ -1448,6 +1531,95 @@ var render = function() {
                                     )
                                   ],
                                   1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "v-tab-item",
+                                  [
+                                    [
+                                      _c(
+                                        "v-container",
+                                        { staticClass: "grey lighten-5" },
+                                        [
+                                          _c(
+                                            "v-row",
+                                            {
+                                              attrs: {
+                                                align: "center",
+                                                justify: "center"
+                                              }
+                                            },
+                                            [
+                                              _c(
+                                                "v-col",
+                                                { attrs: { sm: "9" } },
+                                                [
+                                                  _c(
+                                                    "v-card",
+                                                    {
+                                                      staticClass: "pa-2",
+                                                      attrs: {
+                                                        outlined: "",
+                                                        tile: ""
+                                                      }
+                                                    },
+                                                    [
+                                                      _c(
+                                                        "div",
+                                                        { staticClass: "pa-4" },
+                                                        [
+                                                          _c(
+                                                            "v-btn",
+                                                            {
+                                                              staticClass:
+                                                                "text-center",
+                                                              attrs: {
+                                                                rounded: "",
+                                                                color:
+                                                                  "primary",
+                                                                dark: ""
+                                                              }
+                                                            },
+                                                            [
+                                                              _vm._v(
+                                                                "Auto-Login URL"
+                                                              )
+                                                            ]
+                                                          ),
+                                                          _vm._v(" "),
+                                                          _c(
+                                                            "span",
+                                                            {
+                                                              staticClass:
+                                                                "font-weight-thin pl-3"
+                                                            },
+                                                            [
+                                                              _vm._v(
+                                                                "\n                              " +
+                                                                  _vm._s(
+                                                                    _vm.screen_autologin
+                                                                  ) +
+                                                                  "\n                              "
+                                                              )
+                                                            ]
+                                                          )
+                                                        ],
+                                                        1
+                                                      )
+                                                    ]
+                                                  )
+                                                ],
+                                                1
+                                              )
+                                            ],
+                                            1
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    ]
+                                  ],
+                                  2
                                 )
                               ],
                               1
