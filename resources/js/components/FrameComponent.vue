@@ -19,7 +19,8 @@ export default {
             return {
                 // temp site for testing 
                 url_id: null,
-                url: `../img/default-maintenance.png`,
+                //url: `../img/default-maintenance.png`,
+                url: `../img/default.jpg`,
                 timer: ''
             } 
         },
