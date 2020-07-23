@@ -5,6 +5,7 @@
       app
       clipped
       right
+      :width="270"
     >
       <v-list-item link>
         <v-list-item-action>
@@ -34,6 +35,20 @@
                       <v-list-item-content>
                         <v-list-item-title v-text="link.name"></v-list-item-title>
                       </v-list-item-content>
+
+                      <v-tooltip left>
+                        <template v-if="asset.name === 'Custom Links'" v-slot:activator="{ on, attrs }">
+                          <v-list-item-icon 
+                            class="ml-5"
+                            v-bind="attrs"
+                            v-on="on"
+                            v-on:click="deleteLink(link.id)"
+                          >
+                            <v-icon>mdi-server-remove</v-icon>
+                          </v-list-item-icon>
+                        </template>
+                        <span>delete link</span>
+                      </v-tooltip>
                     </v-list-item>
                   </v-list-item-group>
                 </v-list>
@@ -615,6 +630,22 @@ import axios from 'axios';
           });
       },
 
+      deleteLink: function(event) {
+   
+        if(confirm("DANGER! Are you sure you like to DELETE this link?")) {        
+          axios.delete(`${ this.siteURL }/api/l/${ event }`)
+          .then(response => {
+              alert("link deleted");
+              this.getMediaAssets()
+              this.resetData()
+            })
+            .catch(e => {
+                this.errors.push(e)
+            });
+        }
+        return;
+      },
+
       addSched: function(event) {
 
         console.log('selected link ');
@@ -672,6 +703,8 @@ import axios from 'axios';
               this.getScreenSched()
               // refresh media assets
               this.getMediaAssets()
+              // refresh links
+              this.getLinks()
           })
           .catch(e => {
               this.errors.push(e)

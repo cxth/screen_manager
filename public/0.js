@@ -408,6 +408,21 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -612,8 +627,25 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         _this7.errors.push(e);
       });
     },
-    addSched: function addSched(event) {
+    deleteLink: function deleteLink(event) {
       var _this8 = this;
+
+      if (confirm("DANGER! Are you sure you like to DELETE this link?")) {
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("".concat(this.siteURL, "/api/l/").concat(event)).then(function (response) {
+          alert("link deleted");
+
+          _this8.getMediaAssets();
+
+          _this8.resetData();
+        })["catch"](function (e) {
+          _this8.errors.push(e);
+        });
+      }
+
+      return;
+    },
+    addSched: function addSched(event) {
+      var _this9 = this;
 
       console.log('selected link ');
       console.log(this.selected_link); //return;
@@ -658,16 +690,19 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
         mydata = {}; // reset all data
 
-        _this8.resetData(); // @TODO: clear forms on save
+        _this9.resetData(); // @TODO: clear forms on save
         // refresh schedule
 
 
-        _this8.getScreenSched(); // refresh media assets
+        _this9.getScreenSched(); // refresh media assets
 
 
-        _this8.getMediaAssets();
+        _this9.getMediaAssets(); // refresh links
+
+
+        _this9.getLinks();
       })["catch"](function (e) {
-        _this8.errors.push(e);
+        _this9.errors.push(e);
       });
     },
     resetData: function resetData() {
@@ -689,13 +724,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.selected_link_url = null;
     },
     logout: function logout() {
-      var _this9 = this;
+      var _this10 = this;
 
       if (confirm("Are you sure you like to logout?")) {
         axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/logout")).then(function (response) {
           location.reload();
         })["catch"](function (e) {
-          _this9.errors.push(e);
+          _this10.errors.push(e);
         });
       }
     },
@@ -810,7 +845,7 @@ var render = function() {
       _c(
         "v-navigation-drawer",
         {
-          attrs: { app: "", clipped: "", right: "" },
+          attrs: { app: "", clipped: "", right: "", width: 270 },
           model: {
             value: _vm.drawerRight,
             callback: function($$v) {
@@ -898,6 +933,68 @@ var render = function() {
                                               })
                                             ],
                                             1
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "v-tooltip",
+                                            {
+                                              attrs: { left: "" },
+                                              scopedSlots: _vm._u(
+                                                [
+                                                  asset.name === "Custom Links"
+                                                    ? {
+                                                        key: "activator",
+                                                        fn: function(ref) {
+                                                          var on = ref.on
+                                                          var attrs = ref.attrs
+                                                          return [
+                                                            _c(
+                                                              "v-list-item-icon",
+                                                              _vm._g(
+                                                                _vm._b(
+                                                                  {
+                                                                    staticClass:
+                                                                      "ml-5",
+                                                                    on: {
+                                                                      click: function(
+                                                                        $event
+                                                                      ) {
+                                                                        return _vm.deleteLink(
+                                                                          link.id
+                                                                        )
+                                                                      }
+                                                                    }
+                                                                  },
+                                                                  "v-list-item-icon",
+                                                                  attrs,
+                                                                  false
+                                                                ),
+                                                                on
+                                                              ),
+                                                              [
+                                                                _c("v-icon", [
+                                                                  _vm._v(
+                                                                    "mdi-server-remove"
+                                                                  )
+                                                                ])
+                                                              ],
+                                                              1
+                                                            )
+                                                          ]
+                                                        }
+                                                      }
+                                                    : null
+                                                ],
+                                                null,
+                                                true
+                                              )
+                                            },
+                                            [
+                                              _vm._v(" "),
+                                              _c("span", [
+                                                _vm._v("delete link")
+                                              ])
+                                            ]
                                           )
                                         ],
                                         1

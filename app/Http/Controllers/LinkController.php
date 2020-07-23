@@ -6,6 +6,8 @@ use App\Model\Link;
 use App\Model\Media_Asset;
 use Illuminate\Http\Request;
 use App\Http\Resources\LinkResource;
+use App\Model\Schedule;
+use App\Model\Screen;
 use Symfony\Component\HttpFoundation\Response;
 
 class LinkController extends Controller
@@ -96,9 +98,18 @@ class LinkController extends Controller
      * @param  \App\Model\Link  $link
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Link $link)
+    public function deleteLinkSched(Link $link)
     {
-        $link->delete();
-        return response(null, Response::HTTP_NO_CONTENT);
+       $msg = [];
+       // delete link in sched
+       if (!$link->schedule->isEmpty())
+       {
+        foreach ($link->schedule as $k => $v) {
+          $arr[] = $link->schedule[$k]->id;
+        }
+        Schedule::destroy($arr);
+      }
+      $link->delete();
+      return response(null, Response::HTTP_NO_CONTENT);
     }
 }

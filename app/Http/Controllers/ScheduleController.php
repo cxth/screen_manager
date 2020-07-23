@@ -392,7 +392,6 @@ class ScheduleController extends Controller
         return response(null, Response::HTTP_NO_CONTENT);
     }
 
-
      /**
      * Admin Page.
      *

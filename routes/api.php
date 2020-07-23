@@ -36,7 +36,7 @@ Route::post('/l','LinkController@store');
 Route::get('/l','LinkController@showAll');
 Route::get('/l/{link}','LinkController@show');
 Route::patch('/l/{link}','LinkController@update');
-Route::delete('/l/{link}','LinkController@destroy ');
+Route::delete('/l/{link}','LinkController@deleteLinkSched');
 
 //Route::apiResource('/g/{group}/screens','GroupScreenController');
 Route::get('/g/{group}/id','GroupScreenController@index');
