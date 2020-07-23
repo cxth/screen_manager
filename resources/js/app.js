@@ -9,8 +9,16 @@ require('./bootstrap');
 import Vue from 'vue'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
+import {iframeResize} from 'iframe-resizer'
 
 window.Vue = require('vue');
+
+// iframe resizer
+Vue.directive('resize', {
+  bind: function(el, { value = {} }) {
+    el.addEventListener('load', () => iFrameResize(value, el))
+  }
+})
 
 // declare global variable here
 Vue.mixin({

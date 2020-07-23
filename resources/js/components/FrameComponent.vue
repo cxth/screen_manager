@@ -1,7 +1,14 @@
 <template>
-  <div class="container">
-    <iframe class="responsive-iframe" :src="url" frameborder="0" allow="autoplay; fullscreen" id="mswsm" type="text/html"></iframe>
-  </div>
+  <iframe
+    v-resize="{ log: true }"
+    width="100%"
+    height="100%"
+    frameborder="0"
+    :src="url"  
+    allow="autoplay; fullscreen"
+    id="mswsm" 
+    class="responsive-iframe"
+  ></iframe>
 </template>
 
 <script>
