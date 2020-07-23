@@ -24,6 +24,7 @@ class CreateScreensTable extends Migration
             $table->dateTime('activation_date');
             $table->string('equipment_model_installed', 50)->nullable();
             $table->string('teamviewer_details', 50)->nullable();
+            $table->softDeletes();
             $table->timestamps();
 
             // Foreign KEY
@@ -36,8 +37,16 @@ class CreateScreensTable extends Migration
      *
      * @return void
      */
-    public function down()
+    /*
+     public function down()
     {
         Schema::dropIfExists('screens');
+    }
+    */
+    public function down()
+    {
+        Schema::table('screens', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
     }
 }

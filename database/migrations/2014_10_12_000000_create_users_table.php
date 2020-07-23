@@ -21,6 +21,7 @@ class CreateUsersTable extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -30,8 +31,15 @@ class CreateUsersTable extends Migration
      *
      * @return void
      */
+    // public function down()
+    // {
+    //     Schema::dropIfExists('users');
+    // }
+
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
     }
 }

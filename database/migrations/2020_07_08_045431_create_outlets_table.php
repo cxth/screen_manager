@@ -17,12 +17,13 @@ class CreateOutletsTable extends Migration
             $table->bigIncrements('id');
             $table->string('int_id', 100);
             $table->string('name', 100);
-            $table->string('group', 100);
+            $table->string('group', 100)->nullable();
             $table->string('type', 100)->nullable();
             $table->string('address', 500)->nullable();
             $table->string('city', 100)->nullable();
             $table->string('contact_no', 100)->nullable();
             $table->string('operator', 100)->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -32,8 +33,15 @@ class CreateOutletsTable extends Migration
      *
      * @return void
      */
+    // public function down()
+    // {
+    //     Schema::dropIfExists('outlets');
+    // }
+
     public function down()
     {
-        Schema::dropIfExists('outlets');
+        Schema::table('outlets', function (Blueprint $table) {
+            $table->dropSoftDeletes();
+        });
     }
 }
