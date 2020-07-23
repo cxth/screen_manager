@@ -334,10 +334,15 @@
                             >
                               <div class="pa-4">
                                 <v-btn class="text-center" rounded color="primary" dark>Auto-Login URL</v-btn>
-                                <span class="font-weight-thin pl-3"> 
-                                <!-- http://sm.local/client?r=BrCbp9TN/k72XHk6DHm/WQ==__AC-102SS1 -->
-                                {{ screen_autologin }}
-                                </span>
+                                  <span class="font-weight-thin pl-3"> 
+                                    {{ screen_autologin }}
+                                  </span>
+                              </div>
+                              <div class="pa-4">
+                                <v-btn class="text-center ml-3" rounded color="primary" dark>Now Showing</v-btn>
+                                  <span class="font-weight-thin pl-4"> 
+                                    {{ screen_now_showing }}
+                                  </span>
                               </div>
                               
                             </v-card>
@@ -410,6 +415,7 @@ import axios from 'axios';
       selected_screen: null,
       selected_screen_schedule: null,
       screen_autologin: null,
+      screen_now_showing: null,
 
       selected_mediagroup: null,
       selected_link: null,
@@ -436,7 +442,6 @@ import axios from 'axios';
       // Schedule
       todayx: '2020-01-01',
       events: [],
-
     }),
     mounted () {
       //this.$refs.calendar.scrollToTime('08:00')
@@ -524,6 +529,16 @@ import axios from 'axios';
             {
               this.selected_screen_schedule = response.data;
               this.events = this.eventsFormat()
+
+              if (this.events.length > 0) 
+              {
+                this.screen_now_showing = this.events[this.events.length - 1].name;
+                console.log(this.events[this.events.length - 1].name);
+              }
+              else
+              {
+                this.screen_now_showing = "No current content";
+              }
             }
 
           })
@@ -781,9 +796,6 @@ import axios from 'axios';
 
         return esched;
       }
-
-
-
 
     }
   }

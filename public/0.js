@@ -423,6 +423,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -434,6 +439,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       selected_screen: null,
       selected_screen_schedule: null,
       screen_autologin: null,
+      screen_now_showing: null,
       selected_mediagroup: null,
       selected_link: null,
       selected_link_name: null,
@@ -531,6 +537,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         if (response.data) {
           _this4.selected_screen_schedule = response.data;
           _this4.events = _this4.eventsFormat();
+
+          if (_this4.events.length > 0) {
+            _this4.screen_now_showing = _this4.events[_this4.events.length - 1].name;
+            console.log(_this4.events[_this4.events.length - 1].name);
+          } else {
+            _this4.screen_now_showing = "No current content";
+          }
         }
       })["catch"](function (e) {
         _this4.errors.push(e);
@@ -1808,11 +1821,54 @@ var render = function() {
                                                             },
                                                             [
                                                               _vm._v(
-                                                                "\n                              " +
+                                                                " \n                                  " +
                                                                   _vm._s(
                                                                     _vm.screen_autologin
                                                                   ) +
-                                                                  "\n                              "
+                                                                  "\n                                "
+                                                              )
+                                                            ]
+                                                          )
+                                                        ],
+                                                        1
+                                                      ),
+                                                      _vm._v(" "),
+                                                      _c(
+                                                        "div",
+                                                        { staticClass: "pa-4" },
+                                                        [
+                                                          _c(
+                                                            "v-btn",
+                                                            {
+                                                              staticClass:
+                                                                "text-center ml-3",
+                                                              attrs: {
+                                                                rounded: "",
+                                                                color:
+                                                                  "primary",
+                                                                dark: ""
+                                                              }
+                                                            },
+                                                            [
+                                                              _vm._v(
+                                                                "Now Showing"
+                                                              )
+                                                            ]
+                                                          ),
+                                                          _vm._v(" "),
+                                                          _c(
+                                                            "span",
+                                                            {
+                                                              staticClass:
+                                                                "font-weight-thin pl-4"
+                                                            },
+                                                            [
+                                                              _vm._v(
+                                                                " \n                                  " +
+                                                                  _vm._s(
+                                                                    _vm.screen_now_showing
+                                                                  ) +
+                                                                  "\n                                "
                                                               )
                                                             ]
                                                           )
