@@ -12,6 +12,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _CalendarComponent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./CalendarComponent */ "./resources/js/components/CalendarComponent.vue");
+/* harmony import */ var _MediaAssetsComponent__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MediaAssetsComponent */ "./resources/js/components/MediaAssetsComponent.vue");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
@@ -420,48 +421,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -469,7 +429,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     source: String
   },
   components: {
-    calendar: _CalendarComponent__WEBPACK_IMPORTED_MODULE_1__["default"]
+    calendar: _CalendarComponent__WEBPACK_IMPORTED_MODULE_1__["default"],
+    media_asset_component: _MediaAssetsComponent__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
   data: function data() {
     return {
@@ -482,23 +443,40 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       selected_link: null,
       selected_link_name: null,
       selected_link_url: null,
+      selected: {
+        mediagroup: null,
+        link: null,
+        link_name: null,
+        link_url: null
+      },
       outlets: null,
       media_assets: null,
       links: null,
       // new Outlet
       newOutlet_name: null,
       newOutlet_id: null,
+      new_: {
+        outlet_name: null,
+        outlet_id: null,
+        url: null,
+        url_name: null,
+        url_id: null,
+        screen: null
+      },
       // custom URL
       newURL: null,
       newURL_name: null,
       newURL_id: null,
-      isFormValid: true,
       newScreen: null,
+      //isFormValid: true, // TODO to replace
+      is_form_valid: true,
       // Layout
       drawer: null,
       drawerRight: null,
       screen: 1,
+      // to delete
       screenm: null,
+      // to delete   
       // Schedule
       calendar: {
         today: '2020-01-01',
@@ -616,24 +594,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         this.getScreenAutologin();
       }
     },
-    linkSelect: function linkSelect(event) {
-      // `event` is the native DOM event
-      if (event) {
-        //console.log(event.currentTarget.id);
-        // for UI ------------
-        var i = event.currentTarget.id.split('**');
-        this.selected_mediagroup = i[0];
-        this.selected_link = i[1];
-        this.selected_link_name = this.links[this.selected_link].name;
-        this.selected_link_url = this.links[this.selected_link].url;
-        console.log(this.selected_link_name);
-        console.log(this.selected_link_url); // clear custom URL ---------
-
-        this.newURL = null;
-        this.newURL_name = null;
-        this.isFormValid = false;
-      }
-    },
     addOutlet: function addOutlet(event) {
       var _this6 = this;
 
@@ -733,7 +693,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       var _this10 = this;
 
       console.log('selected link ');
-      console.log(this.selected_link); //return;
+      console.log(this.selected.link); //return;
       // @todo: clean data validation
 
       if (this.selected_screen == null) {
@@ -741,7 +701,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         return;
       }
 
-      if (this.selected_link == null) {
+      if (this.selected.link == null) {
         // check URL & name
         if (!this.newURL || !this.newURL_name) {
           alert('Please complete URL fields');
@@ -749,16 +709,16 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         }
 
         var mydata = {
-          screen_id: this.selected_screen,
+          screen_id: this.selected.screen,
           link_name: this.newURL_name,
           url: this.newURL,
           show_datetime: this.momentNow()
         };
       } else {
         var mydata = {
-          screen_id: this.selected_screen,
-          link_id: this.selected_link,
-          url: this.selected_link_url,
+          screen_id: this.selected.screen,
+          link_id: this.selected.link,
+          url: this.selected.link_url,
           show_datetime: this.momentNow()
         };
       }
@@ -791,21 +751,21 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       });
     },
     resetData: function resetData() {
-      this.selected_link = null;
-      this.selected_link_url = null;
-      this.selected_link_name = null;
-      this.selected_mediagroup = null;
+      this.selected.link = null;
+      this.selected.link_url = null;
+      this.selected.link_name = null;
+      this.selected.mediagroup = null;
       this.newURL = null;
       this.newURL_name = null;
       this.newURL_id = null;
     },
     // new URL keyup
     disableMedia: function disableMedia(event) {
-      this.isFormValid = true;
-      this.selected_mediagroup = null;
-      this.selected_link = null;
-      this.selected_link_name = null;
-      this.selected_link_url = null;
+      this.is_form_valid = true;
+      this.selected.mediagroup = null;
+      this.selected.link = null;
+      this.selected.link_name = null;
+      this.selected.link_url = null;
     },
     logout: function logout() {
       var _this11 = this;
@@ -899,6 +859,98 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MediaAssetsComponent.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MediaAssetsComponent.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['media_assets', 'selected', 'links', 'new_', 'is_form_valid'],
+  methods: {
+    linkSelect: function linkSelect(event) {
+      if (event) {
+        var i = event.currentTarget.id.split('**');
+        console.log('media asset comp'); //console.log(this.links);
+
+        this.selected.mediagroup = i[0];
+        this.selected.link = i[1];
+        this.selected.link_name = this.links[this.selected.link].name;
+        this.selected.link_url = this.links[this.selected.link].url;
+        console.log(this.selected.link_name);
+        console.log(this.selected.link_url); // clear custom URL ---------
+        //this.newURL = null;
+        //this.newURL_name = null;
+        //this.isFormValid = false;
+
+        this.new_.url = null;
+        this.new_.url_name = null; //this.is_form_valid = false // TODO error on declaration
+      }
+    }
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/AdminComponent.vue?vue&type=style&index=0&id=a603f2ce&scoped=true&lang=css&":
 /*!********************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/AdminComponent.vue?vue&type=style&index=0&id=a603f2ce&scoped=true&lang=css& ***!
@@ -980,171 +1032,20 @@ var render = function() {
           }
         },
         [
-          _c(
-            "v-list-item",
-            { attrs: { link: "" } },
-            [
-              _c(
-                "v-list-item-action",
-                [_c("v-icon", [_vm._v("mdi-folder-multiple-image")])],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "v-list-item-content",
-                [_c("v-list-item-title", [_vm._v("Media Assets")])],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "v-list",
-            { attrs: { dense: "" } },
-            [
-              _c(
-                "v-list-item",
-                { attrs: { link: "" } },
-                [
-                  _c(
-                    "v-expansion-panels",
-                    _vm._l(_vm.media_assets, function(asset, i) {
-                      return _c(
-                        "v-expansion-panel",
-                        { key: i },
-                        [
-                          _c("v-expansion-panel-header", [
-                            _vm._v(_vm._s(asset.name))
-                          ]),
-                          _vm._v(" "),
-                          _c(
-                            "v-expansion-panel-content",
-                            [
-                              _c(
-                                "v-list",
-                                { attrs: { dense: "" } },
-                                [
-                                  _c(
-                                    "v-list-item-group",
-                                    {
-                                      attrs: { color: "primary" },
-                                      model: {
-                                        value: _vm.screen,
-                                        callback: function($$v) {
-                                          _vm.screen = $$v
-                                        },
-                                        expression: "screen"
-                                      }
-                                    },
-                                    _vm._l(asset.links, function(link, i) {
-                                      return _c(
-                                        "v-list-item",
-                                        {
-                                          key: i,
-                                          attrs: {
-                                            id: asset.name + "**" + link.id
-                                          },
-                                          on: { click: _vm.linkSelect }
-                                        },
-                                        [
-                                          _c(
-                                            "v-list-item-content",
-                                            [
-                                              _c("v-list-item-title", {
-                                                domProps: {
-                                                  textContent: _vm._s(link.name)
-                                                }
-                                              })
-                                            ],
-                                            1
-                                          ),
-                                          _vm._v(" "),
-                                          _c(
-                                            "v-tooltip",
-                                            {
-                                              attrs: { left: "" },
-                                              scopedSlots: _vm._u(
-                                                [
-                                                  asset.name === "Custom Links"
-                                                    ? {
-                                                        key: "activator",
-                                                        fn: function(ref) {
-                                                          var on = ref.on
-                                                          var attrs = ref.attrs
-                                                          return [
-                                                            _c(
-                                                              "v-list-item-icon",
-                                                              _vm._g(
-                                                                _vm._b(
-                                                                  {
-                                                                    staticClass:
-                                                                      "ml-5",
-                                                                    on: {
-                                                                      click: function(
-                                                                        $event
-                                                                      ) {
-                                                                        return _vm.deleteLink(
-                                                                          link.id
-                                                                        )
-                                                                      }
-                                                                    }
-                                                                  },
-                                                                  "v-list-item-icon",
-                                                                  attrs,
-                                                                  false
-                                                                ),
-                                                                on
-                                                              ),
-                                                              [
-                                                                _c("v-icon", [
-                                                                  _vm._v(
-                                                                    "mdi-server-remove"
-                                                                  )
-                                                                ])
-                                                              ],
-                                                              1
-                                                            )
-                                                          ]
-                                                        }
-                                                      }
-                                                    : null
-                                                ],
-                                                null,
-                                                true
-                                              )
-                                            },
-                                            [
-                                              _vm._v(" "),
-                                              _c("span", [
-                                                _vm._v("delete link")
-                                              ])
-                                            ]
-                                          )
-                                        ],
-                                        1
-                                      )
-                                    }),
-                                    1
-                                  )
-                                ],
-                                1
-                              )
-                            ],
-                            1
-                          )
-                        ],
-                        1
-                      )
-                    }),
-                    1
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          )
+          _c("media_asset_component", {
+            attrs: {
+              media_assets: _vm.media_assets,
+              selected: _vm.selected,
+              links: _vm.links,
+              new_: _vm.new_,
+              is_form_valid: _vm.is_form_valid
+            },
+            on: {
+              linkSelect: function($event) {
+                _vm.screen = $event
+              }
+            }
+          })
         ],
         1
       ),
@@ -1651,7 +1552,9 @@ var render = function() {
                                                                   [
                                                                     _vm._v(
                                                                       _vm._s(
-                                                                        _vm.selected_mediagroup
+                                                                        _vm
+                                                                          .selected
+                                                                          .mediagroup
                                                                       )
                                                                     )
                                                                   ]
@@ -1666,7 +1569,9 @@ var render = function() {
                                                                   [
                                                                     _vm._v(
                                                                       _vm._s(
-                                                                        _vm.selected_link_name
+                                                                        _vm
+                                                                          .selected
+                                                                          .link_name
                                                                       )
                                                                     )
                                                                   ]
@@ -1718,7 +1623,7 @@ var render = function() {
                                                             type: "url",
                                                             outlined: "",
                                                             dense: "",
-                                                            disabled: !_vm.isFormValid
+                                                            disabled: !_vm.is_form_valid
                                                           },
                                                           on: {
                                                             keyup:
@@ -1740,7 +1645,7 @@ var render = function() {
                                                             label: "URL Name",
                                                             outlined: "",
                                                             dense: "",
-                                                            disabled: !_vm.isFormValid
+                                                            disabled: !_vm.is_form_valid
                                                           },
                                                           model: {
                                                             value:
@@ -2248,6 +2153,189 @@ render._withStripped = true
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MediaAssetsComponent.vue?vue&type=template&id=0a3b7621&":
+/*!***********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/MediaAssetsComponent.vue?vue&type=template&id=0a3b7621& ***!
+  \***********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "v-container",
+    [
+      _c(
+        "v-list-item",
+        { attrs: { link: "" } },
+        [
+          _c(
+            "v-list-item-action",
+            [_c("v-icon", [_vm._v("mdi-folder-multiple-image")])],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "v-list-item-content",
+            [_c("v-list-item-title", [_vm._v("Media Assets")])],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-list",
+        { attrs: { dense: "" } },
+        [
+          _c(
+            "v-list-item",
+            { attrs: { link: "" } },
+            [
+              _c(
+                "v-expansion-panels",
+                _vm._l(_vm.media_assets, function(asset, i) {
+                  return _c(
+                    "v-expansion-panel",
+                    { key: i },
+                    [
+                      _c("v-expansion-panel-header", [
+                        _vm._v(_vm._s(asset.name))
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "v-expansion-panel-content",
+                        [
+                          _c(
+                            "v-list",
+                            { attrs: { dense: "" } },
+                            [
+                              _c(
+                                "v-list-item-group",
+                                { attrs: { color: "primary" } },
+                                _vm._l(asset.links, function(link, i) {
+                                  return _c(
+                                    "v-list-item",
+                                    {
+                                      key: i,
+                                      attrs: {
+                                        id: asset.name + "**" + link.id
+                                      },
+                                      on: { click: _vm.linkSelect }
+                                    },
+                                    [
+                                      _c(
+                                        "v-list-item-content",
+                                        [
+                                          _c("v-list-item-title", {
+                                            domProps: {
+                                              textContent: _vm._s(link.name)
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-tooltip",
+                                        {
+                                          attrs: { left: "" },
+                                          scopedSlots: _vm._u(
+                                            [
+                                              asset.name === "Custom Links"
+                                                ? {
+                                                    key: "activator",
+                                                    fn: function(ref) {
+                                                      var on = ref.on
+                                                      var attrs = ref.attrs
+                                                      return [
+                                                        _c(
+                                                          "v-list-item-icon",
+                                                          _vm._g(
+                                                            _vm._b(
+                                                              {
+                                                                staticClass:
+                                                                  "ml-5",
+                                                                on: {
+                                                                  click: function(
+                                                                    $event
+                                                                  ) {
+                                                                    return _vm.deleteLink(
+                                                                      link.id
+                                                                    )
+                                                                  }
+                                                                }
+                                                              },
+                                                              "v-list-item-icon",
+                                                              attrs,
+                                                              false
+                                                            ),
+                                                            on
+                                                          ),
+                                                          [
+                                                            _c("v-icon", [
+                                                              _vm._v(
+                                                                "mdi-server-remove"
+                                                              )
+                                                            ])
+                                                          ],
+                                                          1
+                                                        )
+                                                      ]
+                                                    }
+                                                  }
+                                                : null
+                                            ],
+                                            null,
+                                            true
+                                          )
+                                        },
+                                        [
+                                          _vm._v(" "),
+                                          _c("span", [_vm._v("delete link")])
+                                        ]
+                                      )
+                                    ],
+                                    1
+                                  )
+                                }),
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                }),
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js":
 /*!********************************************************************!*\
   !*** ./node_modules/vue-loader/lib/runtime/componentNormalizer.js ***!
@@ -2511,6 +2599,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CalendarComponent_vue_vue_type_template_id_56bbe5f8___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_CalendarComponent_vue_vue_type_template_id_56bbe5f8___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/MediaAssetsComponent.vue":
+/*!**********************************************************!*\
+  !*** ./resources/js/components/MediaAssetsComponent.vue ***!
+  \**********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _MediaAssetsComponent_vue_vue_type_template_id_0a3b7621___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MediaAssetsComponent.vue?vue&type=template&id=0a3b7621& */ "./resources/js/components/MediaAssetsComponent.vue?vue&type=template&id=0a3b7621&");
+/* harmony import */ var _MediaAssetsComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MediaAssetsComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/MediaAssetsComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _MediaAssetsComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _MediaAssetsComponent_vue_vue_type_template_id_0a3b7621___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _MediaAssetsComponent_vue_vue_type_template_id_0a3b7621___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/MediaAssetsComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/MediaAssetsComponent.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************!*\
+  !*** ./resources/js/components/MediaAssetsComponent.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MediaAssetsComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./MediaAssetsComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MediaAssetsComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MediaAssetsComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/MediaAssetsComponent.vue?vue&type=template&id=0a3b7621&":
+/*!*****************************************************************************************!*\
+  !*** ./resources/js/components/MediaAssetsComponent.vue?vue&type=template&id=0a3b7621& ***!
+  \*****************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MediaAssetsComponent_vue_vue_type_template_id_0a3b7621___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib??vue-loader-options!./MediaAssetsComponent.vue?vue&type=template&id=0a3b7621& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/MediaAssetsComponent.vue?vue&type=template&id=0a3b7621&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MediaAssetsComponent_vue_vue_type_template_id_0a3b7621___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MediaAssetsComponent_vue_vue_type_template_id_0a3b7621___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

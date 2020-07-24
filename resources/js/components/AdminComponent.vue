@@ -7,56 +7,14 @@
       right
       :width="270"
     >
-      <v-list-item link>
-        <v-list-item-action>
-          <v-icon>mdi-folder-multiple-image</v-icon>
-        </v-list-item-action>
-        <v-list-item-content>
-          <v-list-item-title>Media Assets</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-      <v-list dense>
-        <v-list-item link>
-          <v-expansion-panels>
-            <v-expansion-panel
-              v-for="(asset,i) in media_assets"
-              :key="i"
-            >
-              <v-expansion-panel-header>{{ asset.name }}</v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <v-list dense>
-                  <v-list-item-group v-model="screen" color="primary">
-                    <v-list-item
-                      v-for="(link, i) in asset.links"
-                      :key="i"
-                      v-on:click="linkSelect"
-                      :id="asset.name + '**' + link.id"
-                    >
-                      <v-list-item-content>
-                        <v-list-item-title v-text="link.name"></v-list-item-title>
-                      </v-list-item-content>
+      <media_asset_component 
+        :media_assets="media_assets"
+        :selected="selected"
+        :links="links"
+        :new_="new_"
+        :is_form_valid="is_form_valid"
+        @linkSelect="screen=$event"></media_asset_component>
 
-                      <v-tooltip left>
-                        <template v-if="asset.name === 'Custom Links'" v-slot:activator="{ on, attrs }">
-                          <v-list-item-icon 
-                            class="ml-5"
-                            v-bind="attrs"
-                            v-on="on"
-                            v-on:click="deleteLink(link.id)"
-                          >
-                            <v-icon>mdi-server-remove</v-icon>
-                          </v-list-item-icon>
-                        </template>
-                        <span>delete link</span>
-                      </v-tooltip>
-                    </v-list-item>
-                  </v-list-item-group>
-                </v-list>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-        </v-list-item>
-      </v-list>
     </v-navigation-drawer>
 
     <v-app-bar
@@ -231,8 +189,8 @@
                                   <v-list-item three-line>
                                     <v-list-item-content>
                                       <div class="overline mb-4">CONTENT</div>
-                                      <v-list-item-subtitle>{{ selected_mediagroup }}</v-list-item-subtitle>
-                                      <v-list-item-title class="headline mb-4">{{ selected_link_name }}</v-list-item-title>
+                                      <v-list-item-subtitle>{{ selected.mediagroup }}</v-list-item-subtitle>
+                                      <v-list-item-title class="headline mb-4">{{ selected.link_name }}</v-list-item-title>
                                     </v-list-item-content>
                                   </v-list-item>
                                 </v-col>
@@ -256,14 +214,14 @@
                                     dense
                                     @keyup="disableMedia"
                                     v-model="newURL"
-                                    :disabled="!isFormValid"
+                                    :disabled="!is_form_valid"
                                   ></v-text-field>
 
                                   <v-text-field
                                     label="URL Name"
                                     outlined
                                     dense
-                                    :disabled="!isFormValid"
+                                    :disabled="!is_form_valid"
                                     v-model="newURL_name"
                                   ></v-text-field>
 
@@ -439,12 +397,13 @@
 <script>
 import axios from 'axios'
 import calendar from './CalendarComponent'
+import media_asset_component from './MediaAssetsComponent'
 
   export default {
     props: {
       source: String,
     },
-    components: {calendar},
+    components: {calendar,media_asset_component},
     data: () => ({
       selected_outlet: null,
       selected_screen: null,
@@ -457,6 +416,13 @@ import calendar from './CalendarComponent'
       selected_link_name: null,
       selected_link_url: null,
 
+      selected: {
+        mediagroup: null,
+        link: null,
+        link_name: null,
+        link_url: null
+      },
+
       outlets: null,
       media_assets: null,
       links: null,
@@ -465,18 +431,29 @@ import calendar from './CalendarComponent'
       newOutlet_name: null,
       newOutlet_id: null,
 
+      new_: {
+        outlet_name: null,
+        outlet_id: null,
+        url: null,
+        url_name: null,
+        url_id: null,
+        screen: null
+      },
+
       // custom URL
       newURL: null,
       newURL_name: null,
       newURL_id: null,
-      isFormValid: true,
       newScreen: null,
+
+      //isFormValid: true, // TODO to replace
+      is_form_valid: true,
 
       // Layout
       drawer: null,
       drawerRight: null,
-      screen: 1,
-      screenm: null,     
+      screen: 1, // to delete
+      screenm: null,  // to delete   
       
       // Schedule
       calendar: {
@@ -613,26 +590,6 @@ import calendar from './CalendarComponent'
         }
       },
 
-      linkSelect: function (event) {
-        // `event` is the native DOM event
-        if (event) {
-          //console.log(event.currentTarget.id);
-          // for UI ------------
-          var i = event.currentTarget.id.split('**');
-          this.selected_mediagroup = i[0];
-          this.selected_link = i[1];
-          this.selected_link_name = this.links[this.selected_link].name;
-          this.selected_link_url = this.links[this.selected_link].url;
-          console.log(this.selected_link_name);
-          console.log(this.selected_link_url);
-
-          // clear custom URL ---------
-          this.newURL = null;
-          this.newURL_name = null;
-          this.isFormValid = false;
-        }
-      },
-
       addOutlet: function(event) {
         console.log('adding outlet');
         console.log(this.newOutlet_name);
@@ -731,7 +688,7 @@ import calendar from './CalendarComponent'
       addSched: function(event) {
 
         console.log('selected link ');
-        console.log(this.selected_link);
+        console.log(this.selected.link);
         //return;
         // @todo: clean data validation
         if (this.selected_screen == null)
@@ -740,7 +697,7 @@ import calendar from './CalendarComponent'
           return;
         }
         
-        if (this.selected_link == null)
+        if (this.selected.link == null)
         {
           // check URL & name
           if (!(this.newURL) || !(this.newURL_name))
@@ -750,7 +707,7 @@ import calendar from './CalendarComponent'
           }
         
           var mydata = {
-              screen_id: this.selected_screen,
+              screen_id: this.selected.screen,
               link_name: this.newURL_name,
               url: this.newURL,
               show_datetime: this.momentNow()
@@ -759,9 +716,9 @@ import calendar from './CalendarComponent'
         else
         {
           var mydata = {
-              screen_id: this.selected_screen,
-              link_id: this.selected_link,
-              url: this.selected_link_url,
+              screen_id: this.selected.screen,
+              link_id: this.selected.link,
+              url: this.selected.link_url,
               show_datetime: this.momentNow()
           }
         }
@@ -795,10 +752,10 @@ import calendar from './CalendarComponent'
       },
 
       resetData: function() {
-        this.selected_link = null
-        this.selected_link_url = null
-        this.selected_link_name = null
-        this.selected_mediagroup = null;
+        this.selected.link = null
+        this.selected.link_url = null
+        this.selected.link_name = null
+        this.selected.mediagroup = null;
         this.newURL = null
         this.newURL_name = null
         this.newURL_id = null
@@ -807,11 +764,11 @@ import calendar from './CalendarComponent'
 
       // new URL keyup
       disableMedia: function(event) {
-        this.isFormValid = true
-        this.selected_mediagroup = null;
-        this.selected_link = null;
-        this.selected_link_name = null;
-        this.selected_link_url = null;
+        this.is_form_valid = true
+        this.selected.mediagroup = null;
+        this.selected.link = null;
+        this.selected.link_name = null;
+        this.selected.link_url = null;
       },
 
       logout: function() {
