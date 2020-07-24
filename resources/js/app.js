@@ -24,8 +24,8 @@ Vue.directive('resize', {
 Vue.mixin({
     data: function() {
         return {
-            siteURL:'http://sm.mswdb.com'
-            //siteURL:'http://sm.local'
+            //siteURL:'http://sm.mswdb.com'
+            siteURL:'http://sm.local'
         }
     }
 })

@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
+use Carbon\Carbon;
 use App\Model\Outlet;
-use Illuminate\Http\Request;
-use App\Http\Resources\OutletResource;
 use App\Model\Screen;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\OutletResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class OutletController extends Controller
@@ -38,8 +42,53 @@ class OutletController extends Controller
      */
     public function store(Request $request)
     {
-        Outlet::create($request->all());
+        
+        $outlet_intid = strtoupper($request->outlet_id);
+
+        // create Outlet
+        $outlet = Outlet::firstOrCreate(
+          ['int_id' => $outlet_intid],
+          [
+            'int_id' => $outlet_intid,
+            'name' => $request->outlet_name
+          ]
+        );
+
+        $request->merge([
+          'outlet_id' => $outlet->id,
+          'outlet_intid' => $outlet_intid,
+          'screen_description' => $request->outlet_name . " SS1"
+          ]);
+
+        // create Screen
+        $screen = DB::table('screens')
+                     ->select(DB::raw('count(*) as count'))
+                     ->where('outlet_id', '=', $request->outlet_id)
+                     ->first();
+        $screen_counter = $screen->count + 1;
+        $oint_id = $request->outlet_intid;
+        $id = $oint_id.'SS'.$screen_counter;
+        $data = [
+          'id' => $id,
+          'outlet_id' => $request->outlet_id,
+          'description' => $request->screen_description,
+          'activation_date' => Carbon::today()
+        ];
+        $row = Screen::create($data);
+
+        //create User account
+        $user = User::updateOrCreate(
+            ['username' => $row->id],
+            [
+              'username' => $row->id,  
+              'name' => $row->description,
+              'email' => $row->id.'@gmail.com',
+              'password' => Hash::make('password??'),
+            ]
+        );
+
         return response('Saved', Response::HTTP_CREATED);
+
     }
 
     /**

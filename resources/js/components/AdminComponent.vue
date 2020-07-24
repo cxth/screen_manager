@@ -30,7 +30,7 @@
                       v-for="(link, i) in asset.links"
                       :key="i"
                       v-on:click="linkSelect"
-                      :id="asset.name + '.' + link.id"
+                      :id="asset.name + '**' + link.id"
                     >
                       <v-list-item-content>
                         <v-list-item-title v-text="link.name"></v-list-item-title>
@@ -109,9 +109,9 @@
                         ></v-text-field>
                         <v-btn 
                           x-small 
-                          color="secondary" 
+                          class="blue darken-1"
                           dark
-                          :id="item[0].outlet_id+'.'+item[0].outlet_intid+'.new'"
+                          :id="item[0].outlet_id+'**'+item[0].outlet_intid+'.new'"
                           v-on:click="addNewScreen"
                         >
                           Add Screen
@@ -123,11 +123,8 @@
                       v-for="(screen, screen_i) in item"
                       :key="screen_i"
                       v-on:click="screenSelect"
-                      :id="screen.outlet_name + '.' + screen.id"
+                      :id="screen.outlet_name + '**' + screen.id"
                     >
-                      <!-- <v-list-item-icon>
-                        <v-icon v-text="screen.admin_icon" ></v-icon>
-                      </v-list-item-icon> -->
                       <v-list-item-content>
                         <v-list-item-title v-text="screen.description"></v-list-item-title>
                       </v-list-item-content>
@@ -153,25 +150,21 @@
             </v-expansion-panel>
           </v-expansion-panels>
         </v-list-item>
-        <!-- <v-list-item link>
-          <v-list-item-action>
-            <v-icon>mdi-cog</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Settings</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item> -->
-        <v-list-item link
-          v-on:click="logout"
-        >
-          <v-list-item-action>
-            <v-icon>mdi-exit-to-app</v-icon>
-          </v-list-item-action>
-          <v-list-item-content>
-            <v-list-item-title>Logout</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
       </v-list>
+
+      <template v-slot:append>
+        <div class="pa-2">
+          <v-btn 
+            class="grey darken-4"
+            block
+            v-on:click="logout"
+          >
+            <v-icon left>mdi-logout</v-icon> 
+            Logout
+          </v-btn>
+        </div>
+      </template>
+
     </v-navigation-drawer>
 
     <v-main>
@@ -200,8 +193,12 @@
                     SCHEDULE
                   </v-tab>
                   <v-tab>
-                    <v-icon left>mdi-key</v-icon>
+                    <v-icon left>mdi-more</v-icon>
                     INFO
+                  </v-tab>
+                  <v-tab>
+                    <v-icon left>mdi-plus</v-icon>
+                    ADD OUTLET
                   </v-tab>
 
                   <v-tab-item>
@@ -212,7 +209,7 @@
                     >
                       <v-col class="shrink">
                         <v-card
-                            class="mx-auto pb-10 mb-12"
+                            class="mx-auto mt-5 pb-10 mb-12"
                             height="100%"
                             width="500"
                             outlined
@@ -221,7 +218,6 @@
                               no-gutters
                               class="mb-5"
                             >
-                            
                                 <v-col>
                                   <v-list-item three-line>
                                     <v-list-item-content>
@@ -321,26 +317,42 @@
                   <v-tab-item>
           
                     <template>
-                      <v-container class="grey lighten-5">
+                      <v-container class="grey darken-4 pt-8 pb-8">
                         <v-row
                           align="center"
                           justify="center"
                         >
                           <v-col sm="9">
                             <v-card
-                              class="pa-2"
+                              class="pa-6"
                               outlined
                               tile
                             >
-                              <div class="pa-4">
-                                <v-btn class="text-center" rounded color="primary" dark>Auto-Login URL</v-btn>
-                                  <span class="font-weight-thin pl-3"> 
+                              <div class="pb-2">
+                                <v-chip
+                                  class="ma-1"
+                                  color="primary"
+                                  outlined
+                                  pill
+                                >
+                                  Auto-Login URL
+                                  <v-icon right>mdi-account-key</v-icon>
+                                </v-chip>
+                                  <span class="font-weight-thin"> 
                                     {{ screen_autologin }}
                                   </span>
                               </div>
-                              <div class="pa-4">
-                                <v-btn class="text-center ml-3" rounded color="primary" dark>Now Showing</v-btn>
-                                  <span class="font-weight-thin pl-4"> 
+                              <div class="pa-2">
+                                <v-chip
+                                  class="ma-1"
+                                  color="primary"
+                                  outlined
+                                  pill
+                                >
+                                  Now Showing
+                                  <v-icon right>mdi-play-circle</v-icon>
+                                </v-chip>
+                                  <span class="font-weight-thin"> 
                                     {{ screen_now_showing }}
                                   </span>
                               </div>
@@ -380,6 +392,51 @@
                     </template>
 
                   </v-tab-item>
+                  <v-tab-item>
+
+                    <template>
+                      <v-form>
+                        <v-container
+                          class="grey darken-4"
+                        >
+                          <v-row
+                            align="center"
+                            justify="center"
+                          >
+                            <v-col 
+                              cols="12" 
+                              sm="4"
+                              class="mt-10 mb-10"  
+                            >
+                                <v-text-field
+                                  label="Outlet Name"
+                                  outlined
+                                  dense
+                                  v-model="newOutlet_name"
+                                ></v-text-field>
+                                <v-text-field
+                                  label="Outlet ID (XX-XXX format)"
+                                  outlined
+                                  dense
+                                  v-model="newOutlet_id"
+                                ></v-text-field>
+                            
+                                <v-row
+                                  align="center"
+                                  justify="center"
+                                >
+                                    <v-btn rounded color="primary" dark @click="addOutlet" class="mr-2">SAVE</v-btn>
+                                    <v-btn rounded color="primary" dark @click="clearNewOutlet" class="ml-1">CLEAR</v-btn>
+                                </v-row>
+                          
+                            </v-col>
+
+                          </v-row>
+                        </v-container>
+                      </v-form>
+                    </template>
+                  
+                  </v-tab-item>
 
                 </v-tabs>
               </v-card> 
@@ -400,8 +457,6 @@
     </v-footer>
   </v-app>
 </template>
-
-
 
 <script>
 import axios from 'axios';
@@ -425,6 +480,10 @@ import axios from 'axios';
       outlets: null,
       media_assets: null,
       links: null,
+
+      // new Outlet
+      newOutlet_name: null,
+      newOutlet_id: null,
 
       // custom URL
       newURL: null,
@@ -571,7 +630,7 @@ import axios from 'axios';
 
       screenSelect: function (event) {
         if (event) {
-          var i = event.currentTarget.id.split('.');
+          var i = event.currentTarget.id.split('**');
           this.selected_outlet = i[0];
           this.selected_screen = i[1];
 
@@ -585,7 +644,7 @@ import axios from 'axios';
         if (event) {
           //console.log(event.currentTarget.id);
           // for UI ------------
-          var i = event.currentTarget.id.split('.');
+          var i = event.currentTarget.id.split('**');
           this.selected_mediagroup = i[0];
           this.selected_link = i[1];
           this.selected_link_name = this.links[this.selected_link].name;
@@ -600,11 +659,45 @@ import axios from 'axios';
         }
       },
 
+      addOutlet: function(event) {
+        console.log('adding outlet');
+        console.log(this.newOutlet_name);
+        console.log(this.newOutlet_id);
+        if (this.newOutlet_id == null || this.newOutlet_name == null)
+        {
+          return;
+        }
+
+        axios({
+            method: 'post',
+            url: `${ this.siteURL }/api/outlet`,
+            data: {
+              outlet_name: this.newOutlet_name,
+              outlet_id: this.newOutlet_id,
+            }
+        }).then(response => {
+            console.log('from add outlet api');
+            console.log(response.data)
+            this.getOutlets();
+            alert('Outlet successfully added');
+            this.clearNewOutlet()
+          })
+          .catch(e => {
+              this.errors.push(e)
+          });
+
+      },
+
+      clearNewOutlet: function() {
+        this.newOutlet_name = null;
+        this.newOutlet_id = null;
+      },
+
       addNewScreen: function(event) {
         console.log('adding new screen');
         //console.log(this.newScreen);
         //console.log(event.currentTarget.id);
-        var i = event.currentTarget.id.split('.');
+        var i = event.currentTarget.id.split('**');
         axios({
             method: 'post',
             url: `${ this.siteURL }/api/${ i[0] }/screen`,
@@ -636,7 +729,7 @@ import axios from 'axios';
               url: this.newURL
             }
         }).then(response => {
-              alert("link save");
+              alert("Link successfully saved");
               console.log('the link id: ' + response.data)
               this.newURL_id = response.data;
           })
@@ -669,7 +762,7 @@ import axios from 'axios';
         // @todo: clean data validation
         if (this.selected_screen == null)
         {
-          alert('no screen selected');
+          alert('No screen selected');
           return;
         }
         
@@ -708,7 +801,7 @@ import axios from 'axios';
             data: mydata
         }).then(response => {
               console.log(response);
-              alert("schedule save");
+              alert("Schedule saved");
               // reset mydata
               mydata = {}
               // reset all data
@@ -740,7 +833,6 @@ import axios from 'axios';
 
       // new URL keyup
       disableMedia: function(event) {
-        //alert('something');
         this.isFormValid = true
         this.selected_mediagroup = null;
         this.selected_link = null;

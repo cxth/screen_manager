@@ -57,7 +57,6 @@ class ScreenController extends Controller
      */
     public function store(Request $request)
     {
-        //return $request;
         // get latest screen count
         $screen = DB::table('screens')
                      ->select(DB::raw('count(*) as count'))

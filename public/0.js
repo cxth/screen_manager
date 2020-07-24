@@ -428,6 +428,61 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
@@ -447,6 +502,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       outlets: null,
       media_assets: null,
       links: null,
+      // new Outlet
+      newOutlet_name: null,
+      newOutlet_id: null,
       // custom URL
       newURL: null,
       newURL_name: null,
@@ -572,7 +630,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     },
     screenSelect: function screenSelect(event) {
       if (event) {
-        var i = event.currentTarget.id.split('.');
+        var i = event.currentTarget.id.split('**');
         this.selected_outlet = i[0];
         this.selected_screen = i[1];
         this.getScreenSched();
@@ -584,7 +642,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       if (event) {
         //console.log(event.currentTarget.id);
         // for UI ------------
-        var i = event.currentTarget.id.split('.');
+        var i = event.currentTarget.id.split('**');
         this.selected_mediagroup = i[0];
         this.selected_link = i[1];
         this.selected_link_name = this.links[this.selected_link].name;
@@ -597,13 +655,48 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         this.isFormValid = false;
       }
     },
-    addNewScreen: function addNewScreen(event) {
+    addOutlet: function addOutlet(event) {
       var _this6 = this;
+
+      console.log('adding outlet');
+      console.log(this.newOutlet_name);
+      console.log(this.newOutlet_id);
+
+      if (this.newOutlet_id == null || this.newOutlet_name == null) {
+        return;
+      }
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default()({
+        method: 'post',
+        url: "".concat(this.siteURL, "/api/outlet"),
+        data: {
+          outlet_name: this.newOutlet_name,
+          outlet_id: this.newOutlet_id
+        }
+      }).then(function (response) {
+        console.log('from add outlet api');
+        console.log(response.data);
+
+        _this6.getOutlets();
+
+        alert('Outlet successfully added');
+
+        _this6.clearNewOutlet();
+      })["catch"](function (e) {
+        _this6.errors.push(e);
+      });
+    },
+    clearNewOutlet: function clearNewOutlet() {
+      this.newOutlet_name = null;
+      this.newOutlet_id = null;
+    },
+    addNewScreen: function addNewScreen(event) {
+      var _this7 = this;
 
       console.log('adding new screen'); //console.log(this.newScreen);
       //console.log(event.currentTarget.id);
 
-      var i = event.currentTarget.id.split('.');
+      var i = event.currentTarget.id.split('**');
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
         method: 'post',
         url: "".concat(this.siteURL, "/api/").concat(i[0], "/screen"),
@@ -614,14 +707,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         }
       }).then(function (response) {
         if (response.data == "Saved") {
-          _this6.getOutlets();
+          _this7.getOutlets();
         }
       })["catch"](function (e) {
-        _this6.errors.push(e);
+        _this7.errors.push(e);
       });
     },
     addLink: function addLink(event) {
-      var _this7 = this;
+      var _this8 = this;
 
       var newlink = null;
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
@@ -633,39 +726,39 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           url: this.newURL
         }
       }).then(function (response) {
-        alert("link save");
+        alert("Link successfully saved");
         console.log('the link id: ' + response.data);
-        _this7.newURL_id = response.data;
+        _this8.newURL_id = response.data;
       })["catch"](function (e) {
-        _this7.errors.push(e);
+        _this8.errors.push(e);
       });
     },
     deleteLink: function deleteLink(event) {
-      var _this8 = this;
+      var _this9 = this;
 
       if (confirm("DANGER! Are you sure you like to DELETE this link?")) {
         axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("".concat(this.siteURL, "/api/l/").concat(event)).then(function (response) {
           alert("link deleted");
 
-          _this8.getMediaAssets();
+          _this9.getMediaAssets();
 
-          _this8.resetData();
+          _this9.resetData();
         })["catch"](function (e) {
-          _this8.errors.push(e);
+          _this9.errors.push(e);
         });
       }
 
       return;
     },
     addSched: function addSched(event) {
-      var _this9 = this;
+      var _this10 = this;
 
       console.log('selected link ');
       console.log(this.selected_link); //return;
       // @todo: clean data validation
 
       if (this.selected_screen == null) {
-        alert('no screen selected');
+        alert('No screen selected');
         return;
       }
 
@@ -699,23 +792,23 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         data: mydata
       }).then(function (response) {
         console.log(response);
-        alert("schedule save"); // reset mydata
+        alert("Schedule saved"); // reset mydata
 
         mydata = {}; // reset all data
 
-        _this9.resetData(); // @TODO: clear forms on save
+        _this10.resetData(); // @TODO: clear forms on save
         // refresh schedule
 
 
-        _this9.getScreenSched(); // refresh media assets
+        _this10.getScreenSched(); // refresh media assets
 
 
-        _this9.getMediaAssets(); // refresh links
+        _this10.getMediaAssets(); // refresh links
 
 
-        _this9.getLinks();
+        _this10.getLinks();
       })["catch"](function (e) {
-        _this9.errors.push(e);
+        _this10.errors.push(e);
       });
     },
     resetData: function resetData() {
@@ -729,7 +822,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     },
     // new URL keyup
     disableMedia: function disableMedia(event) {
-      //alert('something');
       this.isFormValid = true;
       this.selected_mediagroup = null;
       this.selected_link = null;
@@ -737,13 +829,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.selected_link_url = null;
     },
     logout: function logout() {
-      var _this10 = this;
+      var _this11 = this;
 
       if (confirm("Are you sure you like to logout?")) {
         axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/logout")).then(function (response) {
           location.reload();
         })["catch"](function (e) {
-          _this10.errors.push(e);
+          _this11.errors.push(e);
         });
       }
     },
@@ -931,7 +1023,7 @@ var render = function() {
                                         {
                                           key: i,
                                           attrs: {
-                                            id: asset.name + "." + link.id
+                                            id: asset.name + "**" + link.id
                                           },
                                           on: { click: _vm.linkSelect }
                                         },
@@ -1072,6 +1164,38 @@ var render = function() {
         "v-navigation-drawer",
         {
           attrs: { app: "", width: 270 },
+          scopedSlots: _vm._u([
+            {
+              key: "append",
+              fn: function() {
+                return [
+                  _c(
+                    "div",
+                    { staticClass: "pa-2" },
+                    [
+                      _c(
+                        "v-btn",
+                        {
+                          staticClass: "grey darken-4",
+                          attrs: { block: "" },
+                          on: { click: _vm.logout }
+                        },
+                        [
+                          _c("v-icon", { attrs: { left: "" } }, [
+                            _vm._v("mdi-logout")
+                          ]),
+                          _vm._v(" \n          Logout\n        ")
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ]
+              },
+              proxy: true
+            }
+          ]),
           model: {
             value: _vm.drawer,
             callback: function($$v) {
@@ -1151,13 +1275,13 @@ var render = function() {
                                               _c(
                                                 "v-btn",
                                                 {
+                                                  staticClass: "blue darken-1",
                                                   attrs: {
                                                     "x-small": "",
-                                                    color: "secondary",
                                                     dark: "",
                                                     id:
                                                       item[0].outlet_id +
-                                                      "." +
+                                                      "**" +
                                                       item[0].outlet_intid +
                                                       ".new"
                                                   },
@@ -1186,7 +1310,7 @@ var render = function() {
                                             attrs: {
                                               id:
                                                 screen.outlet_name +
-                                                "." +
+                                                "**" +
                                                 screen.id
                                             },
                                             on: { click: _vm.screenSelect }
@@ -1288,25 +1412,6 @@ var render = function() {
                   )
                 ],
                 1
-              ),
-              _vm._v(" "),
-              _c(
-                "v-list-item",
-                { attrs: { link: "" }, on: { click: _vm.logout } },
-                [
-                  _c(
-                    "v-list-item-action",
-                    [_c("v-icon", [_vm._v("mdi-exit-to-app")])],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "v-list-item-content",
-                    [_c("v-list-item-title", [_vm._v("Logout")])],
-                    1
-                  )
-                ],
-                1
               )
             ],
             1
@@ -1374,10 +1479,23 @@ var render = function() {
                                   "v-tab",
                                   [
                                     _c("v-icon", { attrs: { left: "" } }, [
-                                      _vm._v("mdi-key")
+                                      _vm._v("mdi-more")
                                     ]),
                                     _vm._v(
                                       "\n                  INFO\n                "
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "v-tab",
+                                  [
+                                    _c("v-icon", { attrs: { left: "" } }, [
+                                      _vm._v("mdi-plus")
+                                    ]),
+                                    _vm._v(
+                                      "\n                  ADD OUTLET\n                "
                                     )
                                   ],
                                   1
@@ -1404,7 +1522,7 @@ var render = function() {
                                               "v-card",
                                               {
                                                 staticClass:
-                                                  "mx-auto pb-10 mb-12",
+                                                  "mx-auto mt-5 pb-10 mb-12",
                                                 attrs: {
                                                   height: "100%",
                                                   width: "500",
@@ -1765,7 +1883,9 @@ var render = function() {
                                     [
                                       _c(
                                         "v-container",
-                                        { staticClass: "grey lighten-5" },
+                                        {
+                                          staticClass: "grey darken-4 pt-8 pb-8"
+                                        },
                                         [
                                           _c(
                                             "v-row",
@@ -1783,7 +1903,7 @@ var render = function() {
                                                   _c(
                                                     "v-card",
                                                     {
-                                                      staticClass: "pa-2",
+                                                      staticClass: "pa-6",
                                                       attrs: {
                                                         outlined: "",
                                                         tile: ""
@@ -1792,32 +1912,46 @@ var render = function() {
                                                     [
                                                       _c(
                                                         "div",
-                                                        { staticClass: "pa-4" },
+                                                        { staticClass: "pb-2" },
                                                         [
                                                           _c(
-                                                            "v-btn",
+                                                            "v-chip",
                                                             {
                                                               staticClass:
-                                                                "text-center",
+                                                                "ma-1",
                                                               attrs: {
-                                                                rounded: "",
                                                                 color:
                                                                   "primary",
-                                                                dark: ""
+                                                                outlined: "",
+                                                                pill: ""
                                                               }
                                                             },
                                                             [
                                                               _vm._v(
-                                                                "Auto-Login URL"
+                                                                "\n                                Auto-Login URL\n                                "
+                                                              ),
+                                                              _c(
+                                                                "v-icon",
+                                                                {
+                                                                  attrs: {
+                                                                    right: ""
+                                                                  }
+                                                                },
+                                                                [
+                                                                  _vm._v(
+                                                                    "mdi-account-key"
+                                                                  )
+                                                                ]
                                                               )
-                                                            ]
+                                                            ],
+                                                            1
                                                           ),
                                                           _vm._v(" "),
                                                           _c(
                                                             "span",
                                                             {
                                                               staticClass:
-                                                                "font-weight-thin pl-3"
+                                                                "font-weight-thin"
                                                             },
                                                             [
                                                               _vm._v(
@@ -1835,32 +1969,46 @@ var render = function() {
                                                       _vm._v(" "),
                                                       _c(
                                                         "div",
-                                                        { staticClass: "pa-4" },
+                                                        { staticClass: "pa-2" },
                                                         [
                                                           _c(
-                                                            "v-btn",
+                                                            "v-chip",
                                                             {
                                                               staticClass:
-                                                                "text-center ml-3",
+                                                                "ma-1",
                                                               attrs: {
-                                                                rounded: "",
                                                                 color:
                                                                   "primary",
-                                                                dark: ""
+                                                                outlined: "",
+                                                                pill: ""
                                                               }
                                                             },
                                                             [
                                                               _vm._v(
-                                                                "Now Showing"
+                                                                "\n                                Now Showing\n                                "
+                                                              ),
+                                                              _c(
+                                                                "v-icon",
+                                                                {
+                                                                  attrs: {
+                                                                    right: ""
+                                                                  }
+                                                                },
+                                                                [
+                                                                  _vm._v(
+                                                                    "mdi-play-circle"
+                                                                  )
+                                                                ]
                                                               )
-                                                            ]
+                                                            ],
+                                                            1
                                                           ),
                                                           _vm._v(" "),
                                                           _c(
                                                             "span",
                                                             {
                                                               staticClass:
-                                                                "font-weight-thin pl-4"
+                                                                "font-weight-thin"
                                                             },
                                                             [
                                                               _vm._v(
@@ -1876,6 +2024,142 @@ var render = function() {
                                                         1
                                                       )
                                                     ]
+                                                  )
+                                                ],
+                                                1
+                                              )
+                                            ],
+                                            1
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    ]
+                                  ],
+                                  2
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "v-tab-item",
+                                  [
+                                    [
+                                      _c(
+                                        "v-form",
+                                        [
+                                          _c(
+                                            "v-container",
+                                            { staticClass: "grey darken-4" },
+                                            [
+                                              _c(
+                                                "v-row",
+                                                {
+                                                  attrs: {
+                                                    align: "center",
+                                                    justify: "center"
+                                                  }
+                                                },
+                                                [
+                                                  _c(
+                                                    "v-col",
+                                                    {
+                                                      staticClass:
+                                                        "mt-10 mb-10",
+                                                      attrs: {
+                                                        cols: "12",
+                                                        sm: "4"
+                                                      }
+                                                    },
+                                                    [
+                                                      _c("v-text-field", {
+                                                        attrs: {
+                                                          label: "Outlet Name",
+                                                          outlined: "",
+                                                          dense: ""
+                                                        },
+                                                        model: {
+                                                          value:
+                                                            _vm.newOutlet_name,
+                                                          callback: function(
+                                                            $$v
+                                                          ) {
+                                                            _vm.newOutlet_name = $$v
+                                                          },
+                                                          expression:
+                                                            "newOutlet_name"
+                                                        }
+                                                      }),
+                                                      _vm._v(" "),
+                                                      _c("v-text-field", {
+                                                        attrs: {
+                                                          label:
+                                                            "Outlet ID (XX-XXX format)",
+                                                          outlined: "",
+                                                          dense: ""
+                                                        },
+                                                        model: {
+                                                          value:
+                                                            _vm.newOutlet_id,
+                                                          callback: function(
+                                                            $$v
+                                                          ) {
+                                                            _vm.newOutlet_id = $$v
+                                                          },
+                                                          expression:
+                                                            "newOutlet_id"
+                                                        }
+                                                      }),
+                                                      _vm._v(" "),
+                                                      _c(
+                                                        "v-row",
+                                                        {
+                                                          attrs: {
+                                                            align: "center",
+                                                            justify: "center"
+                                                          }
+                                                        },
+                                                        [
+                                                          _c(
+                                                            "v-btn",
+                                                            {
+                                                              staticClass:
+                                                                "mr-2",
+                                                              attrs: {
+                                                                rounded: "",
+                                                                color:
+                                                                  "primary",
+                                                                dark: ""
+                                                              },
+                                                              on: {
+                                                                click:
+                                                                  _vm.addOutlet
+                                                              }
+                                                            },
+                                                            [_vm._v("SAVE")]
+                                                          ),
+                                                          _vm._v(" "),
+                                                          _c(
+                                                            "v-btn",
+                                                            {
+                                                              staticClass:
+                                                                "ml-1",
+                                                              attrs: {
+                                                                rounded: "",
+                                                                color:
+                                                                  "primary",
+                                                                dark: ""
+                                                              },
+                                                              on: {
+                                                                click:
+                                                                  _vm.clearNewOutlet
+                                                              }
+                                                            },
+                                                            [_vm._v("CLEAR")]
+                                                          )
+                                                        ],
+                                                        1
+                                                      )
+                                                    ],
+                                                    1
                                                   )
                                                 ],
                                                 1
