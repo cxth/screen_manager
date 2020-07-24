@@ -288,29 +288,7 @@
                   <v-tab-item>
                     <v-card flat>
                       
-                      <template>
-                      <v-row>
-                        <v-col
-                          align="center"
-                          justify="center"
-                        >
-                          <v-sheet 
-                             style="maxWidth: 500px"
-                            :fullscreen="$vuetify.breakpoint.mobile"
-                          >
-                            <v-calendar
-                              ref="calendar"
-                              v-model="todayx"
-                              :now="todayx"
-                              :value="todayx"
-                              :events="events"
-                              color="primary"
-                              type="day"
-                            ></v-calendar>
-                          </v-sheet>
-                        </v-col>
-                      </v-row>
-                      </template>
+                      <calendar :calendar="calendar"></calendar>
 
                     </v-card>
                   </v-tab-item>
@@ -459,12 +437,14 @@
 </template>
 
 <script>
-import axios from 'axios';
+import axios from 'axios'
+import calendar from './CalendarComponent'
 
   export default {
     props: {
       source: String,
     },
+    components: {calendar},
     data: () => ({
       selected_outlet: null,
       selected_screen: null,
@@ -499,26 +479,20 @@ import axios from 'axios';
       screenm: null,     
       
       // Schedule
-      todayx: '2020-01-01',
-      events: [],
+      calendar: {
+        today: '2020-01-01',
+        events: []
+      }
     }),
     mounted () {
       //this.$refs.calendar.scrollToTime('08:00')
     },
-    computed: {
-      // outlets() {
-      //   return {
-      //     test: "aaaa"
-      //   }
-      // }
-    },
-
     created () {
       this.$vuetify.theme.dark = true;
       this.getOutlets()
       this.getMediaAssets()
       this.getLinks()
-      this.todayx = this.momentNow('date');
+      this.calendar.today = this.momentNow('date');
     },
     methods: {
 
@@ -587,12 +561,12 @@ import axios from 'axios';
             if (response.data)
             {
               this.selected_screen_schedule = response.data;
-              this.events = this.eventsFormat()
+              this.calendar.events = this.eventsFormat()
 
-              if (this.events.length > 0) 
+              if (this.calendar.events.length > 0) 
               {
-                this.screen_now_showing = this.events[this.events.length - 1].name;
-                console.log(this.events[this.events.length - 1].name);
+                this.screen_now_showing = this.calendar.events[this.calendar.events.length - 1].name;
+                console.log(this.calendar.events[this.calendar.events.length - 1].name);
               }
               else
               {
