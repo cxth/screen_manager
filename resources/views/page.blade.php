@@ -16,6 +16,17 @@
       ::-webkit-scrollbar-thumb        { display: none; }
       ::-webkit-scrollbar-corner       { display: none; }
       ::-webkit-resizer                { display: none; }
+      @-moz-document url-prefix() { /* Disable scrollbar Firefox */
+        html{
+          scrollbar-width: none;
+        }
+      }
+      body {
+        margin: 0; /* remove default margin */
+        scrollbar-width: none; /* Also needed to disable scrollbar Firefox */
+        -ms-overflow-style: none;  /* Disable scrollbar IE 10+ */
+        overflow-y: scroll;
+      }
     </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
