@@ -180,8 +180,8 @@
                                   <v-list-item three-line>
                                     <v-list-item-content>
                                       <div class="overline mb-4">SCREEN</div>
-                                      <v-list-item-subtitle>{{ selected_outlet }}</v-list-item-subtitle>
-                                      <v-list-item-title class="headline mb-4">{{ selected_screen }}</v-list-item-title>
+                                      <v-list-item-subtitle>{{ selected.outlet }}</v-list-item-subtitle>
+                                      <v-list-item-title class="headline mb-4">{{ selected.screen }}</v-list-item-title>
                                     </v-list-item-content>
                                   </v-list-item>
                                 </v-col>
@@ -227,15 +227,13 @@
 
                                 </v-col>
                             </v-row>
-                            <v-row 
-                              no-gutters 
-                            >
+                            <v-row no-gutters>
                               <v-col 
                                 align="center"
                                 justify="center"
                               >
-                                  <v-btn rounded color="primary" dark @click="addSched" class="mr-2">SAVE</v-btn>
-                                  <v-btn rounded color="primary" dark @click="disableMedia" class="ml-2">CLEAR</v-btn>
+                                <v-btn rounded color="primary" dark @click="addSched" class="mr-2">SAVE</v-btn>
+                                <v-btn rounded color="primary" dark @click="disableMedia" class="ml-2">CLEAR</v-btn>
                               </v-col>
                             </v-row>
                           </v-card>
@@ -405,22 +403,27 @@ import media_asset_component from './MediaAssetsComponent'
     },
     components: {calendar,media_asset_component},
     data: () => ({
-      selected_outlet: null,
-      selected_screen: null,
-      selected_screen_schedule: null,
+      //selected_outlet: null,
+      //selected_screen: null,
+      //selected_screen_schedule: null,
       screen_autologin: null,
       screen_now_showing: null,
 
-      selected_mediagroup: null,
-      selected_link: null,
-      selected_link_name: null,
-      selected_link_url: null,
+      //selected_mediagroup: null,
+      //selected_link: null,
+      //selected_link_name: null,
+      //selected_link_url: null,
 
       selected: {
+        // media assets
         mediagroup: null,
         link: null,
         link_name: null,
-        link_url: null
+        link_url: null,
+        // outlet list
+        outlet: null,
+        screen: null,
+        screen_schedule: null
       },
 
       outlets: null,
@@ -452,7 +455,7 @@ import media_asset_component from './MediaAssetsComponent'
       // Layout
       drawer: null,
       drawerRight: null,
-      screen: 1, // to delete
+      //screen: 1, // to delete
       screenm: null,  // to delete   
       
       // Schedule
@@ -500,11 +503,7 @@ import media_asset_component from './MediaAssetsComponent'
       getMediaAssets() {
         axios.get(`${ this.siteURL }/api/media/all`)
           .then(response => {
-          
-              // DON'T TOUCH
               this.media_assets = response.data;
-              //localStorage.name = 'Cxian';
-
           })
           .catch(e => {
               this.errors.push(e)
@@ -520,7 +519,6 @@ import media_asset_component from './MediaAssetsComponent'
                 newlinks[arrayItem.id] = arrayItem;
               });
               this.links = newlinks;
-
           })
           .catch(e => {
               console.log('links not working');
@@ -531,13 +529,13 @@ import media_asset_component from './MediaAssetsComponent'
       getScreenSched: function() {
         axios({
             method: 'get',
-            url: `${ this.siteURL }/api/schedule/ss/${ this.selected_screen }`,
+            url: `${ this.siteURL }/api/schedule/ss/${ this.selected.screen }`,
         }).then(response => {
             //console.log('schedule for screen ' + this.selected_screen);
             //console.log(response.data);
             if (response.data)
             {
-              this.selected_screen_schedule = response.data;
+              this.selected.screen_schedule = response.data;
               this.calendar.events = this.eventsFormat()
 
               if (this.calendar.events.length > 0) 
@@ -563,7 +561,7 @@ import media_asset_component from './MediaAssetsComponent'
             method: 'post',
             url: `${ this.siteURL }/api/screen/login`,
             data: {
-              screen_id: this.selected_screen
+              screen_id: this.selected.screen
             }
         }).then(response => {
               console.log(response.data);
@@ -582,9 +580,8 @@ import media_asset_component from './MediaAssetsComponent'
       screenSelect: function (event) {
         if (event) {
           var i = event.currentTarget.id.split('**');
-          this.selected_outlet = i[0];
-          this.selected_screen = i[1];
-
+          this.selected.outlet = i[0];
+          this.selected.screen = i[1];
           this.getScreenSched()
           this.getScreenAutologin()
         }
@@ -603,8 +600,8 @@ import media_asset_component from './MediaAssetsComponent'
             method: 'post',
             url: `${ this.siteURL }/api/outlet`,
             data: {
-              outlet_name: this.newOutlet_name,
-              outlet_id: this.newOutlet_id,
+              outlet_name: this.new.outlet_name,
+              outlet_id: this.new.outlet_id,
             }
         }).then(response => {
             console.log('from add outlet api');
@@ -616,12 +613,11 @@ import media_asset_component from './MediaAssetsComponent'
           .catch(e => {
               this.errors.push(e)
           });
-
       },
 
       clearNewOutlet: function() {
-        this.newOutlet_name = null;
-        this.newOutlet_id = null;
+        this.new.outlet_name = null;
+        this.new.outlet_id = null;
       },
 
       addNewScreen: function(event) {
@@ -638,7 +634,6 @@ import media_asset_component from './MediaAssetsComponent'
               screen_description: this.newScreen
             }
         }).then(response => {
-              
             if (response.data == "Saved")
             {
               this.getOutlets()
@@ -691,7 +686,7 @@ import media_asset_component from './MediaAssetsComponent'
         console.log(this.selected.link);
         //return;
         // @todo: clean data validation
-        if (this.selected_screen == null)
+        if (this.selected.screen == null)
         {
           alert('No screen selected');
           return;
@@ -725,10 +720,9 @@ import media_asset_component from './MediaAssetsComponent'
         
         console.log('final mydata ');
         console.log(mydata);
-
         axios({
             method: 'post',
-            url: `${ this.siteURL }/api/schedule/screen/${ this.selected_screen }`,
+            url: `${ this.siteURL }/api/schedule/screen/${ this.selected.screen }`,
             data: mydata
         }).then(response => {
               console.log(response);
@@ -756,10 +750,12 @@ import media_asset_component from './MediaAssetsComponent'
         this.selected.link_url = null
         this.selected.link_name = null
         this.selected.mediagroup = null;
-        this.newURL = null
-        this.newURL_name = null
+        // this.new.url = null
+        // this.new.url_name = null
+        // this.new.url_id = null
+        this.newURL = null,
+        this.newURL_name = null,
         this.newURL_id = null
-
       },
 
       // new URL keyup
@@ -778,7 +774,7 @@ import media_asset_component from './MediaAssetsComponent'
               location.reload();
             })
             .catch(e => {
-                this.errors.push(e)
+              this.errors.push(e)
             })
         }
       },
@@ -801,7 +797,7 @@ import media_asset_component from './MediaAssetsComponent'
       eventsFormat: function() {
 
         let esched = [];
-        this.selected_screen_schedule.forEach(function (val, key, map) {
+        this.selected.screen_schedule.forEach(function (val, key, map) {
             var event_name = val[Object.keys(val)].link_name
             var event_start = val[Object.keys(val)].show_datetime
             var event_end = val[Object.keys(val)].expire_datetime

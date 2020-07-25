@@ -408,7 +408,7 @@ class ScheduleController extends Controller
         {
             return redirect('/');
         }
-        setcookie('cross-site-cookie', 'name', ['samesite' => 'None', 'secure' => true]);
+        setcookie('cross-site-cookie', 'name', time()+3600);
         return view('admin');
     }
 }

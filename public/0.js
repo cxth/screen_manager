@@ -419,8 +419,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
-//
-//
 
 
 
@@ -434,20 +432,25 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   },
   data: function data() {
     return {
-      selected_outlet: null,
-      selected_screen: null,
-      selected_screen_schedule: null,
+      //selected_outlet: null,
+      //selected_screen: null,
+      //selected_screen_schedule: null,
       screen_autologin: null,
       screen_now_showing: null,
-      selected_mediagroup: null,
-      selected_link: null,
-      selected_link_name: null,
-      selected_link_url: null,
+      //selected_mediagroup: null,
+      //selected_link: null,
+      //selected_link_name: null,
+      //selected_link_url: null,
       selected: {
+        // media assets
         mediagroup: null,
         link: null,
         link_name: null,
-        link_url: null
+        link_url: null,
+        // outlet list
+        outlet: null,
+        screen: null,
+        screen_schedule: null
       },
       outlets: null,
       media_assets: null,
@@ -473,8 +476,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       // Layout
       drawer: null,
       drawerRight: null,
-      screen: 1,
-      // to delete
+      //screen: 1, // to delete
       screenm: null,
       // to delete   
       // Schedule
@@ -519,8 +521,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       var _this2 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/media/all")).then(function (response) {
-        // DON'T TOUCH
-        _this2.media_assets = response.data; //localStorage.name = 'Cxian';
+        _this2.media_assets = response.data;
       })["catch"](function (e) {
         _this2.errors.push(e);
       });
@@ -545,12 +546,12 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
         method: 'get',
-        url: "".concat(this.siteURL, "/api/schedule/ss/").concat(this.selected_screen)
+        url: "".concat(this.siteURL, "/api/schedule/ss/").concat(this.selected.screen)
       }).then(function (response) {
         //console.log('schedule for screen ' + this.selected_screen);
         //console.log(response.data);
         if (response.data) {
-          _this4.selected_screen_schedule = response.data;
+          _this4.selected.screen_schedule = response.data;
           _this4.calendar.events = _this4.eventsFormat();
 
           if (_this4.calendar.events.length > 0) {
@@ -572,7 +573,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         method: 'post',
         url: "".concat(this.siteURL, "/api/screen/login"),
         data: {
-          screen_id: this.selected_screen
+          screen_id: this.selected.screen
         }
       }).then(function (response) {
         console.log(response.data);
@@ -588,8 +589,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     screenSelect: function screenSelect(event) {
       if (event) {
         var i = event.currentTarget.id.split('**');
-        this.selected_outlet = i[0];
-        this.selected_screen = i[1];
+        this.selected.outlet = i[0];
+        this.selected.screen = i[1];
         this.getScreenSched();
         this.getScreenAutologin();
       }
@@ -609,8 +610,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         method: 'post',
         url: "".concat(this.siteURL, "/api/outlet"),
         data: {
-          outlet_name: this.newOutlet_name,
-          outlet_id: this.newOutlet_id
+          outlet_name: this["new"].outlet_name,
+          outlet_id: this["new"].outlet_id
         }
       }).then(function (response) {
         console.log('from add outlet api');
@@ -626,8 +627,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       });
     },
     clearNewOutlet: function clearNewOutlet() {
-      this.newOutlet_name = null;
-      this.newOutlet_id = null;
+      this["new"].outlet_name = null;
+      this["new"].outlet_id = null;
     },
     addNewScreen: function addNewScreen(event) {
       var _this7 = this;
@@ -696,7 +697,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       console.log(this.selected.link); //return;
       // @todo: clean data validation
 
-      if (this.selected_screen == null) {
+      if (this.selected.screen == null) {
         alert('No screen selected');
         return;
       }
@@ -727,7 +728,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       console.log(mydata);
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
         method: 'post',
-        url: "".concat(this.siteURL, "/api/schedule/screen/").concat(this.selected_screen),
+        url: "".concat(this.siteURL, "/api/schedule/screen/").concat(this.selected.screen),
         data: mydata
       }).then(function (response) {
         console.log(response);
@@ -754,10 +755,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.selected.link = null;
       this.selected.link_url = null;
       this.selected.link_name = null;
-      this.selected.mediagroup = null;
-      this.newURL = null;
-      this.newURL_name = null;
-      this.newURL_id = null;
+      this.selected.mediagroup = null; // this.new.url = null
+      // this.new.url_name = null
+      // this.new.url_id = null
+
+      this.newURL = null, this.newURL_name = null, this.newURL_id = null;
     },
     // new URL keyup
     disableMedia: function disableMedia(event) {
@@ -795,7 +797,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     },
     eventsFormat: function eventsFormat() {
       var esched = [];
-      this.selected_screen_schedule.forEach(function (val, key, map) {
+      this.selected.screen_schedule.forEach(function (val, key, map) {
         var event_name = val[Object.keys(val)].link_name;
         var event_start = val[Object.keys(val)].show_datetime;
         var event_end = val[Object.keys(val)].expire_datetime;
@@ -1490,7 +1492,9 @@ var render = function() {
                                                                   [
                                                                     _vm._v(
                                                                       _vm._s(
-                                                                        _vm.selected_outlet
+                                                                        _vm
+                                                                          .selected
+                                                                          .outlet
                                                                       )
                                                                     )
                                                                   ]
@@ -1505,7 +1509,9 @@ var render = function() {
                                                                   [
                                                                     _vm._v(
                                                                       _vm._s(
-                                                                        _vm.selected_screen
+                                                                        _vm
+                                                                          .selected
+                                                                          .screen
                                                                       )
                                                                     )
                                                                   ]
