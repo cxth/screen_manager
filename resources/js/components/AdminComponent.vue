@@ -33,82 +33,13 @@
       app  
       :width="270"
     >
-      <v-list-item link>
-        <v-list-item-action>
-          <v-icon>mdi-home</v-icon>
-        </v-list-item-action>
-        <v-list-item-content>
-          <v-list-item-title>Outlets</v-list-item-title>
-        </v-list-item-content>
-      </v-list-item>
-      <v-list dense>
-        <v-list-item link
-          v-on:click="outletSelect"
-        >
-          <v-expansion-panels>
-            <v-expansion-panel
-              v-for="(item,name) in outlets"
-              :key="name"
-            >
-              <v-expansion-panel-header>{{ name }}</v-expansion-panel-header>
-              <v-expansion-panel-content>
-                <v-list dense>
-                  <!-- <v-list-item-group v-model="screenm" color="primary"> -->
-                  <v-list-item-group color="primary">
-
-                    <v-list-item>
-                      <v-list-item-content>
-                        <v-text-field
-                          class="ma-0 pa-0"
-                          placeholder="Screen Name"
-                          outlined
-                          dense
-                          v-model="newScreen"
-                        ></v-text-field>
-                        <v-btn 
-                          x-small 
-                          class="blue darken-1"
-                          dark
-                          :id="item[0].outlet_id+'**'+item[0].outlet_intid+'.new'"
-                          v-on:click="addNewScreen"
-                        >
-                          Add Screen
-                        </v-btn>
-                      </v-list-item-content>
-                    </v-list-item>
-
-                    <v-list-item
-                      v-for="(screen, screen_i) in item"
-                      :key="screen_i"
-                      v-on:click="screenSelect"
-                      :id="screen.outlet_name + '**' + screen.id"
-                    >
-                      <v-list-item-content>
-                        <v-list-item-title v-text="screen.description"></v-list-item-title>
-                      </v-list-item-content>
-
-                      <v-tooltip right>
-                        <template v-slot:activator="{ on, attrs }">
-                          <v-list-item-icon 
-                            class="ml-5"
-                            v-bind="attrs"
-                            v-on="on"
-                            v-on:click="openLink(screen.id)"
-                          >
-                            <v-icon>mdi-eye</v-icon>
-                          </v-list-item-icon>
-                        </template>
-                        <span>click to visit screen</span>
-                      </v-tooltip>
-                    
-                    </v-list-item>
-                  </v-list-item-group>
-                </v-list>
-              </v-expansion-panel-content>
-            </v-expansion-panel>
-          </v-expansion-panels>
-        </v-list-item>
-      </v-list>
+      <outlets_component
+        :outlets="outlets"
+        :selected="selected"
+        :getScreenSched="getScreenSched"
+        :getScreenAutologin="getScreenAutologin"
+        :getOutlets="getOutlets"
+        ></outlets_component>
 
       <template v-slot:append>
         <div class="pa-2">
@@ -396,12 +327,13 @@
 import axios from 'axios'
 import calendar from './CalendarComponent'
 import media_asset_component from './MediaAssetsComponent'
+import outlets_component from './OutletsComponent'
 
   export default {
     props: {
       source: String,
     },
-    components: {calendar,media_asset_component},
+    components: {calendar,media_asset_component,outlets_component},
     data: () => ({
       //selected_outlet: null,
       //selected_screen: null,
@@ -476,8 +408,12 @@ import media_asset_component from './MediaAssetsComponent'
     },
     methods: {
 
-      openLink: function(link) {
-        window.open(`${ this.siteURL }/admin/${ link }`);
+      // openLink: function(link) {
+      //   window.open(`${ this.siteURL }/admin/${ link }`);
+      // },
+
+      update(number){
+          this.number=number;
       },
 
       getOutlets() {
@@ -572,20 +508,20 @@ import media_asset_component from './MediaAssetsComponent'
           });
       },
 
-      outletSelect: function (event) {
-        console.log('outlet select');
-        this.newScreen = "";
-      },
+      // outletSelect: function (event) {
+      //   console.log('outlet select');
+      //   this.newScreen = "";
+      // },
 
-      screenSelect: function (event) {
-        if (event) {
-          var i = event.currentTarget.id.split('**');
-          this.selected.outlet = i[0];
-          this.selected.screen = i[1];
-          this.getScreenSched()
-          this.getScreenAutologin()
-        }
-      },
+      // screenSelect: function (event) {
+      //   if (event) {
+      //     var i = event.currentTarget.id.split('**');
+      //     this.selected.outlet = i[0];
+      //     this.selected.screen = i[1];
+      //     this.getScreenSched()
+      //     this.getScreenAutologin()
+      //   }
+      // },
 
       addOutlet: function(event) {
         console.log('adding outlet');
@@ -620,29 +556,29 @@ import media_asset_component from './MediaAssetsComponent'
         this.new.outlet_id = null;
       },
 
-      addNewScreen: function(event) {
-        console.log('adding new screen');
-        //console.log(this.newScreen);
-        //console.log(event.currentTarget.id);
-        var i = event.currentTarget.id.split('**');
-        axios({
-            method: 'post',
-            url: `${ this.siteURL }/api/${ i[0] }/screen`,
-            data: {
-              outlet_id: i[0],
-              outlet_intid: i[1],
-              screen_description: this.newScreen
-            }
-        }).then(response => {
-            if (response.data == "Saved")
-            {
-              this.getOutlets()
-            }
-          })
-          .catch(e => {
-              this.errors.push(e)
-          });
-      },
+      // addNewScreen: function(event) {
+      //   console.log('adding new screen');
+      //   //console.log(this.newScreen);
+      //   //console.log(event.currentTarget.id);
+      //   var i = event.currentTarget.id.split('**');
+      //   axios({
+      //       method: 'post',
+      //       url: `${ this.siteURL }/api/${ i[0] }/screen`,
+      //       data: {
+      //         outlet_id: i[0],
+      //         outlet_intid: i[1],
+      //         screen_description: this.newScreen
+      //       }
+      //   }).then(response => {
+      //       if (response.data == "Saved")
+      //       {
+      //         this.getOutlets()
+      //       }
+      //     })
+      //     .catch(e => {
+      //         this.errors.push(e)
+      //     });
+      // },
 
       addLink: function(event) {
         var newlink = null;
