@@ -11,10 +11,11 @@
         :media_assets="media_assets"
         :selected="selected"
         :links="links"
-        :new_="new_"
-        :is_form_valid="is_form_valid"
-        @linkSelect="screen=$event"></media_asset_component>
-
+        :form="form"
+        :deleteLink="deleteLink"
+        @linkSelect="
+          screen=$event,
+          clearnewURL($event)"></media_asset_component>
     </v-navigation-drawer>
 
     <v-app-bar
@@ -89,88 +90,19 @@
                     <v-icon left>mdi-plus</v-icon>
                     ADD OUTLET
                   </v-tab>
-
                   <v-tab-item>
-                    <v-row
-                      justify="center"
-                      align="center"
-                      pb="3"
-                    >
-                      <v-col class="shrink">
-                        <v-card
-                            class="mx-auto mt-5 pb-10 mb-12"
-                            height="100%"
-                            width="500"
-                            outlined
-                          >
-                            <v-row 
-                              no-gutters
-                              class="mb-5"
-                            >
-                                <v-col>
-                                  <v-list-item three-line>
-                                    <v-list-item-content>
-                                      <div class="overline mb-4">SCREEN</div>
-                                      <v-list-item-subtitle>{{ selected.outlet }}</v-list-item-subtitle>
-                                      <v-list-item-title class="headline mb-4">{{ selected.screen }}</v-list-item-title>
-                                    </v-list-item-content>
-                                  </v-list-item>
-                                </v-col>
-                                <v-col>
-                                  <v-list-item three-line>
-                                    <v-list-item-content>
-                                      <div class="overline mb-4">CONTENT</div>
-                                      <v-list-item-subtitle>{{ selected.mediagroup }}</v-list-item-subtitle>
-                                      <v-list-item-title class="headline mb-4">{{ selected.link_name }}</v-list-item-title>
-                                    </v-list-item-content>
-                                  </v-list-item>
-                                </v-col>
-                                <v-responsive
-                                  width="100%"
-                                ></v-responsive>
-                            
-                            </v-row>
-                            <v-row no-gutters 
-                                align="center"
-                                justify="center"
-                            >
-                              <v-col 
-                                style="maxWidth: 280px"
-                                :fullscreen="$vuetify.breakpoint.mobile"
-                              >
-                                  <v-text-field
-                                    label="or enter URL"
-                                    type="url"
-                                    outlined
-                                    dense
-                                    @keyup="disableMedia"
-                                    v-model="newURL"
-                                    :disabled="!is_form_valid"
-                                  ></v-text-field>
-
-                                  <v-text-field
-                                    label="URL Name"
-                                    outlined
-                                    dense
-                                    :disabled="!is_form_valid"
-                                    v-model="newURL_name"
-                                  ></v-text-field>
-
-                                </v-col>
-                            </v-row>
-                            <v-row no-gutters>
-                              <v-col 
-                                align="center"
-                                justify="center"
-                              >
-                                <v-btn rounded color="primary" dark @click="addSched" class="mr-2">SAVE</v-btn>
-                                <v-btn rounded color="primary" dark @click="disableMedia" class="ml-2">CLEAR</v-btn>
-                              </v-col>
-                            </v-row>
-                          </v-card>
-                      </v-col>
-                    </v-row>
                     
+                    <screensched_component
+                      :selected="selected"
+                      :form="form"
+                      :clear_URL="clear_URL"
+                      :momentNow="momentNow"
+                      :resetData="resetData"
+                      :getScreenSched="getScreenSched"
+                      :getMediaAssets="getMediaAssets"
+                      :getLinks="getLinks">
+                    </screensched_component>
+
                   </v-tab-item>
                   <v-tab-item>
                     <v-card flat>
@@ -181,128 +113,20 @@
                   </v-tab-item>
                   <v-tab-item>
           
-                    <template>
-                      <v-container class="grey darken-4 pt-8 pb-8">
-                        <v-row
-                          align="center"
-                          justify="center"
-                        >
-                          <v-col sm="9">
-                            <v-card
-                              class="pa-6"
-                              outlined
-                              tile
-                            >
-                              <div class="pb-2">
-                                <v-chip
-                                  class="ma-1"
-                                  color="primary"
-                                  outlined
-                                  pill
-                                >
-                                  Auto-Login URL
-                                  <v-icon right>mdi-account-key</v-icon>
-                                </v-chip>
-                                  <span class="font-weight-thin"> 
-                                    {{ screen_autologin }}
-                                  </span>
-                              </div>
-                              <div class="pa-2">
-                                <v-chip
-                                  class="ma-1"
-                                  color="primary"
-                                  outlined
-                                  pill
-                                >
-                                  Now Showing
-                                  <v-icon right>mdi-play-circle</v-icon>
-                                </v-chip>
-                                  <span class="font-weight-thin"> 
-                                    {{ screen_now_showing }}
-                                  </span>
-                              </div>
-                              
-                            </v-card>
-                            <!-- <v-row no-gutters>
-                              <v-col
-                                cols="8"
-                                sm="6"
-                              >
-                                <v-card
-                                  class="pa-2"
-                                  outlined
-                                  style="background-color: darkgrey;"
-                                  tile
-                                >
-                                  Level 2: .col-8 .col-sm-6
-                                </v-card>
-                              </v-col>
-                              <v-col
-                                cols="4"
-                                sm="6"
-                              >
-                                <v-card
-                                  class="pa-2"
-                                  outlined
-                                  style="background-color: darkgrey;"
-                                  tile
-                                >
-                                  Level 3: .col-4 .col-sm-6
-                                </v-card>
-                              </v-col>
-                            </v-row> -->
-                          </v-col>
-                        </v-row>
-                      </v-container>
-                    </template>
+                    <info_component
+                      :screen_autologin="screen_autologin"
+                      :screen_now_showing="screen_now_showing"
+                    ></info_component>
 
                   </v-tab-item>
                   <v-tab-item>
 
-                    <template>
-                      <v-form>
-                        <v-container
-                          class="grey darken-4"
-                        >
-                          <v-row
-                            align="center"
-                            justify="center"
-                          >
-                            <v-col 
-                              cols="12" 
-                              sm="4"
-                              class="mt-10 mb-10"  
-                            >
-                                <v-text-field
-                                  label="Outlet Name"
-                                  outlined
-                                  dense
-                                  v-model="newOutlet_name"
-                                ></v-text-field>
-                                <v-text-field
-                                  label="Outlet ID (XX-XXX format)"
-                                  outlined
-                                  dense
-                                  v-model="newOutlet_id"
-                                ></v-text-field>
-                            
-                                <v-row
-                                  align="center"
-                                  justify="center"
-                                >
-                                    <v-btn rounded color="primary" dark @click="addOutlet" class="mr-2">SAVE</v-btn>
-                                    <v-btn rounded color="primary" dark @click="clearNewOutlet" class="ml-1">CLEAR</v-btn>
-                                </v-row>
-                          
-                            </v-col>
+                    <add_outlet_component
+                      :getOutlets="getOutlets"
+                    ></add_outlet_component>
 
-                          </v-row>
-                        </v-container>
-                      </v-form>
-                    </template>
-                  
                   </v-tab-item>
-
+                  
                 </v-tabs>
               </v-card> 
 
@@ -328,23 +152,19 @@ import axios from 'axios'
 import calendar from './CalendarComponent'
 import media_asset_component from './MediaAssetsComponent'
 import outlets_component from './OutletsComponent'
+import screensched_component from './ScreenSchedComponent'
+import info_component from './InfoComponent'
+import add_outlet_component from './AddOutletComponent'
 
   export default {
     props: {
       source: String,
     },
-    components: {calendar,media_asset_component,outlets_component},
+    components: {calendar,media_asset_component,outlets_component,screensched_component,info_component,add_outlet_component},
     data: () => ({
-      //selected_outlet: null,
-      //selected_screen: null,
-      //selected_screen_schedule: null,
+
       screen_autologin: null,
       screen_now_showing: null,
-
-      //selected_mediagroup: null,
-      //selected_link: null,
-      //selected_link_name: null,
-      //selected_link_url: null,
 
       selected: {
         // media assets
@@ -363,26 +183,16 @@ import outlets_component from './OutletsComponent'
       links: null,
 
       // new Outlet
-      newOutlet_name: null,
-      newOutlet_id: null,
+      // newOutlet_name: null,
+      // newOutlet_id: null,
 
-      new_: {
-        outlet_name: null,
-        outlet_id: null,
-        url: null,
-        url_name: null,
-        url_id: null,
-        screen: null
-      },
-
-      // custom URL
-      newURL: null,
-      newURL_name: null,
+      clear_URL: false,
       newURL_id: null,
       newScreen: null,
 
-      //isFormValid: true, // TODO to replace
-      is_form_valid: true,
+      form: {
+        is_form_valid: true,
+      },
 
       // Layout
       drawer: null,
@@ -408,12 +218,16 @@ import outlets_component from './OutletsComponent'
     },
     methods: {
 
-      // openLink: function(link) {
-      //   window.open(`${ this.siteURL }/admin/${ link }`);
-      // },
-
-      update(number){
-          this.number=number;
+      clearnewURL(event) {
+        this.form.is_form_valid = false
+        if (!this.clear_URL) {
+          this.clear_URL = true
+          return
+        }
+        if (this.clear_URL) {
+          this.clear_URL = false
+          return
+        }
       },
 
       getOutlets() {
@@ -508,78 +322,6 @@ import outlets_component from './OutletsComponent'
           });
       },
 
-      // outletSelect: function (event) {
-      //   console.log('outlet select');
-      //   this.newScreen = "";
-      // },
-
-      // screenSelect: function (event) {
-      //   if (event) {
-      //     var i = event.currentTarget.id.split('**');
-      //     this.selected.outlet = i[0];
-      //     this.selected.screen = i[1];
-      //     this.getScreenSched()
-      //     this.getScreenAutologin()
-      //   }
-      // },
-
-      addOutlet: function(event) {
-        console.log('adding outlet');
-        console.log(this.newOutlet_name);
-        console.log(this.newOutlet_id);
-        if (this.newOutlet_id == null || this.newOutlet_name == null)
-        {
-          return;
-        }
-
-        axios({
-            method: 'post',
-            url: `${ this.siteURL }/api/outlet`,
-            data: {
-              outlet_name: this.new.outlet_name,
-              outlet_id: this.new.outlet_id,
-            }
-        }).then(response => {
-            console.log('from add outlet api');
-            console.log(response.data)
-            this.getOutlets();
-            alert('Outlet successfully added');
-            this.clearNewOutlet()
-          })
-          .catch(e => {
-              this.errors.push(e)
-          });
-      },
-
-      clearNewOutlet: function() {
-        this.new.outlet_name = null;
-        this.new.outlet_id = null;
-      },
-
-      // addNewScreen: function(event) {
-      //   console.log('adding new screen');
-      //   //console.log(this.newScreen);
-      //   //console.log(event.currentTarget.id);
-      //   var i = event.currentTarget.id.split('**');
-      //   axios({
-      //       method: 'post',
-      //       url: `${ this.siteURL }/api/${ i[0] }/screen`,
-      //       data: {
-      //         outlet_id: i[0],
-      //         outlet_intid: i[1],
-      //         screen_description: this.newScreen
-      //       }
-      //   }).then(response => {
-      //       if (response.data == "Saved")
-      //       {
-      //         this.getOutlets()
-      //       }
-      //     })
-      //     .catch(e => {
-      //         this.errors.push(e)
-      //     });
-      // },
-
       addLink: function(event) {
         var newlink = null;
         axios({
@@ -616,91 +358,11 @@ import outlets_component from './OutletsComponent'
         return;
       },
 
-      addSched: function(event) {
-
-        console.log('selected link ');
-        console.log(this.selected.link);
-        //return;
-        // @todo: clean data validation
-        if (this.selected.screen == null)
-        {
-          alert('No screen selected');
-          return;
-        }
-        
-        if (this.selected.link == null)
-        {
-          // check URL & name
-          if (!(this.newURL) || !(this.newURL_name))
-          {
-            alert('Please complete URL fields');
-            return;
-          }
-        
-          var mydata = {
-              screen_id: this.selected.screen,
-              link_name: this.newURL_name,
-              url: this.newURL,
-              show_datetime: this.momentNow()
-          }
-        }
-        else
-        {
-          var mydata = {
-              screen_id: this.selected.screen,
-              link_id: this.selected.link,
-              url: this.selected.link_url,
-              show_datetime: this.momentNow()
-          }
-        }
-        
-        console.log('final mydata ');
-        console.log(mydata);
-        axios({
-            method: 'post',
-            url: `${ this.siteURL }/api/schedule/screen/${ this.selected.screen }`,
-            data: mydata
-        }).then(response => {
-              console.log(response);
-              alert("Schedule saved");
-              // reset mydata
-              mydata = {}
-              // reset all data
-              this.resetData()
-              // @TODO: clear forms on save
-              // refresh schedule
-              this.getScreenSched()
-              // refresh media assets
-              this.getMediaAssets()
-              // refresh links
-              this.getLinks()
-          })
-          .catch(e => {
-              this.errors.push(e)
-          });
-        
-      },
-
       resetData: function() {
         this.selected.link = null
         this.selected.link_url = null
         this.selected.link_name = null
         this.selected.mediagroup = null;
-        // this.new.url = null
-        // this.new.url_name = null
-        // this.new.url_id = null
-        this.newURL = null,
-        this.newURL_name = null,
-        this.newURL_id = null
-      },
-
-      // new URL keyup
-      disableMedia: function(event) {
-        this.is_form_valid = true
-        this.selected.mediagroup = null;
-        this.selected.link = null;
-        this.selected.link_name = null;
-        this.selected.link_url = null;
       },
 
       logout: function() {
@@ -755,28 +417,3 @@ import outlets_component from './OutletsComponent'
     }
   }
 </script>
-
-<style scoped>
-  .my-event {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    border-radius: 2px;
-    background-color: #1867c0;
-    color: #ffffff;
-    border: 1px solid #1867c0;
-    font-size: 12px;
-    padding: 3px;
-    cursor: pointer;
-    margin-bottom: 1px;
-    left: 4px;
-    margin-right: 8px;
-    position: relative;
-  }
-
-  .my-event.with-time {
-    position: absolute;
-    right: 4px;
-    margin-right: 0px;
-  }
-</style>

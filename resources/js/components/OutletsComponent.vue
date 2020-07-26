@@ -138,31 +138,9 @@ export default {
     openLink: function(link) {
       window.open(`${ this.siteURL }/admin/${ link }`);
     }
-    // getOutlets() {
-    //     axios.get(`${ this.siteURL }/api/screen/all`)
-    //     .then(response => {
-    //         let combined = {};
-    //         response.data.forEach(function (arrayItem) {
-    //         if (!(Object.keys(arrayItem) in combined)) {
-    //             combined[Object.keys(arrayItem)] = Object.values(arrayItem);
-    //         }
-    //         else {
-    //             combined[Object.keys(arrayItem)].push(Object.values(arrayItem)[0]);
-    //         }
-    //         });
-    //         this.outlets = combined;
-    //         console.log(this.outlets);
-    //     })
-    //     .catch(e => {
-    //         this.errors.push(e)
-    //     })
-    // }
-    
 
   },
-  computed: {
-
-  }
+  
 }
 </script>
 

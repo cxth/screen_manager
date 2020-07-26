@@ -60,8 +60,8 @@ export default {
     'media_assets',
     'selected',
     'links',
-    'new_',
-    'is_form_valid'
+    'form',
+    'deleteLink'
   ],
   methods: {
     linkSelect: function (event) {
@@ -80,9 +80,10 @@ export default {
         //this.newURL = null;
         //this.newURL_name = null;
         //this.isFormValid = false;
-        this.new_.url = null
-        this.new_.url_name = null
-        //this.is_form_valid = false // TODO error on declaration
+        
+        this.form.is_form_valid = false // TODO error on declaration
+
+        this.$emit('linkSelect', 'deliver some values')
       }
     },
   }
