@@ -53,8 +53,8 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://sm.mswdb.com'),
-    //'url' => env('APP_URLX', 'http://localhost'),
+    //'url' => env('APP_URL', 'http://sm.mswdb.com'),
+    'url' => env('APP_URL', 'http://sm.local'),
 
     'asset_url' => env('ASSET_URL', null),
 

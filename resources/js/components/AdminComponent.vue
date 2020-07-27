@@ -243,7 +243,7 @@ import add_outlet_component from './AddOutletComponent'
                 }
               });
               this.outlets = combined;
-              console.log(this.outlets);
+              //console.log(this.outlets);
           })
           .catch(e => {
               this.errors.push(e)
@@ -291,7 +291,7 @@ import add_outlet_component from './AddOutletComponent'
               if (this.calendar.events.length > 0) 
               {
                 this.screen_now_showing = this.calendar.events[this.calendar.events.length - 1].name;
-                console.log(this.calendar.events[this.calendar.events.length - 1].name);
+                //console.log(this.calendar.events[this.calendar.events.length - 1].name);
               }
               else
               {
@@ -314,7 +314,7 @@ import add_outlet_component from './AddOutletComponent'
               screen_id: this.selected.screen
             }
         }).then(response => {
-              console.log(response.data);
+              //console.log(response.data);
               this.screen_autologin = `${ this.siteURL }/client?r=${ response.data }`;
           })
           .catch(e => {
@@ -334,7 +334,7 @@ import add_outlet_component from './AddOutletComponent'
             }
         }).then(response => {
               alert("Link successfully saved");
-              console.log('the link id: ' + response.data)
+              //console.log('the link id: ' + response.data)
               this.newURL_id = response.data;
           })
           .catch(e => {

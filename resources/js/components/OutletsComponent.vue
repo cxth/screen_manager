@@ -31,6 +31,9 @@
                           outlined
                           dense
                           v-model="newScreen"
+                          :rules="[rules.counter]"
+                          counter
+                          maxlength="25"
                         ></v-text-field>
                         <v-btn 
                           x-small 
@@ -90,18 +93,26 @@ export default {
   ],
   data() {
     return {
-      newScreen: null
+      newScreen: "",
+      rules: {
+        counter: value => value.length <= 25 || 'Max 25 characters',
+      }
     }
   },
   methods: {
     outletSelect: function (event) {
+
       console.log('outlet select');
-      this.newScreen = ""; //TODO activate
-      //let newScreenx = this.newScreen;
-      //this.setNewscreen(null)
-      //this.$emit("update-number","");
+      this.newScreen = ""; 
     },
+
     addNewScreen: function(event) {
+
+      if (this.newScreen == "") {
+        alert('Please enter screen name')
+        return
+      }
+
       console.log('adding new screen');
       //console.log(this.newScreen);
       //console.log(event.currentTarget.id);

@@ -76,12 +76,7 @@ export default {
         this.selected.link_url = this.links[this.selected.link].url;
         console.log(this.selected.link_name);
         console.log(this.selected.link_url);
-        // clear custom URL ---------
-        //this.newURL = null;
-        //this.newURL_name = null;
-        //this.isFormValid = false;
-        
-        this.form.is_form_valid = false // TODO error on declaration
+        this.form.is_form_valid = false 
 
         this.$emit('linkSelect', 'deliver some values')
       }

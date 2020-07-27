@@ -372,8 +372,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
             combined[Object.keys(arrayItem)].push(Object.values(arrayItem)[0]);
           }
         });
-        _this.outlets = combined;
-        console.log(_this.outlets);
+        _this.outlets = combined; //console.log(this.outlets);
       })["catch"](function (e) {
         _this.errors.push(e);
       });
@@ -416,8 +415,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           _this4.calendar.events = _this4.eventsFormat();
 
           if (_this4.calendar.events.length > 0) {
-            _this4.screen_now_showing = _this4.calendar.events[_this4.calendar.events.length - 1].name;
-            console.log(_this4.calendar.events[_this4.calendar.events.length - 1].name);
+            _this4.screen_now_showing = _this4.calendar.events[_this4.calendar.events.length - 1].name; //console.log(this.calendar.events[this.calendar.events.length - 1].name);
           } else {
             _this4.screen_now_showing = "No current content";
           }
@@ -437,7 +435,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           screen_id: this.selected.screen
         }
       }).then(function (response) {
-        console.log(response.data);
+        //console.log(response.data);
         _this5.screen_autologin = "".concat(_this5.siteURL, "/client?r=").concat(response.data);
       })["catch"](function (e) {
         _this5.errors.push(e);
@@ -456,8 +454,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           url: this.newURL
         }
       }).then(function (response) {
-        alert("Link successfully saved");
-        console.log('the link id: ' + response.data);
+        alert("Link successfully saved"); //console.log('the link id: ' + response.data)
+
         _this6.newURL_id = response.data;
       })["catch"](function (e) {
         _this6.errors.push(e);
@@ -718,13 +716,8 @@ __webpack_require__.r(__webpack_exports__);
         this.selected.link_name = this.links[this.selected.link].name;
         this.selected.link_url = this.links[this.selected.link].url;
         console.log(this.selected.link_name);
-        console.log(this.selected.link_url); // clear custom URL ---------
-        //this.newURL = null;
-        //this.newURL_name = null;
-        //this.isFormValid = false;
-
-        this.form.is_form_valid = false; // TODO error on declaration
-
+        console.log(this.selected.link_url);
+        this.form.is_form_valid = false;
         this.$emit('linkSelect', 'deliver some values');
       }
     }
@@ -823,23 +816,33 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['outlets', 'selected', 'getScreenSched', 'getScreenAutologin', 'getOutlets'],
   data: function data() {
     return {
-      newScreen: null
+      newScreen: "",
+      rules: {
+        counter: function counter(value) {
+          return value.length <= 25 || 'Max 25 characters';
+        }
+      }
     };
   },
   methods: {
     outletSelect: function outletSelect(event) {
       console.log('outlet select');
-      this.newScreen = ""; //TODO activate
-      //let newScreenx = this.newScreen;
-      //this.setNewscreen(null)
-      //this.$emit("update-number","");
+      this.newScreen = "";
     },
     addNewScreen: function addNewScreen(event) {
       var _this = this;
+
+      if (this.newScreen == "") {
+        alert('Please enter screen name');
+        return;
+      }
 
       console.log('adding new screen'); //console.log(this.newScreen);
       //console.log(event.currentTarget.id);
@@ -1963,7 +1966,10 @@ var render = function() {
                                             attrs: {
                                               placeholder: "Screen Name",
                                               outlined: "",
-                                              dense: ""
+                                              dense: "",
+                                              rules: [_vm.rules.counter],
+                                              counter: "",
+                                              maxlength: "25"
                                             },
                                             model: {
                                               value: _vm.newScreen,
