@@ -43,7 +43,7 @@ class ScheduleController extends Controller
      * API // Get latest URL from AJAX request in client Front-end.
      *
      * @return \Illuminate\Http\Response
-     * @TODO for deletion
+     * 
      */
     public function getUrl()
     {
