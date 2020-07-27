@@ -17,12 +17,17 @@
               outlined
               dense
               v-model="newOutlet_name"
+              :rules="[rules.counter]"
+              counter
+              maxlength="50"
             ></v-text-field>
             <v-text-field
-              label="Outlet ID (XX-XXX format)"
+              label="Outlet ID"
               outlined
               dense
               v-model="newOutlet_id"
+              hint="strictly in (XX-XXX) format"
+              :rules="[rules.required, rules.outlet]"
             ></v-text-field>
         
             <v-row
@@ -44,16 +49,33 @@
 export default {
   props: ['getOutlets'],
   data: () => ({
-    newOutlet_name: null,
-    newOutlet_id: null
+    newOutlet_name: "",
+    newOutlet_id: "",
+    rules: {
+      required: value => !!value || 'Required.',
+      counter: value => value.length <= 50 || 'Max 50 characters',
+      outlet: value => {
+        const pattern = /^[A-Z]{2}-[0-9]{3}$/
+        return pattern.test(value) || 'Invalid Outlet ID.'
+      },
+    },
+    errors: [],
   }),
   methods: {
-    addOutlet: function(event) {
+    addOutlet: function(e) {
+      this.errors = [];
+
       console.log('adding outlet');
       console.log(this.newOutlet_name);
       console.log(this.newOutlet_id);
-      if (this.newOutlet_id == null || this.newOutlet_name == null)
+      if (this.newOutlet_id == "" || this.newOutlet_name == "")
       {
+        alert('Please fill outlet name and ID fields.');
+        return;
+      }
+
+      if (!this.validOutletID(this.newOutlet_id)) {
+        this.errors.push('Valid Outlet ID required.');
         return;
       }
 
@@ -74,11 +96,20 @@ export default {
         .catch(e => {
             this.errors.push(e)
         });
+
+        if (!this.errors.length) {
+          return true;
+        }
+        e.preventDefault();
     },
     clearNewOutlet: function() {
-      this.newOutlet_name = null;
-      this.newOutlet_id = null;
+      this.newOutlet_name = "";
+      this.newOutlet_id = "";
     },
+    validOutletID: function (outletid) {
+      var re = /^[A-Z]{2}-[0-9]{3}$/;
+      return re.test(outletid);
+    }
   }
 
 }

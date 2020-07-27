@@ -63,6 +63,9 @@
                     dense
                     v-model="newURL_name"
                     :disabled="!form.is_form_valid"
+                    :rules="[rules.counter]"
+                    counter
+                    maxlength="50"
                   ></v-text-field>
 
                 </v-col>
@@ -86,8 +89,11 @@
 export default {
   props: ['selected','form','is_form_valid','clear_URL','momentNow','resetData','getScreenSched','getMediaAssets','getLinks'],
   data: () => ({
-    newURL: null,
-    newURL_name: null,
+    newURL: "",
+    newURL_name: "",
+    rules: {
+      counter: value => value.length <= 50 || 'Max 50 characters',
+    }
   }),
   watch: {
     clear_URL: function (event) {
@@ -111,7 +117,7 @@ export default {
         if (this.selected.link == null)
         {
           // check URL & name
-          if (!(this.newURL) || !(this.newURL_name))
+          if (this.newURL=="" || this.newURL_name=="")
           {
             alert('Please complete URL fields');
             return;

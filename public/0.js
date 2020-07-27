@@ -51,23 +51,48 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['getOutlets'],
   data: function data() {
     return {
-      newOutlet_name: null,
-      newOutlet_id: null
+      newOutlet_name: "",
+      newOutlet_id: "",
+      rules: {
+        required: function required(value) {
+          return !!value || 'Required.';
+        },
+        counter: function counter(value) {
+          return value.length <= 50 || 'Max 50 characters';
+        },
+        outlet: function outlet(value) {
+          var pattern = /^[A-Z]{2}-[0-9]{3}$/;
+          return pattern.test(value) || 'Invalid Outlet ID.';
+        }
+      },
+      errors: []
     };
   },
   methods: {
-    addOutlet: function addOutlet(event) {
+    addOutlet: function addOutlet(e) {
       var _this = this;
 
+      this.errors = [];
       console.log('adding outlet');
       console.log(this.newOutlet_name);
       console.log(this.newOutlet_id);
 
-      if (this.newOutlet_id == null || this.newOutlet_name == null) {
+      if (this.newOutlet_id == "" || this.newOutlet_name == "") {
+        alert('Please fill outlet name and ID fields.');
+        return;
+      }
+
+      if (!this.validOutletID(this.newOutlet_id)) {
+        this.errors.push('Valid Outlet ID required.');
         return;
       }
 
@@ -90,10 +115,20 @@ __webpack_require__.r(__webpack_exports__);
       })["catch"](function (e) {
         _this.errors.push(e);
       });
+
+      if (!this.errors.length) {
+        return true;
+      }
+
+      e.preventDefault();
     },
     clearNewOutlet: function clearNewOutlet() {
-      this.newOutlet_name = null;
-      this.newOutlet_id = null;
+      this.newOutlet_name = "";
+      this.newOutlet_id = "";
+    },
+    validOutletID: function validOutletID(outletid) {
+      var re = /^[A-Z]{2}-[0-9]{3}$/;
+      return re.test(outletid);
     }
   }
 });
@@ -976,12 +1011,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['selected', 'form', 'is_form_valid', 'clear_URL', 'momentNow', 'resetData', 'getScreenSched', 'getMediaAssets', 'getLinks'],
   data: function data() {
     return {
-      newURL: null,
-      newURL_name: null
+      newURL: "",
+      newURL_name: "",
+      rules: {
+        counter: function counter(value) {
+          return value.length <= 50 || 'Max 50 characters';
+        }
+      }
     };
   },
   watch: {
@@ -1005,7 +1048,7 @@ __webpack_require__.r(__webpack_exports__);
 
       if (this.selected.link == null) {
         // check URL & name
-        if (!this.newURL || !this.newURL_name) {
+        if (this.newURL == "" || this.newURL_name == "") {
           alert('Please complete URL fields');
           return;
         }
@@ -1146,7 +1189,14 @@ var render = function() {
                 { staticClass: "mt-10 mb-10", attrs: { cols: "12", sm: "4" } },
                 [
                   _c("v-text-field", {
-                    attrs: { label: "Outlet Name", outlined: "", dense: "" },
+                    attrs: {
+                      label: "Outlet Name",
+                      outlined: "",
+                      dense: "",
+                      rules: [_vm.rules.counter],
+                      counter: "",
+                      maxlength: "50"
+                    },
                     model: {
                       value: _vm.newOutlet_name,
                       callback: function($$v) {
@@ -1158,9 +1208,11 @@ var render = function() {
                   _vm._v(" "),
                   _c("v-text-field", {
                     attrs: {
-                      label: "Outlet ID (XX-XXX format)",
+                      label: "Outlet ID",
                       outlined: "",
-                      dense: ""
+                      dense: "",
+                      hint: "strictly in (XX-XXX) format",
+                      rules: [_vm.rules.required, _vm.rules.outlet]
                     },
                     model: {
                       value: _vm.newOutlet_id,
@@ -2277,7 +2329,10 @@ var render = function() {
                               label: "URL Name",
                               outlined: "",
                               dense: "",
-                              disabled: !_vm.form.is_form_valid
+                              disabled: !_vm.form.is_form_valid,
+                              rules: [_vm.rules.counter],
+                              counter: "",
+                              maxlength: "50"
                             },
                             model: {
                               value: _vm.newURL_name,
