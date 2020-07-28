@@ -39,7 +39,7 @@ __webpack_require__.r(__webpack_exports__);
   created: function created() {
     this.fetchURL();
     this.timer = setInterval(this.fetchURL, 12000); //console.log('global var: ' + `${ this.siteURL }/request`);
-    // 12000 seconds
+    // 12000 12 seconds
     // 300000 5 minutes
   },
   methods: {

@@ -5,7 +5,7 @@
       app
       clipped
       right
-      :width="270"
+      :width="300"
     >
       <media_asset_component 
         :media_assets="media_assets"
@@ -32,8 +32,21 @@
     <v-navigation-drawer
       v-model="drawer"
       app  
-      :width="270"
+      :width="300"
     >
+      
+      <v-list>
+        <v-list-item @click.stop="left = !left">
+          <v-list-item-action>
+            <v-icon color="green accent-3">mdi-exit-to-app</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title style="color:#00E676">Active Screens</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list>
+      <v-divider></v-divider>
+      
       <outlets_component
         :outlets="outlets"
         :selected="selected"
@@ -54,6 +67,17 @@
           </v-btn>
         </div>
       </template>
+
+    </v-navigation-drawer>
+
+    <v-navigation-drawer
+      v-model="left"
+      fixed
+      temporary
+      :width="300"
+    >
+    
+    <active_screens_component></active_screens_component>
 
     </v-navigation-drawer>
 
@@ -151,6 +175,7 @@
 import axios from 'axios'
 import calendar from './CalendarComponent'
 import media_asset_component from './MediaAssetsComponent'
+import active_screens_component from './ActiveScreensComponent'
 import outlets_component from './OutletsComponent'
 import screensched_component from './ScreenSchedComponent'
 import info_component from './InfoComponent'
@@ -160,12 +185,18 @@ import add_outlet_component from './AddOutletComponent'
     props: {
       source: String,
     },
-    components: {calendar,media_asset_component,outlets_component,screensched_component,info_component,add_outlet_component},
+    components: {
+      calendar,
+      media_asset_component,
+      active_screens_component,
+      outlets_component,
+      screensched_component,
+      info_component,
+      add_outlet_component
+    },
     data: () => ({
-
       screen_autologin: null,
       screen_now_showing: null,
-
       selected: {
         // media assets
         mediagroup: null,
@@ -177,29 +208,19 @@ import add_outlet_component from './AddOutletComponent'
         screen: null,
         screen_schedule: null
       },
-
       outlets: null,
       media_assets: null,
       links: null,
-
-      // new Outlet
-      // newOutlet_name: null,
-      // newOutlet_id: null,
-
       clear_URL: false,
       newURL_id: null,
       newScreen: null,
-
       form: {
         is_form_valid: true,
       },
-
       // Layout
       drawer: null,
       drawerRight: null,
-      //screen: 1, // to delete
-      screenm: null,  // to delete   
-      
+      left: false,
       // Schedule
       calendar: {
         today: '2020-01-01',
@@ -231,23 +252,23 @@ import add_outlet_component from './AddOutletComponent'
       },
 
       getOutlets() {
-          axios.get(`${ this.siteURL }/api/screen/all`)
-          .then(response => {
-              let combined = {};
-              response.data.forEach(function (arrayItem) {
-                if (!(Object.keys(arrayItem) in combined)) {
-                  combined[Object.keys(arrayItem)] = Object.values(arrayItem);
-                }
-                else {
-                  combined[Object.keys(arrayItem)].push(Object.values(arrayItem)[0]);
-                }
-              });
-              this.outlets = combined;
-              //console.log(this.outlets);
-          })
-          .catch(e => {
-              this.errors.push(e)
-          })
+        axios.get(`${ this.siteURL }/api/screen/all`)
+        .then(response => {
+            let combined = {};
+            response.data.forEach(function (arrayItem) {
+              if (!(Object.keys(arrayItem) in combined)) {
+                combined[Object.keys(arrayItem)] = Object.values(arrayItem);
+              }
+              else {
+                combined[Object.keys(arrayItem)].push(Object.values(arrayItem)[0]);
+              }
+            });
+            this.outlets = combined;
+            //console.log(this.outlets);
+        })
+        .catch(e => {
+            this.errors.push(e)
+        })
       },
 
       getMediaAssets() {
@@ -287,18 +308,13 @@ import add_outlet_component from './AddOutletComponent'
             {
               this.selected.screen_schedule = response.data;
               this.calendar.events = this.eventsFormat()
-
+              this.screen_now_showing = "No current content";
               if (this.calendar.events.length > 0) 
               {
                 this.screen_now_showing = this.calendar.events[this.calendar.events.length - 1].name;
                 //console.log(this.calendar.events[this.calendar.events.length - 1].name);
               }
-              else
-              {
-                this.screen_now_showing = "No current content";
-              }
             }
-
           })
           .catch(e => {
               this.errors.push(e)
@@ -325,13 +341,13 @@ import add_outlet_component from './AddOutletComponent'
       addLink: function(event) {
         var newlink = null;
         axios({
-            method: 'post',
-            url: `${ this.siteURL }/api/l`,
-            data: {
-              media__asset_id: 100,
-              name: this.newURL_name,
-              url: this.newURL
-            }
+          method: 'post',
+          url: `${ this.siteURL }/api/l`,
+          data: {
+            media__asset_id: 100,
+            name: this.newURL_name,
+            url: this.newURL
+          }
         }).then(response => {
               alert("Link successfully saved");
               //console.log('the link id: ' + response.data)
@@ -343,7 +359,6 @@ import add_outlet_component from './AddOutletComponent'
       },
 
       deleteLink: function(event) {
-   
         if(confirm("DANGER! Are you sure you like to DELETE this link?")) {        
           axios.delete(`${ this.siteURL }/api/l/${ event }`)
           .then(response => {
@@ -413,7 +428,6 @@ import add_outlet_component from './AddOutletComponent'
 
         return esched;
       }
-
-    }
+    } // methods
   }
 </script>

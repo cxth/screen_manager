@@ -27,8 +27,8 @@ Route::get('/media/all','MediaAssetController@listAll');
 Route::apiResource('/media','MediaAssetController');
 
 Route::get('/screen/all','ScreenController@listAll');
+Route::get('/screen/active','ScreenController@getActive');
 Route::post('/screen/login','ScheduleController@getScreenAutologin');
-
 
 //Route::apiResource('/m/{medium}/link','LinkController');
 Route::get('/m/{medium}/link','LinkController@index');

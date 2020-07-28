@@ -3,6 +3,7 @@
 namespace App\Model;
 
 use App\Model\Outlet;
+use App\Model\Session;
 use App\Model\Schedule;
 use Illuminate\Database\Eloquent\Model;
 
@@ -31,4 +32,5 @@ class Screen extends Model
         //return $this->belongsToMany(Schedule::class);
         return $this->hasMany(Schedule::class); // Success on schedule per screen
     }
+
 }

@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\ScheduleResource;
+use App\Model\Session;
 //use App\Http\Resources\ScheduleGroupResource;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -51,28 +52,45 @@ class ScheduleController extends Controller
         {
             return redirect('/login');
         }
+
         $screen = Screen::find(Auth::user()->username);
         
-        // view screen from admin 
+        // catch view screen from admin 
         $uscreen = session('uscreen');
         if (Auth::user()->username == 'admin' && $uscreen != null)
         {
             $screen = Screen::find($uscreen);
         }
-
+        
         //$screen = Screen::find('CFANGSS03');
         if (!$screen)
         {
             return ["invalid-user"];
         }
 
+        // log request
+        $this->logSession($screen->id);
+
         $schedule = $this->nowShowing($screen);
-        //var_dump($schedule->isEmpty());
         if ($schedule->isEmpty()) {
-            // @TODO: default image or URL here
+            // @TODO: default image or URL here...
         }
         
         return $schedule;
+    }
+
+    /**
+     * Web // Log request for Active Sessions Monitoring 
+     *
+     * @return null
+     * 
+     */
+    public function logSession($screen_id)
+    {
+      Session::updateOrCreate(
+        ['screen_id' => $screen_id],
+        ['request_log' => Carbon::now()]
+      );
     }
 
     /**

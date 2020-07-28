@@ -3,13 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use Carbon\Carbon;
 use App\Model\Outlet;
 use App\Model\Screen;
+use App\Model\Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\ScreenResource;
-use Carbon\Carbon;
+use App\Http\Resources\SessionResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class ScreenController extends Controller
@@ -26,7 +28,13 @@ class ScreenController extends Controller
         $result = Screen::all();
         return ScreenResource::collection($result);
     }
-    
+
+    public function getActive()
+    {
+        $minutes = env('SCREEN_ACTIVE_TIMEOUT', 15); 
+        $result = Session::where('request_log', '>=', Carbon::now()->subMinutes($minutes)->toDateTimeString())->get();   
+        return SessionResource::collection($result);
+    }
     
     /**
      * Display a listing of the screens
