@@ -86,10 +86,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   mounted: function mounted() {
     var _this = this;
 
-    // check every 5 minutes
+    // check every 5 minutes - 300000
+    // check every minutes - 1000
     window.setInterval(function () {
       _this.getActiveScreens();
-    }, 300000);
+    }, 1000);
   },
   methods: {
     getActiveScreens: function getActiveScreens(event) {

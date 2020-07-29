@@ -10,6 +10,8 @@ import Vue from 'vue'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import {iframeResize} from 'iframe-resizer'
+import VueCookies from 'vue-cookies'
+
 
 window.Vue = require('vue');
 
@@ -32,6 +34,12 @@ Vue.mixin({
 })
 
 Vue.use(Vuetify)
+Vue.use(VueCookies)
+// set default config
+Vue.$cookies.config('7d')
+Vue.$cookies.set('cross-site-cookie=bar; SameSite=None; Secure')
+
+
 const opts = {}
 //export default new Vuetify(opts)
 

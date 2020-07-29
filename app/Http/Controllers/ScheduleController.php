@@ -19,6 +19,12 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ScheduleController extends Controller
 {
+    
+    public function __construct()
+    {
+      header('Set-Cookie: cross-site-cookie=bar; SameSite=None; Secure', false);
+    }
+  
     /**
      * Web // Default controller for front-end display
      *
@@ -426,7 +432,7 @@ class ScheduleController extends Controller
         {
             return redirect('/');
         }
-        setcookie('cross-site-cookie', 'name', time()+3600);
+        //setcookie('cross-site-cookie', 'name', time()+3600);
         
         return view('admin');
     }

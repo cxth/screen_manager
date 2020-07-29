@@ -58,10 +58,11 @@ import axios from 'axios'
        this.getActiveScreens()
     },
     mounted: function () {
-      // check every 5 minutes
+      // check every 5 minutes - 300000
+      // check every minutes - 1000
       window.setInterval(() => {
           this.getActiveScreens();
-      },300000);
+      },1000);
     },
     methods: {
       getActiveScreens: function(event) {
