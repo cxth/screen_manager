@@ -7,7 +7,19 @@
       <v-sheet 
         style="maxWidth: 500px"
         :fullscreen="$vuetify.breakpoint.mobile"
+        outlined
       >
+        <v-toolbar
+            class="grey darken-4"
+            flat
+            dense
+            dark
+          >
+          <v-toolbar-title>
+            {{ selected.screen_name }}
+          </v-toolbar-title>
+          <v-spacer></v-spacer>
+        </v-toolbar>
         <v-calendar
           ref="calendar"
           v-model="calendar.today"
@@ -25,7 +37,8 @@
 <script>
 export default {
   props: {
-    calendar: Object
+    calendar: Object,
+    selected: Object
   }
 }
 </script>

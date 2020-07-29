@@ -24,7 +24,8 @@
       dark
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <v-toolbar-title style="color:#FFA500">Screen Manager</v-toolbar-title>
+      <!-- <v-toolbar-title style="color:#FFA500">Screen Manager</v-toolbar-title> -->
+      <v-toolbar-title style="color:#FFF">Screen Manager</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-app-bar-nav-icon @click.stop="drawerRight = !drawerRight"></v-app-bar-nav-icon>
     </v-app-bar>
@@ -131,7 +132,10 @@
                   <v-tab-item>
                     <v-card flat>
                       
-                      <calendar :calendar="calendar"></calendar>
+                      <calendar 
+                        :calendar="calendar"
+                        :selected="selected"
+                      ></calendar>
 
                     </v-card>
                   </v-tab-item>
@@ -140,6 +144,7 @@
                     <info_component
                       :screen_autologin="screen_autologin"
                       :screen_now_showing="screen_now_showing"
+                      :selected="selected"
                     ></info_component>
 
                   </v-tab-item>
@@ -206,6 +211,8 @@ import add_outlet_component from './AddOutletComponent'
         // outlet list
         outlet: null,
         screen: null,
+        screen_name: null,
+        // schedule
         screen_schedule: null
       },
       outlets: null,

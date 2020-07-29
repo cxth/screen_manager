@@ -90,7 +90,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     // check every minutes - 1000
     window.setInterval(function () {
       _this.getActiveScreens();
-    }, 1000);
+    }, 60000);
   },
   methods: {
     getActiveScreens: function getActiveScreens(event) {
@@ -470,6 +470,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
@@ -504,6 +509,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         // outlet list
         outlet: null,
         screen: null,
+        screen_name: null,
+        // schedule
         screen_schedule: null
       },
       outlets: null,
@@ -760,9 +767,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
-    calendar: Object
+    calendar: Object,
+    selected: Object
   }
 });
 
@@ -824,8 +844,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['screen_autologin', 'screen_now_showing']
+  props: ['screen_autologin', 'screen_now_showing', 'selected']
 });
 
 /***/ }),
@@ -1053,6 +1086,7 @@ __webpack_require__.r(__webpack_exports__);
         var i = event.currentTarget.id.split('**');
         this.selected.outlet = i[0];
         this.selected.screen = i[1];
+        this.selected.screen_name = i[2];
         this.getScreenSched();
         this.getScreenAutologin();
       }
@@ -1639,7 +1673,7 @@ var render = function() {
             }
           }),
           _vm._v(" "),
-          _c("v-toolbar-title", { staticStyle: { color: "#FFA500" } }, [
+          _c("v-toolbar-title", { staticStyle: { color: "#FFF" } }, [
             _vm._v("Screen Manager")
           ]),
           _vm._v(" "),
@@ -1883,7 +1917,10 @@ var render = function() {
                                       { attrs: { flat: "" } },
                                       [
                                         _c("calendar", {
-                                          attrs: { calendar: _vm.calendar }
+                                          attrs: {
+                                            calendar: _vm.calendar,
+                                            selected: _vm.selected
+                                          }
                                         })
                                       ],
                                       1
@@ -1899,7 +1936,8 @@ var render = function() {
                                       attrs: {
                                         screen_autologin: _vm.screen_autologin,
                                         screen_now_showing:
-                                          _vm.screen_now_showing
+                                          _vm.screen_now_showing,
+                                        selected: _vm.selected
                                       }
                                     })
                                   ],
@@ -1984,9 +2022,32 @@ var render = function() {
             "v-sheet",
             {
               staticStyle: { maxWidth: "500px" },
-              attrs: { fullscreen: _vm.$vuetify.breakpoint.mobile }
+              attrs: {
+                fullscreen: _vm.$vuetify.breakpoint.mobile,
+                outlined: ""
+              }
             },
             [
+              _c(
+                "v-toolbar",
+                {
+                  staticClass: "grey darken-4",
+                  attrs: { flat: "", dense: "", dark: "" }
+                },
+                [
+                  _c("v-toolbar-title", [
+                    _vm._v(
+                      "\n          " +
+                        _vm._s(_vm.selected.screen_name) +
+                        "\n        "
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("v-spacer")
+                ],
+                1
+              ),
+              _vm._v(" "),
               _c("v-calendar", {
                 ref: "calendar",
                 attrs: {
@@ -2050,68 +2111,95 @@ var render = function() {
             [
               _c(
                 "v-card",
-                { staticClass: "pa-6", attrs: { outlined: "", tile: "" } },
+                { attrs: { outlined: "", tile: "" } },
                 [
                   _c(
-                    "div",
-                    { staticClass: "pb-2" },
+                    "v-toolbar",
+                    {
+                      staticClass: "grey darken-4",
+                      attrs: { flat: "", dense: "", dark: "" }
+                    },
                     [
-                      _c(
-                        "v-chip",
-                        {
-                          staticClass: "ma-1",
-                          attrs: { color: "primary", outlined: "", pill: "" }
-                        },
-                        [
-                          _vm._v("\n            Auto-Login URL\n            "),
-                          _c("v-icon", { attrs: { right: "" } }, [
-                            _vm._v("mdi-account-key")
-                          ])
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c("span", { staticClass: "font-weight-thin" }, [
+                      _c("v-toolbar-title", [
                         _vm._v(
-                          " \n              " +
-                            _vm._s(_vm.screen_autologin) +
-                            "\n            "
+                          "\n            " +
+                            _vm._s(_vm.selected.screen_name) +
+                            "\n          "
                         )
-                      ])
+                      ]),
+                      _vm._v(" "),
+                      _c("v-spacer")
                     ],
                     1
                   ),
                   _vm._v(" "),
-                  _c(
-                    "div",
-                    { staticClass: "pa-2" },
-                    [
-                      _c(
-                        "v-chip",
-                        {
-                          staticClass: "ma-1",
-                          attrs: { color: "primary", outlined: "", pill: "" }
-                        },
-                        [
-                          _vm._v("\n            Now Showing\n            "),
-                          _c("v-icon", { attrs: { right: "" } }, [
-                            _vm._v("mdi-play-circle")
-                          ])
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c("span", { staticClass: "font-weight-thin" }, [
-                        _vm._v(
-                          " \n              " +
-                            _vm._s(_vm.screen_now_showing) +
-                            "\n            "
-                        )
-                      ])
-                    ],
-                    1
-                  )
-                ]
+                  _c("v-container", { staticClass: "pa-6" }, [
+                    _c(
+                      "div",
+                      { staticClass: "pb-2" },
+                      [
+                        _c(
+                          "v-chip",
+                          {
+                            staticClass: "ma-1",
+                            attrs: { color: "primary", outlined: "", pill: "" }
+                          },
+                          [
+                            _vm._v(
+                              "\n              Auto-Login URL\n              "
+                            ),
+                            _c("v-icon", { attrs: { right: "" } }, [
+                              _vm._v("mdi-account-key")
+                            ])
+                          ],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _c("span", { staticClass: "font-weight-thin" }, [
+                          _vm._v(
+                            " \n                " +
+                              _vm._s(_vm.screen_autologin) +
+                              "\n              "
+                          )
+                        ])
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "pa-2" },
+                      [
+                        _c(
+                          "v-chip",
+                          {
+                            staticClass: "ma-1",
+                            attrs: { color: "primary", outlined: "", pill: "" }
+                          },
+                          [
+                            _vm._v(
+                              "\n              Now Showing\n              "
+                            ),
+                            _c("v-icon", { attrs: { right: "" } }, [
+                              _vm._v("mdi-play-circle")
+                            ])
+                          ],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _c("span", { staticClass: "font-weight-thin" }, [
+                          _vm._v(
+                            " \n                " +
+                              _vm._s(_vm.screen_now_showing) +
+                              "\n              "
+                          )
+                        ])
+                      ],
+                      1
+                    )
+                  ])
+                ],
+                1
               )
             ],
             1
@@ -2436,7 +2524,9 @@ var render = function() {
                                           id:
                                             screen.outlet_name +
                                             "**" +
-                                            screen.id
+                                            screen.id +
+                                            "**" +
+                                            screen.description
                                         },
                                         on: { click: _vm.screenSelect }
                                       },
@@ -2606,7 +2696,7 @@ var render = function() {
                                   _c(
                                     "v-list-item-title",
                                     { staticClass: "headline mb-4" },
-                                    [_vm._v(_vm._s(_vm.selected.screen))]
+                                    [_vm._v(_vm._s(_vm.selected.screen_name))]
                                   )
                                 ],
                                 1

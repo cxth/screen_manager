@@ -62,7 +62,7 @@ import axios from 'axios'
       // check every minutes - 1000
       window.setInterval(() => {
           this.getActiveScreens();
-      },1000);
+      },60000);
     },
     methods: {
       getActiveScreens: function(event) {

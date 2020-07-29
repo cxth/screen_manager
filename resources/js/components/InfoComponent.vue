@@ -6,38 +6,51 @@
     >
       <v-col sm="9">
         <v-card
-          class="pa-6"
           outlined
           tile
         >
-          <div class="pb-2">
-            <v-chip
-              class="ma-1"
-              color="primary"
-              outlined
-              pill
-            >
-              Auto-Login URL
-              <v-icon right>mdi-account-key</v-icon>
-            </v-chip>
-              <span class="font-weight-thin"> 
-                {{ screen_autologin }}
-              </span>
-          </div>
-          <div class="pa-2">
-            <v-chip
-              class="ma-1"
-              color="primary"
-              outlined
-              pill
-            >
-              Now Showing
-              <v-icon right>mdi-play-circle</v-icon>
-            </v-chip>
-              <span class="font-weight-thin"> 
-                {{ screen_now_showing }}
-              </span>
-          </div>
+          <v-toolbar
+            class="grey darken-4"
+            flat
+            dense
+            dark
+          >
+            <v-toolbar-title>
+              {{ selected.screen_name }}
+            </v-toolbar-title>
+            <v-spacer></v-spacer>
+          </v-toolbar>
+
+          <v-container class="pa-6">
+            <div class="pb-2">
+              <v-chip
+                class="ma-1"
+                color="primary"
+                outlined
+                pill
+              >
+                Auto-Login URL
+                <v-icon right>mdi-account-key</v-icon>
+              </v-chip>
+                <span class="font-weight-thin"> 
+                  {{ screen_autologin }}
+                </span>
+            </div>
+            <div class="pa-2">
+              <v-chip
+                class="ma-1"
+                color="primary"
+                outlined
+                pill
+              >
+                Now Showing
+                <v-icon right>mdi-play-circle</v-icon>
+              </v-chip>
+                <span class="font-weight-thin"> 
+                  {{ screen_now_showing }}
+                </span>
+            </div>
+          </v-container>
           
         </v-card>
       </v-col>
@@ -47,7 +60,7 @@
 
 <script>
 export default {
-  props:['screen_autologin','screen_now_showing']
+  props:['screen_autologin','screen_now_showing','selected']
 }
 </script>
 

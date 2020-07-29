@@ -21,7 +21,7 @@
                     <v-list-item-content>
                       <div class="overline mb-4">SCREEN</div>
                       <v-list-item-subtitle>{{ selected.outlet }}</v-list-item-subtitle>
-                      <v-list-item-title class="headline mb-4">{{ selected.screen }}</v-list-item-title>
+                      <v-list-item-title class="headline mb-4">{{ selected.screen_name }}</v-list-item-title>
                     </v-list-item-content>
                   </v-list-item>
                 </v-col>
