@@ -14,30 +14,34 @@
       <v-toolbar-title>Active Screens</v-toolbar-title>
       <v-spacer></v-spacer>
     </v-toolbar>
-    <v-list dense>
-      <v-list-item-group color="primary">
-        <v-list-item
-          v-for="(outlet, i) in outlets"
-          :key="i"
-        >
-          <v-list-item-content>
-            <v-list-item-title v-text="outlet.outlet_name"></v-list-item-title>
-
-             <v-list-item
-                v-for="(screen, i) in screens[outlet.outlet_name]"
-                :key="i"
-              >
-               <v-list-item-icon>
-                <v-icon color="green accent-3">mdi-checkbox-blank-circle</v-icon>
-              </v-list-item-icon>
-              <v-list-item-subtitle v-text="screen.description"></v-list-item-subtitle>
-          
-            </v-list-item>
-          
-          </v-list-item-content>
-        </v-list-item>
-      </v-list-item-group>
-    </v-list>
+    <template v-if="outlets.length">
+      <v-list dense>
+        <v-list-item-group color="primary">
+          <v-list-item 
+            v-for="(outlet, i) in outlets"
+            :key="i"
+          >
+            <v-list-item-content>
+              <v-list-item-title v-text="outlet.outlet_name"></v-list-item-title>
+              <v-list-item
+                  v-for="(screen, i) in screens[outlet.outlet_name]"
+                  :key="i"
+                >
+                <v-list-item-icon>
+                  <v-icon color="green accent-3">mdi-checkbox-blank-circle</v-icon>
+                </v-list-item-icon>
+                <v-list-item-subtitle v-text="screen.description"></v-list-item-subtitle>
+              </v-list-item>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-item-group>
+      </v-list>
+    </template>
+    <template v-else>
+      <v-card>
+        <p class="text-center pa-5" v-text="no_content"></p>
+      </v-card>
+    </template>
   </v-card>
 </template>
 
@@ -45,6 +49,7 @@
 import axios from 'axios'
   export default {
     data: () => ({
+      no_content: 'No active screen',
       screens: [],
       outlets: [],
       timer: ''
@@ -64,9 +69,7 @@ import axios from 'axios'
         console.log('getting active screens..')
         axios.get(`${ this.siteURL }/api/screen/active`)
         .then(response => {
-            console.log(response.data)
             if (response.data.length > 0) {
-              console.log(response.data)
               let data = []
               let active_outlets = []
               let active_screens = []
@@ -83,16 +86,17 @@ import axios from 'axios'
                 }
 
               });
-
               this.outlets = active_outlets
               this.screens = active_screens
-
+            }
+            else
+            {
+              console.log('no active screen')
             }
         })
         .catch(e => {
             this.errors.push(e)
         })
-
       },
       cancelAutoUpdate() { clearInterval(this.timer) }
     },

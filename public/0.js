@@ -66,10 +66,15 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      no_content: 'No active screen',
       screens: [],
       outlets: [],
       timer: ''
@@ -92,10 +97,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       console.log('getting active screens..');
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/screen/active")).then(function (response) {
-        console.log(response.data);
-
         if (response.data.length > 0) {
-          console.log(response.data);
           var data = [];
           var active_outlets = [];
           var active_screens = [];
@@ -111,6 +113,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           });
           _this2.outlets = active_outlets;
           _this2.screens = active_screens;
+        } else {
+          console.log('no active screen');
         }
       })["catch"](function (e) {
         _this2.errors.push(e);
@@ -556,9 +560,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
             combined[Object.keys(arrayItem)].push(Object.values(arrayItem)[0]);
           }
         });
-        _this.outlets = combined; //console.log(this.outlets);
+        _this.outlets = combined;
       })["catch"](function (e) {
         _this.errors.push(e);
+
+        console.log('error getting outlet list');
       });
     },
     getMediaAssets: function getMediaAssets() {
@@ -568,6 +574,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         _this2.media_assets = response.data;
       })["catch"](function (e) {
         _this2.errors.push(e);
+
+        console.log('error getting media assets');
       });
     },
     getLinks: function getLinks() {
@@ -580,9 +588,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         });
         _this3.links = newlinks;
       })["catch"](function (e) {
-        console.log('links not working');
-
         _this3.errors.push(e);
+
+        console.log('error getting links');
       });
     },
     getScreenSched: function getScreenSched() {
@@ -592,25 +600,24 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         method: 'get',
         url: "".concat(this.siteURL, "/api/schedule/ss/").concat(this.selected.screen)
       }).then(function (response) {
-        //console.log('schedule for screen ' + this.selected_screen);
-        //console.log(response.data);
         if (response.data) {
           _this4.selected.screen_schedule = response.data;
           _this4.calendar.events = _this4.eventsFormat();
           _this4.screen_now_showing = "No current content";
 
           if (_this4.calendar.events.length > 0) {
-            _this4.screen_now_showing = _this4.calendar.events[_this4.calendar.events.length - 1].name; //console.log(this.calendar.events[this.calendar.events.length - 1].name);
+            _this4.screen_now_showing = _this4.calendar.events[_this4.calendar.events.length - 1].name;
           }
         }
       })["catch"](function (e) {
         _this4.errors.push(e);
+
+        console.log('error getting schedule');
       });
     },
     getScreenAutologin: function getScreenAutologin() {
       var _this5 = this;
 
-      console.log('getScreenAutologin');
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
         method: 'post',
         url: "".concat(this.siteURL, "/api/screen/login"),
@@ -622,6 +629,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         _this5.screen_autologin = "".concat(_this5.siteURL, "/client?r=").concat(response.data);
       })["catch"](function (e) {
         _this5.errors.push(e);
+
+        console.log('error getting auto login');
       });
     },
     addLink: function addLink(event) {
@@ -637,8 +646,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           url: this.newURL
         }
       }).then(function (response) {
-        alert("Link successfully saved"); //console.log('the link id: ' + response.data)
-
+        alert("Link successfully saved");
         _this6.newURL_id = response.data;
       })["catch"](function (e) {
         _this6.errors.push(e);
@@ -690,7 +698,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       return Object.assign.apply(Object, [{}].concat(_toConsumableArray(objArr)));
     },
     toArray: function toArray(obj) {
-      //return Object.keys(obj).map((key) => [obj[key]]);
       return Object.entries(obj);
     },
     eventsFormat: function eventsFormat() {
@@ -893,14 +900,10 @@ __webpack_require__.r(__webpack_exports__);
     linkSelect: function linkSelect(event) {
       if (event) {
         var i = event.currentTarget.id.split('**');
-        console.log('media asset comp'); //console.log(this.links);
-
         this.selected.mediagroup = i[0];
         this.selected.link = i[1];
         this.selected.link_name = this.links[this.selected.link].name;
         this.selected.link_url = this.links[this.selected.link].url;
-        console.log(this.selected.link_name);
-        console.log(this.selected.link_url);
         this.form.is_form_valid = false;
         this.$emit('linkSelect', 'deliver some values');
       }
@@ -1017,7 +1020,6 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     outletSelect: function outletSelect(event) {
-      console.log('outlet select');
       this.newScreen = "";
     },
     addNewScreen: function addNewScreen(event) {
@@ -1028,11 +1030,7 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
-      console.log('adding new screen'); //console.log(this.newScreen);
-      //console.log(event.currentTarget.id);
-
       var i = event.currentTarget.id.split('**');
-      console.log(event.currentTarget.id);
       axios({
         method: 'post',
         url: "".concat(this.siteURL, "/api/").concat(i[0], "/screen"),
@@ -1051,7 +1049,6 @@ __webpack_require__.r(__webpack_exports__);
     },
     screenSelect: function screenSelect(event) {
       if (event) {
-        console.log(event.currentTarget.id);
         var i = event.currentTarget.id.split('**');
         this.selected.outlet = i[0];
         this.selected.screen = i[1];
@@ -1186,10 +1183,6 @@ __webpack_require__.r(__webpack_exports__);
     addSched: function addSched(event) {
       var _this = this;
 
-      console.log('selected link ');
-      console.log(this.selected.link); //return;
-      // @todo: clean data validation
-
       if (this.selected.screen == null) {
         alert('No screen selected');
         return;
@@ -1225,19 +1218,14 @@ __webpack_require__.r(__webpack_exports__);
         data: mydata
       }).then(function (response) {
         console.log(response);
-        alert("Schedule saved"); // reset mydata
+        alert("Schedule saved");
+        mydata = {};
 
-        mydata = {}; // reset all data
+        _this.resetData();
 
-        _this.resetData(); // @TODO: clear forms on save
-        // refresh schedule
+        _this.getScreenSched();
 
-
-        _this.getScreenSched(); // refresh media assets
-
-
-        _this.getMediaAssets(); // refresh links
-
+        _this.getMediaAssets();
 
         _this.getLinks();
       })["catch"](function (e) {
@@ -1392,68 +1380,81 @@ var render = function() {
         1
       ),
       _vm._v(" "),
-      _c(
-        "v-list",
-        { attrs: { dense: "" } },
-        [
-          _c(
-            "v-list-item-group",
-            { attrs: { color: "primary" } },
-            _vm._l(_vm.outlets, function(outlet, i) {
-              return _c(
-                "v-list-item",
-                { key: i },
-                [
-                  _c(
-                    "v-list-item-content",
-                    [
-                      _c("v-list-item-title", {
-                        domProps: { textContent: _vm._s(outlet.outlet_name) }
-                      }),
-                      _vm._v(" "),
-                      _vm._l(_vm.screens[outlet.outlet_name], function(
-                        screen,
-                        i
-                      ) {
-                        return _c(
-                          "v-list-item",
-                          { key: i },
+      _vm.outlets.length
+        ? [
+            _c(
+              "v-list",
+              { attrs: { dense: "" } },
+              [
+                _c(
+                  "v-list-item-group",
+                  { attrs: { color: "primary" } },
+                  _vm._l(_vm.outlets, function(outlet, i) {
+                    return _c(
+                      "v-list-item",
+                      { key: i },
+                      [
+                        _c(
+                          "v-list-item-content",
                           [
-                            _c(
-                              "v-list-item-icon",
-                              [
-                                _c(
-                                  "v-icon",
-                                  { attrs: { color: "green accent-3" } },
-                                  [_vm._v("mdi-checkbox-blank-circle")]
-                                )
-                              ],
-                              1
-                            ),
-                            _vm._v(" "),
-                            _c("v-list-item-subtitle", {
+                            _c("v-list-item-title", {
                               domProps: {
-                                textContent: _vm._s(screen.description)
+                                textContent: _vm._s(outlet.outlet_name)
                               }
+                            }),
+                            _vm._v(" "),
+                            _vm._l(_vm.screens[outlet.outlet_name], function(
+                              screen,
+                              i
+                            ) {
+                              return _c(
+                                "v-list-item",
+                                { key: i },
+                                [
+                                  _c(
+                                    "v-list-item-icon",
+                                    [
+                                      _c(
+                                        "v-icon",
+                                        { attrs: { color: "green accent-3" } },
+                                        [_vm._v("mdi-checkbox-blank-circle")]
+                                      )
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c("v-list-item-subtitle", {
+                                    domProps: {
+                                      textContent: _vm._s(screen.description)
+                                    }
+                                  })
+                                ],
+                                1
+                              )
                             })
                           ],
-                          1
+                          2
                         )
-                      })
-                    ],
-                    2
-                  )
-                ],
-                1
-              )
-            }),
-            1
-          )
-        ],
-        1
-      )
+                      ],
+                      1
+                    )
+                  }),
+                  1
+                )
+              ],
+              1
+            )
+          ]
+        : [
+            _c("v-card", [
+              _c("p", {
+                staticClass: "text-center pa-5",
+                domProps: { textContent: _vm._s(_vm.no_content) }
+              })
+            ])
+          ]
     ],
-    1
+    2
   )
 }
 var staticRenderFns = []

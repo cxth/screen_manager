@@ -264,10 +264,10 @@ import add_outlet_component from './AddOutletComponent'
               }
             });
             this.outlets = combined;
-            //console.log(this.outlets);
         })
         .catch(e => {
             this.errors.push(e)
+            console.log('error getting outlet list')
         })
       },
 
@@ -278,6 +278,7 @@ import add_outlet_component from './AddOutletComponent'
           })
           .catch(e => {
               this.errors.push(e)
+              console.log('error getting media assets')
           })
       },
 
@@ -292,8 +293,8 @@ import add_outlet_component from './AddOutletComponent'
               this.links = newlinks;
           })
           .catch(e => {
-              console.log('links not working');
               this.errors.push(e)
+              console.log('error getting links')
           })
       },
 
@@ -302,8 +303,6 @@ import add_outlet_component from './AddOutletComponent'
             method: 'get',
             url: `${ this.siteURL }/api/schedule/ss/${ this.selected.screen }`,
         }).then(response => {
-            //console.log('schedule for screen ' + this.selected_screen);
-            //console.log(response.data);
             if (response.data)
             {
               this.selected.screen_schedule = response.data;
@@ -312,17 +311,16 @@ import add_outlet_component from './AddOutletComponent'
               if (this.calendar.events.length > 0) 
               {
                 this.screen_now_showing = this.calendar.events[this.calendar.events.length - 1].name;
-                //console.log(this.calendar.events[this.calendar.events.length - 1].name);
               }
             }
           })
           .catch(e => {
               this.errors.push(e)
+              console.log('error getting schedule')
           });
       },
 
       getScreenAutologin: function() {
-        console.log('getScreenAutologin');
         axios({
             method: 'post',
             url: `${ this.siteURL }/api/screen/login`,
@@ -335,6 +333,7 @@ import add_outlet_component from './AddOutletComponent'
           })
           .catch(e => {
               this.errors.push(e)
+              console.log('error getting auto login')
           });
       },
 
@@ -350,7 +349,6 @@ import add_outlet_component from './AddOutletComponent'
           }
         }).then(response => {
               alert("Link successfully saved");
-              //console.log('the link id: ' + response.data)
               this.newURL_id = response.data;
           })
           .catch(e => {
@@ -400,30 +398,32 @@ import add_outlet_component from './AddOutletComponent'
         }
         return dayjs().format('YYYY-MM-DD HH:mm:ss');
       },
+
       trimObj: function(objArr) {
         return Object.assign({}, ...objArr );
       },
+
       toArray: function(obj) {
-        //return Object.keys(obj).map((key) => [obj[key]]);
         return Object.entries(obj);
       },
+
       eventsFormat: function() {
 
         let esched = [];
         this.selected.screen_schedule.forEach(function (val, key, map) {
-            var event_name = val[Object.keys(val)].link_name
-            var event_start = val[Object.keys(val)].show_datetime
-            var event_end = val[Object.keys(val)].expire_datetime
-            var entry = {
-              name: event_name,
-              start: event_start,
-              end: event_end
-            }
-            if (event_end == null)
-            {
-              delete entry.end;
-            }
-            esched.push(entry);
+          var event_name = val[Object.keys(val)].link_name
+          var event_start = val[Object.keys(val)].show_datetime
+          var event_end = val[Object.keys(val)].expire_datetime
+          var entry = {
+            name: event_name,
+            start: event_start,
+            end: event_end
+          }
+          if (event_end == null)
+          {
+            delete entry.end;
+          }
+          esched.push(entry);
         });
 
         return esched;

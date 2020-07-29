@@ -67,20 +67,14 @@ export default {
     linkSelect: function (event) {
       if (event) {
         var i = event.currentTarget.id.split('**');
-        console.log('media asset comp');
-        //console.log(this.links);
-
         this.selected.mediagroup = i[0];
         this.selected.link = i[1];
         this.selected.link_name = this.links[this.selected.link].name;
         this.selected.link_url = this.links[this.selected.link].url;
-        console.log(this.selected.link_name);
-        console.log(this.selected.link_url);
         this.form.is_form_valid = false 
-
         this.$emit('linkSelect', 'deliver some values')
       }
-    },
+    }
   }
 }
 </script>

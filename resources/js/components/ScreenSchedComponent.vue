@@ -87,7 +87,17 @@
 
 <script>
 export default {
-  props: ['selected','form','is_form_valid','clear_URL','momentNow','resetData','getScreenSched','getMediaAssets','getLinks'],
+  props: [
+    'selected',
+    'form',
+    'is_form_valid',
+    'clear_URL',
+    'momentNow',
+    'resetData',
+    'getScreenSched',
+    'getMediaAssets',
+    'getLinks'
+  ],
   data: () => ({
     newURL: "",
     newURL_name: "",
@@ -103,11 +113,6 @@ export default {
   },
   methods: {
       addSched: function(event) {
-
-        console.log('selected link ');
-        console.log(this.selected.link);
-        //return;
-        // @todo: clean data validation
         if (this.selected.screen == null)
         {
           alert('No screen selected');
@@ -148,22 +153,16 @@ export default {
             url: `${ this.siteURL }/api/schedule/screen/${ this.selected.screen }`,
             data: mydata
         }).then(response => {
-              console.log(response);
-              alert("Schedule saved");
-              // reset mydata
-              mydata = {}
-              // reset all data
-              this.resetData()
-              // @TODO: clear forms on save
-              // refresh schedule
-              this.getScreenSched()
-              // refresh media assets
-              this.getMediaAssets()
-              // refresh links
-              this.getLinks()
+            console.log(response);
+            alert("Schedule saved");
+            mydata = {}
+            this.resetData()
+            this.getScreenSched()
+            this.getMediaAssets()
+            this.getLinks()
           })
           .catch(e => {
-              this.errors.push(e)
+            this.errors.push(e)
           });
       },
       // new URL keyup
@@ -177,7 +176,6 @@ export default {
         this.$emit('disableMedia', 'message from disable media')
       },
   }
-
 }
 </script>
 

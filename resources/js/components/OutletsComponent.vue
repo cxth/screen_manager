@@ -101,8 +101,6 @@ export default {
   },
   methods: {
     outletSelect: function (event) {
-
-      console.log('outlet select');
       this.newScreen = ""; 
     },
 
@@ -113,11 +111,7 @@ export default {
         return
       }
 
-      console.log('adding new screen');
-      //console.log(this.newScreen);
-      //console.log(event.currentTarget.id);
       var i = event.currentTarget.id.split('**');
-      console.log(event.currentTarget.id);
       axios({
         method: 'post',
         url: `${ this.siteURL }/api/${ i[0] }/screen`,
@@ -136,9 +130,9 @@ export default {
               this.errors.push(e)
           });
     },
+
     screenSelect: function (event) {
       if (event) {
-        console.log(event.currentTarget.id);
         var i = event.currentTarget.id.split('**');
         this.selected.outlet = i[0];
         this.selected.screen = i[1];
@@ -146,12 +140,11 @@ export default {
         this.getScreenAutologin()
       }
     },
+
     openLink: function(link) {
       window.open(`${ this.siteURL }/admin/${ link }`);
     }
-
-  },
-  
+  }
 }
 </script>
 
