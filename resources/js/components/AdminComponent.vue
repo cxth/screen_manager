@@ -53,6 +53,7 @@
         :selected="selected"
         :getScreenSched="getScreenSched"
         :getScreenAutologin="getScreenAutologin"
+        :getScreenNotes="getScreenNotes"
         :getOutlets="getOutlets"
         ></outlets_component>
 
@@ -144,7 +145,13 @@
                     <info_component
                       :screen_autologin="screen_autologin"
                       :screen_now_showing="screen_now_showing"
+                      :getScreenNotes="getScreenNotes"
+                      :screen_resolution="screen_resolution"
+                      :screen_activation_dates="screen_activation_dates"
+                      :screen_equipment_model_installed="screen_equipment_model_installed"
+                      :screen_teamviewer_details="screen_teamviewer_details"
                       :selected="selected"
+                      :testlang="testlang"
                     ></info_component>
 
                   </v-tab-item>
@@ -202,6 +209,11 @@ import add_outlet_component from './AddOutletComponent'
     data: () => ({
       screen_autologin: null,
       screen_now_showing: null,
+      screen_resolution: null,
+      screen_activation_dates: null,
+      screen_equipment_model_installed: null,
+      screen_teamviewer_details: null,
+
       selected: {
         // media assets
         mediagroup: null,
@@ -212,9 +224,15 @@ import add_outlet_component from './AddOutletComponent'
         outlet: null,
         screen: null,
         screen_name: null,
+        screen_resolution: null,
+        screen_activation_dates: null,
+        screen_equipment_model_installed: null,
+        screen_teamviewer_details: null,
+
         // schedule
         screen_schedule: null
       },
+      testlang: '',
       outlets: null,
       media_assets: null,
       links: null,
@@ -261,6 +279,7 @@ import add_outlet_component from './AddOutletComponent'
       getOutlets() {
         axios.get(`${ this.siteURL }/api/screen/all`)
         .then(response => {
+            //console.log(response.data);
             let combined = {};
             response.data.forEach(function (arrayItem) {
               if (!(Object.keys(arrayItem) in combined)) {
@@ -341,6 +360,30 @@ import add_outlet_component from './AddOutletComponent'
           .catch(e => {
               this.errors.push(e)
               console.log('error getting auto login')
+          });
+      },
+
+      getScreenNotes: function() {
+        console.log('getting notes..')
+        this.screen_resolution = ''
+        this.screen_equipment_model_installed = ''
+        this.screen_teamviewer_details = ''
+        axios({
+            method: 'get',
+            url: `${ this.siteURL }/api/getscreen/${ this.selected.screen }`,
+        }).then(response => {
+            if (response.data)
+            {
+              this.testlang = response.data.resolution
+              this.screen_resolution = response.data.resolution
+              this.screen_activation_dates = response.data.activation_date
+              this.screen_equipment_model_installed = response.data.equipment_model_installed
+              this.screen_teamviewer_details = response.data.teamviewer_details
+            }
+          })
+          .catch(e => {
+              this.errors.push(e)
+              console.log('error getting schedule')
           });
       },
 

@@ -87,10 +87,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     var _this = this;
 
     // check every 5 minutes - 300000
-    // check every minutes - 1000
+    // check every minutes - 60000
     window.setInterval(function () {
       _this.getActiveScreens();
-    }, 60000);
+    }, 300000);
   },
   methods: {
     getActiveScreens: function getActiveScreens(event) {
@@ -475,6 +475,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -500,6 +507,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     return {
       screen_autologin: null,
       screen_now_showing: null,
+      screen_resolution: null,
+      screen_activation_dates: null,
+      screen_equipment_model_installed: null,
+      screen_teamviewer_details: null,
       selected: {
         // media assets
         mediagroup: null,
@@ -510,9 +521,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         outlet: null,
         screen: null,
         screen_name: null,
+        screen_resolution: null,
+        screen_activation_dates: null,
+        screen_equipment_model_installed: null,
+        screen_teamviewer_details: null,
         // schedule
         screen_schedule: null
       },
+      testlang: '',
       outlets: null,
       media_assets: null,
       links: null,
@@ -560,6 +576,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       var _this = this;
 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/screen/all")).then(function (response) {
+        //console.log(response.data);
         var combined = {};
         response.data.forEach(function (arrayItem) {
           if (!(Object.keys(arrayItem) in combined)) {
@@ -641,8 +658,32 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         console.log('error getting auto login');
       });
     },
-    addLink: function addLink(event) {
+    getScreenNotes: function getScreenNotes() {
       var _this6 = this;
+
+      console.log('getting notes..');
+      this.screen_resolution = '';
+      this.screen_equipment_model_installed = '';
+      this.screen_teamviewer_details = '';
+      axios__WEBPACK_IMPORTED_MODULE_0___default()({
+        method: 'get',
+        url: "".concat(this.siteURL, "/api/getscreen/").concat(this.selected.screen)
+      }).then(function (response) {
+        if (response.data) {
+          _this6.testlang = response.data.resolution;
+          _this6.screen_resolution = response.data.resolution;
+          _this6.screen_activation_dates = response.data.activation_date;
+          _this6.screen_equipment_model_installed = response.data.equipment_model_installed;
+          _this6.screen_teamviewer_details = response.data.teamviewer_details;
+        }
+      })["catch"](function (e) {
+        _this6.errors.push(e);
+
+        console.log('error getting schedule');
+      });
+    },
+    addLink: function addLink(event) {
+      var _this7 = this;
 
       var newlink = null;
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
@@ -655,23 +696,23 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         }
       }).then(function (response) {
         alert("Link successfully saved");
-        _this6.newURL_id = response.data;
+        _this7.newURL_id = response.data;
       })["catch"](function (e) {
-        _this6.errors.push(e);
+        _this7.errors.push(e);
       });
     },
     deleteLink: function deleteLink(event) {
-      var _this7 = this;
+      var _this8 = this;
 
       if (confirm("DANGER! Are you sure you like to DELETE this link?")) {
         axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("".concat(this.siteURL, "/api/l/").concat(event)).then(function (response) {
           alert("link deleted");
 
-          _this7.getMediaAssets();
+          _this8.getMediaAssets();
 
-          _this7.resetData();
+          _this8.resetData();
         })["catch"](function (e) {
-          _this7.errors.push(e);
+          _this8.errors.push(e);
         });
       }
 
@@ -684,13 +725,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.selected.mediagroup = null;
     },
     logout: function logout() {
-      var _this8 = this;
+      var _this9 = this;
 
       if (confirm("Are you sure you like to logout?")) {
         axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/logout")).then(function (response) {
           location.reload();
         })["catch"](function (e) {
-          _this8.errors.push(e);
+          _this9.errors.push(e);
         });
       }
     },
@@ -857,8 +898,196 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['screen_autologin', 'screen_now_showing', 'selected']
+  props: ['screen_autologin', 'screen_now_showing', 'getScreenNotes', 'screen_resolution', 'screen_activation_dates', 'screen_equipment_model_installed', 'screen_teamviewer_details', 'selected', 'testlang'],
+  data: function data() {
+    return {
+      int_resolution: '',
+      int_equipment_model: '',
+      int_teamviewer: ''
+    };
+  },
+  methods: {
+    saveScreenNotes: function saveScreenNotes(event) {
+      var _this = this;
+
+      console.log('saving saveScreenNotes');
+      var mydata = {
+        id: this.selected.screen,
+        resolution: this.int_resolution ? this.int_resolution : this.screen_resolution,
+        equipment_model_installed: this.int_equipment_model ? this.int_equipment_model : this.screen_equipment_model_installed,
+        teamviewer_details: this.int_teamviewer ? this.int_teamviewer : this.screen_teamviewer_details
+      };
+
+      if (event == "resolution") {
+        mydata.resolution = this.int_resolution;
+      }
+
+      if (event == "equipment") {
+        mydata.equipment_model_installed = this.int_equipment_model;
+      }
+
+      if (event == "teamviewer") {
+        mydata.teamviewer_details = this.int_teamviewer;
+      }
+
+      console.log(mydata);
+      axios({
+        method: 'post',
+        url: "".concat(this.siteURL, "/api/getscreen"),
+        data: mydata
+      }).then(function (response) {
+        console.log(response.data);
+
+        if (response.data != "no-request") {//this.getScreenNotes()
+        }
+      })["catch"](function (e) {
+        _this.errors.push(e);
+
+        console.log('error getting auto login');
+      });
+    }
+  },
+  created: function created() {
+    console.log('testlang: ' + this.testlang);
+    this.int_resolution = this.screen_resolution;
+    this.int_equipment_model = this.screen_equipment_model_installed;
+    this.int_teamviewer = this.screen_teamviewer_details;
+  },
+  computed: {
+    resolution: {
+      get: function get(event) {
+        return this.screen_resolution;
+      },
+      set: function set(newValue) {
+        this.int_resolution = newValue;
+      }
+    },
+    equipment_model_installed: {
+      get: function get(event) {
+        return this.screen_equipment_model_installed;
+      },
+      set: function set(newValue) {
+        this.int_equipment_model = newValue;
+      }
+    },
+    teamviewer: {
+      get: function get(event) {
+        return this.screen_teamviewer_details;
+      },
+      set: function set(newValue) {
+        this.int_teamviewer = newValue;
+      }
+    }
+  }
 });
 
 /***/ }),
@@ -1041,7 +1270,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['outlets', 'selected', 'getScreenSched', 'getScreenAutologin', 'getOutlets'],
+  props: ['outlets', 'selected', 'getScreenSched', 'getScreenAutologin', 'getScreenNotes', 'getOutlets'],
   data: function data() {
     return {
       newScreen: "",
@@ -1082,6 +1311,8 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     screenSelect: function screenSelect(event) {
+      console.log('selecting screen');
+
       if (event) {
         var i = event.currentTarget.id.split('**');
         this.selected.outlet = i[0];
@@ -1089,6 +1320,7 @@ __webpack_require__.r(__webpack_exports__);
         this.selected.screen_name = i[2];
         this.getScreenSched();
         this.getScreenAutologin();
+        this.getScreenNotes();
       }
     },
     openLink: function openLink(link) {
@@ -1786,6 +2018,7 @@ var render = function() {
               selected: _vm.selected,
               getScreenSched: _vm.getScreenSched,
               getScreenAutologin: _vm.getScreenAutologin,
+              getScreenNotes: _vm.getScreenNotes,
               getOutlets: _vm.getOutlets
             }
           })
@@ -1937,7 +2170,17 @@ var render = function() {
                                         screen_autologin: _vm.screen_autologin,
                                         screen_now_showing:
                                           _vm.screen_now_showing,
-                                        selected: _vm.selected
+                                        getScreenNotes: _vm.getScreenNotes,
+                                        screen_resolution:
+                                          _vm.screen_resolution,
+                                        screen_activation_dates:
+                                          _vm.screen_activation_dates,
+                                        screen_equipment_model_installed:
+                                          _vm.screen_equipment_model_installed,
+                                        screen_teamviewer_details:
+                                          _vm.screen_teamviewer_details,
+                                        selected: _vm.selected,
+                                        testlang: _vm.testlang
                                       }
                                     })
                                   ],
@@ -2133,71 +2376,366 @@ var render = function() {
                     1
                   ),
                   _vm._v(" "),
-                  _c("v-container", { staticClass: "pa-6" }, [
-                    _c(
-                      "div",
-                      { staticClass: "pb-2" },
-                      [
-                        _c(
-                          "v-chip",
-                          {
-                            staticClass: "ma-1",
-                            attrs: { color: "primary", outlined: "", pill: "" }
-                          },
+                  _c(
+                    "v-container",
+                    {
+                      staticClass: "pa-6",
+                      attrs: { align: "center", justify: "center" }
+                    },
+                    [
+                      _c(
+                        "v-row",
+                        { attrs: { "no-gutters": "" } },
+                        [
                           [
-                            _vm._v(
-                              "\n              Auto-Login URL\n              "
+                            _c(
+                              "v-col",
+                              { attrs: { lg: "3" } },
+                              [
+                                _c(
+                                  "v-card",
+                                  {
+                                    staticClass: "pa-2 pr-6",
+                                    attrs: {
+                                      flat: "",
+                                      tile: "",
+                                      color: "teal",
+                                      align: "right"
+                                    }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                  Auto-Login URL\n                "
+                                    )
+                                  ]
+                                )
+                              ],
+                              1
                             ),
-                            _c("v-icon", { attrs: { right: "" } }, [
-                              _vm._v("mdi-account-key")
-                            ])
-                          ],
-                          1
-                        ),
-                        _vm._v(" "),
-                        _c("span", { staticClass: "font-weight-thin" }, [
-                          _vm._v(
-                            " \n                " +
-                              _vm._s(_vm.screen_autologin) +
-                              "\n              "
-                          )
-                        ])
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      { staticClass: "pa-2" },
-                      [
-                        _c(
-                          "v-chip",
-                          {
-                            staticClass: "ma-1",
-                            attrs: { color: "primary", outlined: "", pill: "" }
-                          },
+                            _vm._v(" "),
+                            _c(
+                              "v-col",
+                              { attrs: { lg: "8" } },
+                              [
+                                _c(
+                                  "v-card",
+                                  {
+                                    staticClass: "pa-2",
+                                    attrs: { flat: "", tile: "" }
+                                  },
+                                  [
+                                    _c("v-text-field", {
+                                      attrs: {
+                                        "single-line": "",
+                                        dense: "",
+                                        readonly: ""
+                                      },
+                                      model: {
+                                        value: _vm.screen_autologin,
+                                        callback: function($$v) {
+                                          _vm.screen_autologin = $$v
+                                        },
+                                        expression: "screen_autologin"
+                                      }
+                                    })
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            )
+                          ]
+                        ],
+                        2
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-row",
+                        { attrs: { "no-gutters": "" } },
+                        [
                           [
-                            _vm._v(
-                              "\n              Now Showing\n              "
+                            _c(
+                              "v-col",
+                              { attrs: { lg: "3" } },
+                              [
+                                _c(
+                                  "v-card",
+                                  {
+                                    staticClass: "pa-2 pr-6",
+                                    attrs: {
+                                      flat: "",
+                                      tile: "",
+                                      color: "teal",
+                                      align: "right"
+                                    }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                  Now Showing\n                "
+                                    )
+                                  ]
+                                )
+                              ],
+                              1
                             ),
-                            _c("v-icon", { attrs: { right: "" } }, [
-                              _vm._v("mdi-play-circle")
-                            ])
-                          ],
-                          1
-                        ),
-                        _vm._v(" "),
-                        _c("span", { staticClass: "font-weight-thin" }, [
-                          _vm._v(
-                            " \n                " +
-                              _vm._s(_vm.screen_now_showing) +
-                              "\n              "
-                          )
-                        ])
-                      ],
-                      1
-                    )
-                  ])
+                            _vm._v(" "),
+                            _c(
+                              "v-col",
+                              { attrs: { lg: "8" } },
+                              [
+                                _c(
+                                  "v-card",
+                                  {
+                                    staticClass: "pa-2",
+                                    attrs: { flat: "", tile: "" }
+                                  },
+                                  [
+                                    _c("v-text-field", {
+                                      attrs: {
+                                        "single-line": "",
+                                        dense: "",
+                                        readonly: ""
+                                      },
+                                      model: {
+                                        value: _vm.screen_now_showing,
+                                        callback: function($$v) {
+                                          _vm.screen_now_showing = $$v
+                                        },
+                                        expression: "screen_now_showing"
+                                      }
+                                    })
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            )
+                          ]
+                        ],
+                        2
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-row",
+                        { attrs: { "no-gutters": "" } },
+                        [
+                          [
+                            _c(
+                              "v-col",
+                              { attrs: { lg: "3" } },
+                              [
+                                _c(
+                                  "v-card",
+                                  {
+                                    staticClass: "pa-2 pr-6",
+                                    attrs: {
+                                      flat: "",
+                                      tile: "",
+                                      color: "teal",
+                                      align: "right"
+                                    }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                  Resolution\n                "
+                                    )
+                                  ]
+                                )
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-col",
+                              { attrs: { lg: "8" } },
+                              [
+                                _c(
+                                  "v-card",
+                                  {
+                                    staticClass: "pa-2",
+                                    attrs: { flat: "", tile: "" }
+                                  },
+                                  [
+                                    _c("v-text-field", {
+                                      attrs: {
+                                        "single-line": "",
+                                        dense: "",
+                                        "append-outer-icon": "mdi-pencil"
+                                      },
+                                      on: {
+                                        "click:append-outer": function($event) {
+                                          return _vm.saveScreenNotes(
+                                            "resolution"
+                                          )
+                                        }
+                                      },
+                                      model: {
+                                        value: _vm.resolution,
+                                        callback: function($$v) {
+                                          _vm.resolution = $$v
+                                        },
+                                        expression: "resolution"
+                                      }
+                                    })
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            )
+                          ]
+                        ],
+                        2
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-row",
+                        { attrs: { "no-gutters": "" } },
+                        [
+                          [
+                            _c(
+                              "v-col",
+                              { attrs: { lg: "3" } },
+                              [
+                                _c(
+                                  "v-card",
+                                  {
+                                    staticClass: "pa-2 pr-6",
+                                    attrs: {
+                                      flat: "",
+                                      tile: "",
+                                      color: "teal",
+                                      align: "right"
+                                    }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                  Equipment Model\n                "
+                                    )
+                                  ]
+                                )
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-col",
+                              { attrs: { lg: "8" } },
+                              [
+                                _c(
+                                  "v-card",
+                                  {
+                                    staticClass: "pa-2",
+                                    attrs: { flat: "", tile: "" }
+                                  },
+                                  [
+                                    _c("v-text-field", {
+                                      attrs: {
+                                        "single-line": "",
+                                        dense: "",
+                                        "append-outer-icon": "mdi-pencil"
+                                      },
+                                      on: {
+                                        "click:append-outer": function($event) {
+                                          return _vm.saveScreenNotes(
+                                            "equipment"
+                                          )
+                                        }
+                                      },
+                                      model: {
+                                        value: _vm.equipment_model_installed,
+                                        callback: function($$v) {
+                                          _vm.equipment_model_installed = $$v
+                                        },
+                                        expression: "equipment_model_installed"
+                                      }
+                                    })
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            )
+                          ]
+                        ],
+                        2
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-row",
+                        { attrs: { "no-gutters": "" } },
+                        [
+                          [
+                            _c(
+                              "v-col",
+                              { attrs: { lg: "3" } },
+                              [
+                                _c(
+                                  "v-card",
+                                  {
+                                    staticClass: "pa-2 pr-6",
+                                    attrs: {
+                                      flat: "",
+                                      tile: "",
+                                      color: "teal",
+                                      align: "right"
+                                    }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                  Team Viewer Details\n                "
+                                    )
+                                  ]
+                                )
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-col",
+                              { attrs: { lg: "8" } },
+                              [
+                                _c(
+                                  "v-card",
+                                  {
+                                    staticClass: "pa-2",
+                                    attrs: { flat: "", tile: "" }
+                                  },
+                                  [
+                                    _c("v-text-field", {
+                                      attrs: {
+                                        "single-line": "",
+                                        dense: "",
+                                        "append-outer-icon": "mdi-pencil"
+                                      },
+                                      on: {
+                                        "click:append-outer": function($event) {
+                                          return _vm.saveScreenNotes(
+                                            "teamviewer"
+                                          )
+                                        }
+                                      },
+                                      model: {
+                                        value: _vm.teamviewer,
+                                        callback: function($$v) {
+                                          _vm.teamviewer = $$v
+                                        },
+                                        expression: "teamviewer"
+                                      }
+                                    })
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            )
+                          ]
+                        ],
+                        2
+                      )
+                    ],
+                    1
+                  )
                 ],
                 1
               )

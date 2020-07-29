@@ -29,6 +29,20 @@ class ScreenController extends Controller
         return ScreenResource::collection($result);
     }
 
+    /**
+     * Get screen details
+     *
+     * @return \Illuminate\Http\Response
+     * @url /api/screen/all
+     */
+    public function getData(Screen $screen)
+    {
+        return $screen;
+      
+        // $result = Screen::find($screen);
+        // return ScreenResource::collection($result);
+    }
+
     public function getActive()
     {
         $minutes = env('SCREEN_ACTIVE_TIMEOUT', 15); 
@@ -117,6 +131,25 @@ class ScreenController extends Controller
     public function edit(Screen $screen)
     {
         //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Model\Screen  $screen
+     * @return \Illuminate\Http\Response
+     */
+    public function updateData(Request $request)
+    {
+        if ($request) {
+          $screen = Screen::find($request->id);
+          $screen->resolution = $request->resolution;
+          $screen->equipment_model_installed = $request->equipment_model_installed;
+          $screen->teamviewer_details = $request->teamviewer_details;
+          $screen->save();
+          return $screen;
+        }
+        return "no-request";
     }
 
     /**

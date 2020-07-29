@@ -89,6 +89,7 @@ export default {
     'selected',
     'getScreenSched',
     'getScreenAutologin',
+    'getScreenNotes',
     'getOutlets'
   ],
   data() {
@@ -132,6 +133,7 @@ export default {
     },
 
     screenSelect: function (event) {
+      console.log('selecting screen');
       if (event) {
         var i = event.currentTarget.id.split('**');
         this.selected.outlet = i[0];
@@ -139,6 +141,7 @@ export default {
         this.selected.screen_name = i[2];
         this.getScreenSched()
         this.getScreenAutologin()
+        this.getScreenNotes()
       }
     },
 

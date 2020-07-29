@@ -59,10 +59,10 @@ import axios from 'axios'
     },
     mounted: function () {
       // check every 5 minutes - 300000
-      // check every minutes - 1000
+      // check every minutes - 60000
       window.setInterval(() => {
           this.getActiveScreens();
-      },60000);
+      },300000);
     },
     methods: {
       getActiveScreens: function(event) {
