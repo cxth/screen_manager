@@ -1,6 +1,6 @@
 <template>
   <v-app id="inspire">
-    <v-navigation-drawer
+    <v-navigation-drawer v-if="selected.screen"
       v-model="drawerRight"
       app
       clipped
@@ -24,7 +24,6 @@
       dark
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-      <!-- <v-toolbar-title style="color:#FFA500">Screen Manager</v-toolbar-title> -->
       <v-toolbar-title style="color:#FFF">Screen Manager</v-toolbar-title>
       <v-spacer></v-spacer>
       <v-app-bar-nav-icon @click.stop="drawerRight = !drawerRight"></v-app-bar-nav-icon>
@@ -101,15 +100,15 @@
 
               <v-card>
                 <v-tabs left dense>
-                  <v-tab>
+                  <v-tab v-if="selected.screen">
                     <v-icon left>mdi-play-box-outline</v-icon>
                     SCREEN
                   </v-tab>
-                  <v-tab>
+                  <v-tab v-if="selected.screen">
                     <v-icon left>mdi-calendar-clock</v-icon>
                     SCHEDULE
                   </v-tab>
-                  <v-tab>
+                  <v-tab v-if="selected.screen">
                     <v-icon left>mdi-more</v-icon>
                     INFO
                   </v-tab>
@@ -117,8 +116,8 @@
                     <v-icon left>mdi-plus</v-icon>
                     ADD OUTLET
                   </v-tab>
-                  <v-tab-item>
-                    
+
+                  <v-tab-item v-if="selected.screen">
                     <screensched_component
                       :selected="selected"
                       :form="form"
@@ -130,20 +129,16 @@
                       :getMediaAssets="getMediaAssets"
                       :getLinks="getLinks">
                     </screensched_component>
-
                   </v-tab-item>
-                  <v-tab-item>
+                  <v-tab-item v-if="selected.screen">
                     <v-card flat>
-                      
                       <calendar 
                         :calendar="calendar"
                         :selected="selected"
                       ></calendar>
-
                     </v-card>
                   </v-tab-item>
-                  <v-tab-item>
-          
+                  <v-tab-item v-if="selected.screen">
                     <info_component
                       :screen_autologin="screen_autologin"
                       :screen_now_showing="screen_now_showing"
@@ -152,6 +147,7 @@
                       :screen_equipment_model_installed="screen_equipment_model_installed"
                       :screen_teamviewer_details="screen_teamviewer_details"
                       :selected="selected"
+                      @saveScreenNotes="refreshScreen($event)"
                     ></info_component>
 
                   </v-tab-item>
@@ -373,6 +369,17 @@ import add_outlet_component from './AddOutletComponent'
             this.errors.push(e)
             console.log('error getting schedule')
         });
+      },
+
+      /**
+       * @attached to saveScreenNotes()
+       * @on info_component
+       * @use to get new screen name
+       * @return selected.screen_name
+       */
+      refreshScreen: function(new_screen_name) {
+        this.selected.screen_name = new_screen_name
+        this.getOutlets()
       },
 
       /**

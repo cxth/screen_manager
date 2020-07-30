@@ -478,10 +478,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
-//
-//
-//
-//
 
 
 
@@ -674,6 +670,17 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
         console.log('error getting schedule');
       });
+    },
+
+    /**
+     * @attached to saveScreenNotes()
+     * @on info_component
+     * @use to get new screen name
+     * @return selected.screen_name
+     */
+    refreshScreen: function refreshScreen(new_screen_name) {
+      this.selected.screen_name = new_screen_name;
+      this.getOutlets();
     },
 
     /**
@@ -1141,6 +1148,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -1151,20 +1165,25 @@ __webpack_require__.r(__webpack_exports__);
     return {
       int_resolution: '',
       int_equipment_model: '',
-      int_teamviewer: ''
+      int_teamviewer: '',
+      int_screen_name: ''
     };
   },
   methods: {
     saveScreenNotes: function saveScreenNotes(event) {
       var _this = this;
 
-      console.log('saving saveScreenNotes');
       var mydata = {
         id: this.selected.screen,
+        description: this.int_screen_name ? this.int_screen_name : this.selected.screen_name,
         resolution: this.int_resolution ? this.int_resolution : this.screen_resolution,
         equipment_model_installed: this.int_equipment_model ? this.int_equipment_model : this.screen_equipment_model_installed,
         teamviewer_details: this.int_teamviewer ? this.int_teamviewer : this.screen_teamviewer_details
       };
+
+      if (event == "name") {
+        mydata.description = this.int_screen_name;
+      }
 
       if (event == "resolution") {
         mydata.resolution = this.int_resolution;
@@ -1178,6 +1197,7 @@ __webpack_require__.r(__webpack_exports__);
         mydata.teamviewer_details = this.int_teamviewer;
       }
 
+      console.log('saving screen info..');
       console.log(mydata);
       axios({
         method: 'post',
@@ -1192,6 +1212,16 @@ __webpack_require__.r(__webpack_exports__);
 
         console.log('error getting auto login');
       });
+      this.$emit('saveScreenNotes', this.int_screen_name);
+    },
+    renameScreen: function renameScreen() {
+      if (!this.selected.screen) {
+        return;
+      }
+
+      if (confirm("Are you sure you like to rename the screen?")) {
+        this.saveScreenNotes('name');
+      }
     }
   },
   created: function created() {
@@ -1222,6 +1252,14 @@ __webpack_require__.r(__webpack_exports__);
       },
       set: function set(newValue) {
         this.int_teamviewer = newValue;
+      }
+    },
+    screen_name: {
+      get: function get(event) {
+        return this.selected.screen_name;
+      },
+      set: function set(newValue) {
+        this.int_screen_name = newValue;
       }
     }
   }
@@ -2099,36 +2137,38 @@ var render = function() {
     "v-app",
     { attrs: { id: "inspire" } },
     [
-      _c(
-        "v-navigation-drawer",
-        {
-          attrs: { app: "", clipped: "", right: "", width: 300 },
-          model: {
-            value: _vm.drawerRight,
-            callback: function($$v) {
-              _vm.drawerRight = $$v
-            },
-            expression: "drawerRight"
-          }
-        },
-        [
-          _c("media_asset_component", {
-            attrs: {
-              media_assets: _vm.media_assets,
-              selected: _vm.selected,
-              links: _vm.links,
-              form: _vm.form,
-              deleteLink: _vm.deleteLink
-            },
-            on: {
-              linkSelect: function($event) {
-                ;(_vm.screen = $event), _vm.clearnewURL($event)
+      _vm.selected.screen
+        ? _c(
+            "v-navigation-drawer",
+            {
+              attrs: { app: "", clipped: "", right: "", width: 300 },
+              model: {
+                value: _vm.drawerRight,
+                callback: function($$v) {
+                  _vm.drawerRight = $$v
+                },
+                expression: "drawerRight"
               }
-            }
-          })
-        ],
-        1
-      ),
+            },
+            [
+              _c("media_asset_component", {
+                attrs: {
+                  media_assets: _vm.media_assets,
+                  selected: _vm.selected,
+                  links: _vm.links,
+                  form: _vm.form,
+                  deleteLink: _vm.deleteLink
+                },
+                on: {
+                  linkSelect: function($event) {
+                    ;(_vm.screen = $event), _vm.clearnewURL($event)
+                  }
+                }
+              })
+            ],
+            1
+          )
+        : _vm._e(),
       _vm._v(" "),
       _c(
         "v-app-bar",
@@ -2314,44 +2354,50 @@ var render = function() {
                               "v-tabs",
                               { attrs: { left: "", dense: "" } },
                               [
-                                _c(
-                                  "v-tab",
-                                  [
-                                    _c("v-icon", { attrs: { left: "" } }, [
-                                      _vm._v("mdi-play-box-outline")
-                                    ]),
-                                    _vm._v(
-                                      "\n                  SCREEN\n                "
+                                _vm.selected.screen
+                                  ? _c(
+                                      "v-tab",
+                                      [
+                                        _c("v-icon", { attrs: { left: "" } }, [
+                                          _vm._v("mdi-play-box-outline")
+                                        ]),
+                                        _vm._v(
+                                          "\n                  SCREEN\n                "
+                                        )
+                                      ],
+                                      1
                                     )
-                                  ],
-                                  1
-                                ),
+                                  : _vm._e(),
                                 _vm._v(" "),
-                                _c(
-                                  "v-tab",
-                                  [
-                                    _c("v-icon", { attrs: { left: "" } }, [
-                                      _vm._v("mdi-calendar-clock")
-                                    ]),
-                                    _vm._v(
-                                      "\n                  SCHEDULE\n                "
+                                _vm.selected.screen
+                                  ? _c(
+                                      "v-tab",
+                                      [
+                                        _c("v-icon", { attrs: { left: "" } }, [
+                                          _vm._v("mdi-calendar-clock")
+                                        ]),
+                                        _vm._v(
+                                          "\n                  SCHEDULE\n                "
+                                        )
+                                      ],
+                                      1
                                     )
-                                  ],
-                                  1
-                                ),
+                                  : _vm._e(),
                                 _vm._v(" "),
-                                _c(
-                                  "v-tab",
-                                  [
-                                    _c("v-icon", { attrs: { left: "" } }, [
-                                      _vm._v("mdi-more")
-                                    ]),
-                                    _vm._v(
-                                      "\n                  INFO\n                "
+                                _vm.selected.screen
+                                  ? _c(
+                                      "v-tab",
+                                      [
+                                        _c("v-icon", { attrs: { left: "" } }, [
+                                          _vm._v("mdi-more")
+                                        ]),
+                                        _vm._v(
+                                          "\n                  INFO\n                "
+                                        )
+                                      ],
+                                      1
                                     )
-                                  ],
-                                  1
-                                ),
+                                  : _vm._e(),
                                 _vm._v(" "),
                                 _c(
                                   "v-tab",
@@ -2366,69 +2412,81 @@ var render = function() {
                                   1
                                 ),
                                 _vm._v(" "),
-                                _c(
-                                  "v-tab-item",
-                                  [
-                                    _c("screensched_component", {
-                                      attrs: {
-                                        selected: _vm.selected,
-                                        form: _vm.form,
-                                        clear_URL: _vm.clear_URL,
-                                        momentNow: _vm.momentNow,
-                                        resetData: _vm.resetData,
-                                        getSelectedScreenInfo:
-                                          _vm.getSelectedScreenInfo,
-                                        getScreenSched: _vm.getScreenSched,
-                                        getMediaAssets: _vm.getMediaAssets,
-                                        getLinks: _vm.getLinks
-                                      }
-                                    })
-                                  ],
-                                  1
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "v-tab-item",
-                                  [
-                                    _c(
-                                      "v-card",
-                                      { attrs: { flat: "" } },
+                                _vm.selected.screen
+                                  ? _c(
+                                      "v-tab-item",
                                       [
-                                        _c("calendar", {
+                                        _c("screensched_component", {
                                           attrs: {
-                                            calendar: _vm.calendar,
-                                            selected: _vm.selected
+                                            selected: _vm.selected,
+                                            form: _vm.form,
+                                            clear_URL: _vm.clear_URL,
+                                            momentNow: _vm.momentNow,
+                                            resetData: _vm.resetData,
+                                            getSelectedScreenInfo:
+                                              _vm.getSelectedScreenInfo,
+                                            getScreenSched: _vm.getScreenSched,
+                                            getMediaAssets: _vm.getMediaAssets,
+                                            getLinks: _vm.getLinks
                                           }
                                         })
                                       ],
                                       1
                                     )
-                                  ],
-                                  1
-                                ),
+                                  : _vm._e(),
                                 _vm._v(" "),
-                                _c(
-                                  "v-tab-item",
-                                  [
-                                    _c("info_component", {
-                                      attrs: {
-                                        screen_autologin: _vm.screen_autologin,
-                                        screen_now_showing:
-                                          _vm.screen_now_showing,
-                                        screen_resolution:
-                                          _vm.screen_resolution,
-                                        screen_activation_date:
-                                          _vm.screen_activation_date,
-                                        screen_equipment_model_installed:
-                                          _vm.screen_equipment_model_installed,
-                                        screen_teamviewer_details:
-                                          _vm.screen_teamviewer_details,
-                                        selected: _vm.selected
-                                      }
-                                    })
-                                  ],
-                                  1
-                                ),
+                                _vm.selected.screen
+                                  ? _c(
+                                      "v-tab-item",
+                                      [
+                                        _c(
+                                          "v-card",
+                                          { attrs: { flat: "" } },
+                                          [
+                                            _c("calendar", {
+                                              attrs: {
+                                                calendar: _vm.calendar,
+                                                selected: _vm.selected
+                                              }
+                                            })
+                                          ],
+                                          1
+                                        )
+                                      ],
+                                      1
+                                    )
+                                  : _vm._e(),
+                                _vm._v(" "),
+                                _vm.selected.screen
+                                  ? _c(
+                                      "v-tab-item",
+                                      [
+                                        _c("info_component", {
+                                          attrs: {
+                                            screen_autologin:
+                                              _vm.screen_autologin,
+                                            screen_now_showing:
+                                              _vm.screen_now_showing,
+                                            screen_resolution:
+                                              _vm.screen_resolution,
+                                            screen_activation_date:
+                                              _vm.screen_activation_date,
+                                            screen_equipment_model_installed:
+                                              _vm.screen_equipment_model_installed,
+                                            screen_teamviewer_details:
+                                              _vm.screen_teamviewer_details,
+                                            selected: _vm.selected
+                                          },
+                                          on: {
+                                            saveScreenNotes: function($event) {
+                                              return _vm.refreshScreen($event)
+                                            }
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  : _vm._e(),
                                 _vm._v(" "),
                                 _c(
                                   "v-tab-item",
@@ -2606,13 +2664,31 @@ var render = function() {
                       attrs: { flat: "", dense: "", dark: "" }
                     },
                     [
-                      _c("v-toolbar-title", [
-                        _vm._v(
-                          "\n            " +
-                            _vm._s(_vm.selected.screen_name) +
-                            "\n          "
-                        )
-                      ]),
+                      _c(
+                        "v-toolbar-title",
+                        [
+                          _c("v-text-field", {
+                            staticClass: "pt-8",
+                            attrs: {
+                              "single-line": "",
+                              "append-outer-icon": "mdi-pencil"
+                            },
+                            on: {
+                              "click:append-outer": function($event) {
+                                return _vm.renameScreen("name")
+                              }
+                            },
+                            model: {
+                              value: _vm.screen_name,
+                              callback: function($$v) {
+                                _vm.screen_name = $$v
+                              },
+                              expression: "screen_name"
+                            }
+                          })
+                        ],
+                        1
+                      ),
                       _vm._v(" "),
                       _c("v-spacer")
                     ],

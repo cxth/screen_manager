@@ -16,7 +16,14 @@
             dark
           >
             <v-toolbar-title>
-              {{ selected.screen_name }}
+              <!-- {{ selected.screen_name }} -->
+              <v-text-field
+                single-line
+                class="pt-8"
+                v-model="screen_name"
+                append-outer-icon="mdi-pencil"
+                @click:append-outer="renameScreen('name')"
+              ></v-text-field>
             </v-toolbar-title>
             <v-spacer></v-spacer>
           </v-toolbar>
@@ -210,17 +217,21 @@ export default {
     int_resolution: '',
     int_equipment_model: '',
     int_teamviewer: '',
+    int_screen_name: '',
   }),
   methods: {
     saveScreenNotes: function(event) {
 
-      console.log('saving saveScreenNotes')
-
       let mydata = {
         id: this.selected.screen,
+        description: this.int_screen_name ? this.int_screen_name : this.selected.screen_name,
         resolution: this.int_resolution ? this.int_resolution : this.screen_resolution,
         equipment_model_installed: this.int_equipment_model ? this.int_equipment_model : this.screen_equipment_model_installed,
         teamviewer_details: this.int_teamviewer ? this.int_teamviewer : this.screen_teamviewer_details
+      }
+      if (event == "name")
+      {
+        mydata.description = this.int_screen_name
       }
       if (event == "resolution")
       {
@@ -234,8 +245,10 @@ export default {
       {
         mydata.teamviewer_details = this.int_teamviewer
       }
-
+      
+      console.log('saving screen info..')
       console.log(mydata)
+      
       axios({
           method: 'post',
           url: `${ this.siteURL }/api/getscreen`,
@@ -251,6 +264,17 @@ export default {
           this.errors.push(e)
           console.log('error getting auto login')
       });
+
+      this.$emit('saveScreenNotes',this.int_screen_name)
+    },
+    renameScreen: function() {
+      if (!this.selected.screen)
+      {
+        return
+      }
+      if(confirm("Are you sure you like to rename the screen?")){
+        this.saveScreenNotes('name')
+      }
     }
   },
   created() {
@@ -283,6 +307,14 @@ export default {
         this.int_teamviewer = newValue
       }
     },
+    screen_name: {
+      get: function (event) {
+        return this.selected.screen_name
+      },
+      set: function (newValue) {
+        this.int_screen_name = newValue
+      }
+    }
 
   }
 }
