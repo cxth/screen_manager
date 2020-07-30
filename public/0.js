@@ -536,7 +536,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       newURL_id: null,
       newScreen: null,
       form: {
-        is_form_valid: true
+        is_form_valid: false
       },
       // Layout
       drawer: null,
@@ -559,6 +559,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     this.calendar.today = this.momentNow('date');
   },
   methods: {
+    /**
+     * @attached to LinkSelect()
+     * @used to enable `custom URL` fields
+     * @return null
+     */
     clearnewURL: function clearnewURL(event) {
       this.form.is_form_valid = false;
 
@@ -572,6 +577,12 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         return;
       }
     },
+
+    /**
+     * @attached to created()
+     * @used to get outlet list
+     * @return this.outlets Array
+     */
     getOutlets: function getOutlets() {
       var _this = this;
 
@@ -592,6 +603,12 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         console.log('error getting outlet list');
       });
     },
+
+    /**
+     * @attached to created()
+     * @used to get media assets group
+     * @return this.media_assets Array
+     */
     getMediaAssets: function getMediaAssets() {
       var _this2 = this;
 
@@ -603,6 +620,12 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         console.log('error getting media assets');
       });
     },
+
+    /**
+     * @attached to created()
+     * @used to get links
+     * @return this.links Array
+     */
     getLinks: function getLinks() {
       var _this3 = this;
 
@@ -618,21 +641,33 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         console.log('error getting links');
       });
     },
-    getScreenSched: function getScreenSched() {
+
+    /**
+     * @attached to screenSelect()
+     * @on outlet_component
+     * @use to get select screen current content
+     * @return selected.mediagroup, selected.link_name
+     */
+    getSelectedScreenInfo: function getSelectedScreenInfo(screen) {
       var _this4 = this;
+
+      console.log('getSelectedScreenInfo...'); // get content of screen
 
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
         method: 'get',
-        url: "".concat(this.siteURL, "/api/schedule/ss/").concat(this.selected.screen)
+        url: "".concat(this.siteURL, "/api/schedule/ss/").concat(screen[1])
       }).then(function (response) {
-        if (response.data) {
-          _this4.selected.screen_schedule = response.data;
-          _this4.calendar.events = _this4.eventsFormat();
-          _this4.screen_now_showing = "No current content";
+        _this4.selected.link_name = '';
+        _this4.selected.mediagroup = '';
+        _this4.screen_now_showing = "No current content";
+        _this4.form.is_form_valid = true;
 
-          if (_this4.calendar.events.length > 0) {
-            _this4.screen_now_showing = _this4.calendar.events[_this4.calendar.events.length - 1].name;
-          }
+        if (response.data.length > 0) {
+          console.log(response.data);
+          _this4.selected.link_name = response.data[0][_this4.selected.outlet].link_name;
+          _this4.screen_now_showing = response.data[0][_this4.selected.outlet].link_name;
+          _this4.selected.mediagroup = response.data[0][_this4.selected.outlet].media_asset_name;
+          _this4.form.is_form_valid = false;
         }
       })["catch"](function (e) {
         _this4.errors.push(e);
@@ -640,8 +675,39 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         console.log('error getting schedule');
       });
     },
-    getScreenAutologin: function getScreenAutologin() {
+
+    /**
+     * @attached to props
+     * @on outlet_component
+     * @use to get select screen current schedule for calendar component
+     * @return selected.screen_schedule, calendar.events, screen_now_showing
+     */
+    getScreenSched: function getScreenSched() {
       var _this5 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default()({
+        method: 'get',
+        url: "".concat(this.siteURL, "/api/schedule/ss/").concat(this.selected.screen)
+      }).then(function (response) {
+        if (response.data) {
+          _this5.selected.screen_schedule = response.data;
+          _this5.calendar.events = _this5.eventsFormat();
+        }
+      })["catch"](function (e) {
+        _this5.errors.push(e);
+
+        console.log('error getting schedule');
+      });
+    },
+
+    /**
+     * @attached to props
+     * @on outlet_component
+     * @use to get selected screen auto-login for info component
+     * @return screen_autologin
+     */
+    getScreenAutologin: function getScreenAutologin() {
+      var _this6 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
         method: 'post',
@@ -651,15 +717,22 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         }
       }).then(function (response) {
         //console.log(response.data);
-        _this5.screen_autologin = "".concat(_this5.siteURL, "/client?r=").concat(response.data);
+        _this6.screen_autologin = "".concat(_this6.siteURL, "/client?r=").concat(response.data);
       })["catch"](function (e) {
-        _this5.errors.push(e);
+        _this6.errors.push(e);
 
         console.log('error getting auto login');
       });
     },
+
+    /**
+     * @attached to props
+     * @on outlet_component
+     * @use to get selected screen auto-login for info component
+     * @return screen_resolution, screen_activation_dates, screen_equipment_model_installed, screen_teamviewer_details
+     */
     getScreenNotes: function getScreenNotes() {
-      var _this6 = this;
+      var _this7 = this;
 
       console.log('getting notes..');
       this.screen_resolution = '';
@@ -670,20 +743,28 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         url: "".concat(this.siteURL, "/api/getscreen/").concat(this.selected.screen)
       }).then(function (response) {
         if (response.data) {
-          _this6.testlang = response.data.resolution;
-          _this6.screen_resolution = response.data.resolution;
-          _this6.screen_activation_dates = response.data.activation_date;
-          _this6.screen_equipment_model_installed = response.data.equipment_model_installed;
-          _this6.screen_teamviewer_details = response.data.teamviewer_details;
+          _this7.testlang = response.data.resolution;
+          _this7.screen_resolution = response.data.resolution;
+          _this7.screen_activation_dates = response.data.activation_date;
+          _this7.screen_equipment_model_installed = response.data.equipment_model_installed;
+          _this7.screen_teamviewer_details = response.data.teamviewer_details;
         }
       })["catch"](function (e) {
-        _this6.errors.push(e);
+        _this7.errors.push(e);
 
         console.log('error getting schedule');
       });
     },
+
+    /**
+     * @attached 
+     * @on 
+     * @use 
+     * @return 
+     * TODO
+     */
     addLink: function addLink(event) {
-      var _this7 = this;
+      var _this8 = this;
 
       var newlink = null;
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
@@ -696,42 +777,69 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         }
       }).then(function (response) {
         alert("Link successfully saved");
-        _this7.newURL_id = response.data;
+        _this8.newURL_id = response.data;
       })["catch"](function (e) {
-        _this7.errors.push(e);
+        _this8.errors.push(e);
       });
     },
+
+    /**
+     * @attached 
+     * @on 
+     * @use 
+     * @return 
+     * TODO
+     */
     deleteLink: function deleteLink(event) {
-      var _this8 = this;
+      var _this9 = this;
 
       if (confirm("DANGER! Are you sure you like to DELETE this link?")) {
         axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("".concat(this.siteURL, "/api/l/").concat(event)).then(function (response) {
           alert("link deleted");
+          var screen = ['', _this9.selected.screen];
 
-          _this8.getMediaAssets();
+          _this9.getSelectedScreenInfo(screen);
 
-          _this8.resetData();
+          _this9.getMediaAssets();
+
+          _this9.resetData();
         })["catch"](function (e) {
-          _this8.errors.push(e);
+          _this9.errors.push(e);
         });
       }
 
       return;
     },
+
+    /**
+     * @attached on props
+     * @on screen_sched component
+     * @use to reset select links and media asset
+     * @return selected null
+     * 
+     */
     resetData: function resetData() {
       this.selected.link = null;
       this.selected.link_url = null;
       this.selected.link_name = null;
       this.selected.mediagroup = null;
     },
+
+    /**
+     * @attached local method
+     * @on admin component
+     * @use logout
+     * @return null
+     * 
+     */
     logout: function logout() {
-      var _this9 = this;
+      var _this10 = this;
 
       if (confirm("Are you sure you like to logout?")) {
         axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/logout")).then(function (response) {
           location.reload();
         })["catch"](function (e) {
-          _this9.errors.push(e);
+          _this10.errors.push(e);
         });
       }
     },
@@ -1007,7 +1115,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['screen_autologin', 'screen_now_showing', 'getScreenNotes', 'screen_resolution', 'screen_activation_dates', 'screen_equipment_model_installed', 'screen_teamviewer_details', 'selected', 'testlang'],
+  props: ['screen_autologin', 'screen_now_showing', 'screen_resolution', 'screen_activation_dates', 'screen_equipment_model_installed', 'screen_teamviewer_details', 'selected'],
   data: function data() {
     return {
       int_resolution: '',
@@ -1047,8 +1155,7 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         console.log(response.data);
 
-        if (response.data != "no-request") {//this.getScreenNotes()
-        }
+        if (response.data != "no-request") {}
       })["catch"](function (e) {
         _this.errors.push(e);
 
@@ -1057,7 +1164,6 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   created: function created() {
-    console.log('testlang: ' + this.testlang);
     this.int_resolution = this.screen_resolution;
     this.int_equipment_model = this.screen_equipment_model_installed;
     this.int_teamviewer = this.screen_teamviewer_details;
@@ -1321,6 +1427,7 @@ __webpack_require__.r(__webpack_exports__);
         this.getScreenSched();
         this.getScreenAutologin();
         this.getScreenNotes();
+        this.$emit('screenSelect', i);
       }
     },
     openLink: function openLink(link) {
@@ -1428,7 +1535,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['selected', 'form', 'is_form_valid', 'clear_URL', 'momentNow', 'resetData', 'getScreenSched', 'getMediaAssets', 'getLinks'],
+  props: ['selected', 'form', 'is_form_valid', 'clear_URL', 'momentNow', 'resetData', 'getSelectedScreenInfo', 'getScreenSched', 'getMediaAssets', 'getLinks'],
   data: function data() {
     return {
       newURL: "",
@@ -1487,17 +1594,25 @@ __webpack_require__.r(__webpack_exports__);
         console.log(response);
         alert("Schedule saved");
         mydata = {};
+        var screen = ['', _this.selected.screen];
 
-        _this.resetData();
+        _this.getSelectedScreenInfo(screen);
 
-        _this.getScreenSched();
+        _this.getScreenSched(); // refresh for custom URL
+
 
         _this.getMediaAssets();
 
         _this.getLinks();
+
+        _this.intclearURL();
       })["catch"](function (e) {
         _this.errors.push(e);
       });
+    },
+    intclearURL: function intclearURL() {
+      this.newURL = '';
+      this.newURL_name = '';
     },
     // new URL keyup
     disableMedia: function disableMedia(event) {
@@ -2020,6 +2135,11 @@ var render = function() {
               getScreenAutologin: _vm.getScreenAutologin,
               getScreenNotes: _vm.getScreenNotes,
               getOutlets: _vm.getOutlets
+            },
+            on: {
+              screenSelect: function($event) {
+                return _vm.getSelectedScreenInfo($event)
+              }
             }
           })
         ],
@@ -2133,6 +2253,8 @@ var render = function() {
                                         clear_URL: _vm.clear_URL,
                                         momentNow: _vm.momentNow,
                                         resetData: _vm.resetData,
+                                        getSelectedScreenInfo:
+                                          _vm.getSelectedScreenInfo,
                                         getScreenSched: _vm.getScreenSched,
                                         getMediaAssets: _vm.getMediaAssets,
                                         getLinks: _vm.getLinks
@@ -2170,7 +2292,6 @@ var render = function() {
                                         screen_autologin: _vm.screen_autologin,
                                         screen_now_showing:
                                           _vm.screen_now_showing,
-                                        getScreenNotes: _vm.getScreenNotes,
                                         screen_resolution:
                                           _vm.screen_resolution,
                                         screen_activation_dates:
@@ -2179,8 +2300,7 @@ var render = function() {
                                           _vm.screen_equipment_model_installed,
                                         screen_teamviewer_details:
                                           _vm.screen_teamviewer_details,
-                                        selected: _vm.selected,
-                                        testlang: _vm.testlang
+                                        selected: _vm.selected
                                       }
                                     })
                                   ],

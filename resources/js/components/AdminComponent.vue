@@ -55,6 +55,7 @@
         :getScreenAutologin="getScreenAutologin"
         :getScreenNotes="getScreenNotes"
         :getOutlets="getOutlets"
+        @screenSelect="getSelectedScreenInfo($event)"
         ></outlets_component>
 
       <template v-slot:append>
@@ -124,6 +125,7 @@
                       :clear_URL="clear_URL"
                       :momentNow="momentNow"
                       :resetData="resetData"
+                      :getSelectedScreenInfo="getSelectedScreenInfo"
                       :getScreenSched="getScreenSched"
                       :getMediaAssets="getMediaAssets"
                       :getLinks="getLinks">
@@ -145,13 +147,11 @@
                     <info_component
                       :screen_autologin="screen_autologin"
                       :screen_now_showing="screen_now_showing"
-                      :getScreenNotes="getScreenNotes"
                       :screen_resolution="screen_resolution"
                       :screen_activation_dates="screen_activation_dates"
                       :screen_equipment_model_installed="screen_equipment_model_installed"
                       :screen_teamviewer_details="screen_teamviewer_details"
                       :selected="selected"
-                      :testlang="testlang"
                     ></info_component>
 
                   </v-tab-item>
@@ -240,7 +240,7 @@ import add_outlet_component from './AddOutletComponent'
       newURL_id: null,
       newScreen: null,
       form: {
-        is_form_valid: true,
+        is_form_valid: false,
       },
       // Layout
       drawer: null,
@@ -264,6 +264,11 @@ import add_outlet_component from './AddOutletComponent'
     },
     methods: {
 
+      /**
+       * @attached to LinkSelect()
+       * @used to enable `custom URL` fields
+       * @return null
+       */
       clearnewURL(event) {
         this.form.is_form_valid = false
         if (!this.clear_URL) {
@@ -276,6 +281,11 @@ import add_outlet_component from './AddOutletComponent'
         }
       },
 
+      /**
+       * @attached to created()
+       * @used to get outlet list
+       * @return this.outlets Array
+       */
       getOutlets() {
         axios.get(`${ this.siteURL }/api/screen/all`)
         .then(response => {
@@ -297,6 +307,11 @@ import add_outlet_component from './AddOutletComponent'
         })
       },
 
+      /**
+       * @attached to created()
+       * @used to get media assets group
+       * @return this.media_assets Array
+       */
       getMediaAssets() {
         axios.get(`${ this.siteURL }/api/media/all`)
           .then(response => {
@@ -308,6 +323,11 @@ import add_outlet_component from './AddOutletComponent'
           })
       },
 
+      /**
+       * @attached to created()
+       * @used to get links
+       * @return this.links Array
+       */
       getLinks() {
         axios.get(`${ this.siteURL }/api/l`)
           .then(response => {
@@ -324,6 +344,43 @@ import add_outlet_component from './AddOutletComponent'
           })
       },
 
+      /**
+       * @attached to screenSelect()
+       * @on outlet_component
+       * @use to get select screen current content
+       * @return selected.mediagroup, selected.link_name
+       */
+      getSelectedScreenInfo: function(screen) {
+        console.log('getSelectedScreenInfo...')
+        // get content of screen
+        axios({
+            method: 'get',
+            url: `${ this.siteURL }/api/schedule/ss/${ screen[1] }`,
+        }).then(response => {
+            this.selected.link_name = ''
+            this.selected.mediagroup = ''
+            this.screen_now_showing = "No current content";
+            this.form.is_form_valid = true
+            if (response.data.length > 0)
+            {
+              console.log(response.data)
+              this.selected.link_name = response.data[0][this.selected.outlet].link_name
+              this.screen_now_showing = response.data[0][this.selected.outlet].link_name
+              this.selected.mediagroup = response.data[0][this.selected.outlet].media_asset_name
+              this.form.is_form_valid = false
+            }
+        }).catch(e => {
+            this.errors.push(e)
+            console.log('error getting schedule')
+        });
+      },
+
+      /**
+       * @attached to props
+       * @on outlet_component
+       * @use to get select screen current schedule for calendar component
+       * @return selected.screen_schedule, calendar.events, screen_now_showing
+       */
       getScreenSched: function() {
         axios({
             method: 'get',
@@ -333,11 +390,6 @@ import add_outlet_component from './AddOutletComponent'
             {
               this.selected.screen_schedule = response.data;
               this.calendar.events = this.eventsFormat()
-              this.screen_now_showing = "No current content";
-              if (this.calendar.events.length > 0) 
-              {
-                this.screen_now_showing = this.calendar.events[this.calendar.events.length - 1].name;
-              }
             }
           })
           .catch(e => {
@@ -346,6 +398,12 @@ import add_outlet_component from './AddOutletComponent'
           });
       },
 
+      /**
+       * @attached to props
+       * @on outlet_component
+       * @use to get selected screen auto-login for info component
+       * @return screen_autologin
+       */
       getScreenAutologin: function() {
         axios({
             method: 'post',
@@ -363,6 +421,12 @@ import add_outlet_component from './AddOutletComponent'
           });
       },
 
+      /**
+       * @attached to props
+       * @on outlet_component
+       * @use to get selected screen auto-login for info component
+       * @return screen_resolution, screen_activation_dates, screen_equipment_model_installed, screen_teamviewer_details
+       */
       getScreenNotes: function() {
         console.log('getting notes..')
         this.screen_resolution = ''
@@ -387,6 +451,13 @@ import add_outlet_component from './AddOutletComponent'
           });
       },
 
+      /**
+       * @attached 
+       * @on 
+       * @use 
+       * @return 
+       * TODO
+       */
       addLink: function(event) {
         var newlink = null;
         axios({
@@ -406,11 +477,20 @@ import add_outlet_component from './AddOutletComponent'
           });
       },
 
+      /**
+       * @attached 
+       * @on 
+       * @use 
+       * @return 
+       * TODO
+       */
       deleteLink: function(event) {
         if(confirm("DANGER! Are you sure you like to DELETE this link?")) {        
           axios.delete(`${ this.siteURL }/api/l/${ event }`)
           .then(response => {
               alert("link deleted");
+              var screen = ['',this.selected.screen]
+              this.getSelectedScreenInfo(screen)
               this.getMediaAssets()
               this.resetData()
             })
@@ -421,6 +501,13 @@ import add_outlet_component from './AddOutletComponent'
         return;
       },
 
+      /**
+       * @attached on props
+       * @on screen_sched component
+       * @use to reset select links and media asset
+       * @return selected null
+       * 
+       */
       resetData: function() {
         this.selected.link = null
         this.selected.link_url = null
@@ -428,6 +515,13 @@ import add_outlet_component from './AddOutletComponent'
         this.selected.mediagroup = null;
       },
 
+      /**
+       * @attached local method
+       * @on admin component
+       * @use logout
+       * @return null
+       * 
+       */
       logout: function() {
         if(confirm("Are you sure you like to logout?")){
           axios.get(`${ this.siteURL }/logout`)

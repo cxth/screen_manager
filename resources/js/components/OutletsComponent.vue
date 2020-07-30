@@ -142,6 +142,7 @@ export default {
         this.getScreenSched()
         this.getScreenAutologin()
         this.getScreenNotes()
+        this.$emit('screenSelect', i)
       }
     },
 

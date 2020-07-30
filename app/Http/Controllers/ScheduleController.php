@@ -247,17 +247,25 @@ class ScheduleController extends Controller
 
 
     /**
-     * Display a listing of todays schedule by ADMIN API.
+     * API // Display a listing of todays schedule by ADMIN API.
      *
      * @url api/schedule/ss/CFANGSS03
      * @return \Illuminate\Http\Response
      */
     public function showScreen(Screen $screen)
     {               
-        $result = $screen->schedule()
-            ->whereDate('show_datetime', Carbon::today())
-            ->orderBy('show_datetime', 'desc')
-            ->get();
+        // $result = $screen->schedule()
+        //     ->whereDate('show_datetime', Carbon::today())
+        //     ->orderBy('show_datetime', 'desc')
+        //     ->get();
+        $arr = [$screen->id];
+        $result = DB::table('schedules')
+            ->whereRaw('screen_id = ?
+                        AND show_datetime < NOW() 
+                        AND (expire_datetime > NOW() 
+                        OR expire_datetime is NULL) 
+                        ORDER BY show_datetime DESC', $arr)
+                        ->get();
         return ScheduleResource::collection($result);
     }
 
@@ -294,7 +302,7 @@ class ScheduleController extends Controller
 
 
     /**
-     * Update schedule on selected screen [NO GROUP].
+     * API // Update schedule on selected screen [NO GROUP].
      *
      * @url POST api/schedule/screen/1
      * @return \Illuminate\Http\Response

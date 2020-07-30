@@ -94,6 +94,7 @@ export default {
     'clear_URL',
     'momentNow',
     'resetData',
+    'getSelectedScreenInfo',
     'getScreenSched',
     'getMediaAssets',
     'getLinks'
@@ -156,15 +157,23 @@ export default {
             console.log(response);
             alert("Schedule saved");
             mydata = {}
-            this.resetData()
+            var screen = ['',this.selected.screen]
+            this.getSelectedScreenInfo(screen)
             this.getScreenSched()
+            // refresh for custom URL
             this.getMediaAssets()
             this.getLinks()
+            this.intclearURL()
           })
           .catch(e => {
             this.errors.push(e)
           });
       },
+      intclearURL: function() {
+        this.newURL = ''
+        this.newURL_name = ''
+      },
+
       // new URL keyup
       disableMedia: function(event) {
         this.form.is_form_valid = true

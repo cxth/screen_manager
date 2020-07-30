@@ -171,13 +171,11 @@ export default {
   props:[
     'screen_autologin',
     'screen_now_showing',
-    'getScreenNotes',
     'screen_resolution',
     'screen_activation_dates',
     'screen_equipment_model_installed',
     'screen_teamviewer_details',
-    'selected',
-    'testlang'
+    'selected'
   ],
   data: () => ({
     int_resolution: '',
@@ -217,7 +215,7 @@ export default {
             console.log(response.data);
             if (response.data != "no-request")
             {
-              //this.getScreenNotes()
+ 
             }
         })
         .catch(e => {
@@ -227,7 +225,6 @@ export default {
     }
   },
   created() {
-    console.log('testlang: ' + this.testlang)
     this.int_resolution = this.screen_resolution
     this.int_equipment_model = this.screen_equipment_model_installed
     this.int_teamviewer = this.screen_teamviewer_details
