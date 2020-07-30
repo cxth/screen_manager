@@ -23,7 +23,21 @@
                   <!-- <v-list-item-group v-model="screenm" color="primary"> -->
                   <v-list-item-group color="primary">
 
-                    <v-list-item>
+                    
+                    <v-list-item v-if="!add_screen_panel">
+                      <v-list-item-content>
+                        <v-btn 
+                          x-small 
+                          class="blue darken-1"
+                          dark
+                          v-on:click="add_screen_panel=true"
+                        >
+                          Add Screen
+                        </v-btn>
+                      </v-list-item-content>
+                    </v-list-item>
+                    
+                    <v-list-item v-else>
                       <v-list-item-content>
                         <v-text-field
                           class="ma-0 pa-0"
@@ -37,12 +51,12 @@
                         ></v-text-field>
                         <v-btn 
                           x-small 
-                          class="blue darken-1"
+                          class="teal"
                           dark
                           :id="item[0].outlet_id+'**'+item[0].outlet_intid+'**new'"
                           v-on:click="addNewScreen"
                         >
-                          Add Screen
+                          Save
                         </v-btn>
                       </v-list-item-content>
                     </v-list-item>
@@ -70,8 +84,9 @@
                         </template>
                         <span>click to visit screen</span>
                       </v-tooltip>
-                    
+                      
                     </v-list-item>
+                    
                   </v-list-item-group>
                 </v-list>
               </v-expansion-panel-content>
@@ -94,6 +109,7 @@ export default {
   ],
   data() {
     return {
+      add_screen_panel: false,
       newScreen: "",
       rules: {
         counter: value => value.length <= 25 || 'Max 25 characters',
@@ -106,10 +122,14 @@ export default {
     },
 
     addNewScreen: function(event) {
-
+      
       if (this.newScreen == "") {
         alert('Please enter screen name')
         return
+      }
+
+      if (!confirm("Are you sure you like add this screen?")) {
+          return
       }
 
       var i = event.currentTarget.id.split('**');
@@ -143,6 +163,7 @@ export default {
         this.getScreenAutologin()
         this.getScreenNotes()
         this.$emit('screenSelect', i)
+        this.add_screen_panel = false;
       }
     },
 

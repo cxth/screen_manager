@@ -1444,10 +1444,26 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['outlets', 'selected', 'getScreenSched', 'getScreenAutologin', 'getScreenNotes', 'getOutlets'],
   data: function data() {
     return {
+      add_screen_panel: false,
       newScreen: "",
       rules: {
         counter: function counter(value) {
@@ -1465,6 +1481,10 @@ __webpack_require__.r(__webpack_exports__);
 
       if (this.newScreen == "") {
         alert('Please enter screen name');
+        return;
+      }
+
+      if (!confirm("Are you sure you like add this screen?")) {
         return;
       }
 
@@ -1497,6 +1517,7 @@ __webpack_require__.r(__webpack_exports__);
         this.getScreenAutologin();
         this.getScreenNotes();
         this.$emit('screenSelect', i);
+        this.add_screen_panel = false;
       }
     },
     openLink: function openLink(link) {
@@ -3378,58 +3399,93 @@ var render = function() {
                                 "v-list-item-group",
                                 { attrs: { color: "primary" } },
                                 [
-                                  _c(
-                                    "v-list-item",
-                                    [
-                                      _c(
-                                        "v-list-item-content",
+                                  !_vm.add_screen_panel
+                                    ? _c(
+                                        "v-list-item",
                                         [
-                                          _c("v-text-field", {
-                                            staticClass: "ma-0 pa-0",
-                                            attrs: {
-                                              placeholder: "Screen Name",
-                                              outlined: "",
-                                              dense: "",
-                                              rules: [_vm.rules.counter],
-                                              counter: "",
-                                              maxlength: "25"
-                                            },
-                                            model: {
-                                              value: _vm.newScreen,
-                                              callback: function($$v) {
-                                                _vm.newScreen = $$v
-                                              },
-                                              expression: "newScreen"
-                                            }
-                                          }),
-                                          _vm._v(" "),
                                           _c(
-                                            "v-btn",
-                                            {
-                                              staticClass: "blue darken-1",
-                                              attrs: {
-                                                "x-small": "",
-                                                dark: "",
-                                                id:
-                                                  item[0].outlet_id +
-                                                  "**" +
-                                                  item[0].outlet_intid +
-                                                  "**new"
-                                              },
-                                              on: { click: _vm.addNewScreen }
-                                            },
+                                            "v-list-item-content",
                                             [
-                                              _vm._v(
-                                                "\n                        Add Screen\n                      "
+                                              _c(
+                                                "v-btn",
+                                                {
+                                                  staticClass: "blue darken-1",
+                                                  attrs: {
+                                                    "x-small": "",
+                                                    dark: ""
+                                                  },
+                                                  on: {
+                                                    click: function($event) {
+                                                      _vm.add_screen_panel = true
+                                                    }
+                                                  }
+                                                },
+                                                [
+                                                  _vm._v(
+                                                    "\n                        Add Screen\n                      "
+                                                  )
+                                                ]
                                               )
-                                            ]
+                                            ],
+                                            1
                                           )
                                         ],
                                         1
                                       )
-                                    ],
-                                    1
-                                  ),
+                                    : _c(
+                                        "v-list-item",
+                                        [
+                                          _c(
+                                            "v-list-item-content",
+                                            [
+                                              _c("v-text-field", {
+                                                staticClass: "ma-0 pa-0",
+                                                attrs: {
+                                                  placeholder: "Screen Name",
+                                                  outlined: "",
+                                                  dense: "",
+                                                  rules: [_vm.rules.counter],
+                                                  counter: "",
+                                                  maxlength: "25"
+                                                },
+                                                model: {
+                                                  value: _vm.newScreen,
+                                                  callback: function($$v) {
+                                                    _vm.newScreen = $$v
+                                                  },
+                                                  expression: "newScreen"
+                                                }
+                                              }),
+                                              _vm._v(" "),
+                                              _c(
+                                                "v-btn",
+                                                {
+                                                  staticClass: "teal",
+                                                  attrs: {
+                                                    "x-small": "",
+                                                    dark: "",
+                                                    id:
+                                                      item[0].outlet_id +
+                                                      "**" +
+                                                      item[0].outlet_intid +
+                                                      "**new"
+                                                  },
+                                                  on: {
+                                                    click: _vm.addNewScreen
+                                                  }
+                                                },
+                                                [
+                                                  _vm._v(
+                                                    "\n                        Save\n                      "
+                                                  )
+                                                ]
+                                              )
+                                            ],
+                                            1
+                                          )
+                                        ],
+                                        1
+                                      ),
                                   _vm._v(" "),
                                   _vm._l(item, function(screen, screen_i) {
                                     return _c(
