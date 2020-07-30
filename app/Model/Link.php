@@ -15,7 +15,8 @@ class Link extends Model
 
     public function media_asset()
     {
-        return $this->hasMany(Media_Asset::class);
+        //return $this->hasMany(Media_Asset::class);
+        return $this->belongsTo(Media_Asset::class); // for front-end get schedule
     }
 
     public function schedule()

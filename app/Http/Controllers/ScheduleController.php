@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\ScheduleResource;
+use App\Model\Media_Asset;
 use App\Model\Session;
 //use App\Http\Resources\ScheduleGroupResource;
 use Symfony\Component\HttpFoundation\Response;
@@ -68,19 +69,27 @@ class ScheduleController extends Controller
             $screen = Screen::find($uscreen);
         }
         
-        //$screen = Screen::find('CFANGSS03');
+        // testing only
+        $screen = Screen::find('BB-401SS1'); //Vasra1
+        //dd($screen);
+
         if (!$screen)
         {
             return ["invalid-user"];
         }
 
         // log request
-        $this->logSession($screen->id);
+        //$this->logSession($screen->id);
 
         $schedule = $this->nowShowing($screen);
         if ($schedule->isEmpty()) {
             // @TODO: default image or URL here...
         }
+
+        //dd($schedule[0]->id);
+        // active session history log
+        $this->logSessionHistory($screen, Schedule::find($schedule[0]->id));
+        return;
         
         return $schedule;
     }
@@ -97,6 +106,29 @@ class ScheduleController extends Controller
         ['screen_id' => $screen_id],
         ['request_log' => Carbon::now()]
       );
+    }
+
+    /**
+     * Web // Log request for Active Sessions Monitoring 
+     *
+     * @return null
+     * 
+     */
+    public function logSessionHistory(Screen $screen, Schedule $schedule)
+    {
+      $screen_id = $screen->id;
+      $outlet_id = $screen->outlet_id;
+      $outlet_int = $screen->outlet->int_id;
+      $outlet_name = $screen->outlet->name;
+      $link_id = $schedule->link_id;
+      $media_asset = $schedule->link->media__asset_id;
+      $media_asset_id = Media_Asset::find($media_asset)->id;
+      $media_asset_name = Media_Asset::find($media_asset)->name;
+
+      //dd($schedule->link->media__asset_id);
+      dd($screen_id, $outlet_id, $outlet_int, $outlet_name, $link_id, $media_asset_id, $media_asset_name);
+      return [$screen, $schedule];
+
     }
 
     /**
@@ -197,7 +229,7 @@ class ScheduleController extends Controller
      * Display now showing for front-end per screen
      */
     public function nowShowing(Screen $screen)
-    {
+    {    
         $arr = [$screen->id];
         $result = DB::table('schedules')
             ->whereRaw('screen_id = ?
@@ -205,7 +237,7 @@ class ScheduleController extends Controller
                         AND (expire_datetime > NOW() 
                         OR expire_datetime is NULL) 
                         ORDER BY show_datetime DESC', $arr)
-                        ->get();
+                        ->get(); // `get` because of '->isEmpty()'
         return $result;
     }
     

@@ -23,7 +23,8 @@ class Schedule extends Model
 
     public function link()
     {
-        return $this->hasMany(Link::class);
+        //return $this->hasMany(Link::class);
+        return $this->belongsTo(Link::class); // for front-end get schedule
     }
     
     public function group_screen()
