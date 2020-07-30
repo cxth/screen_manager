@@ -143,9 +143,10 @@ class ScreenController extends Controller
     {
         if ($request) {
           $screen = Screen::find($request->id);
-          $screen->resolution = $request->resolution;
-          $screen->equipment_model_installed = $request->equipment_model_installed;
-          $screen->teamviewer_details = $request->teamviewer_details;
+          if (isset($request->resolution)) $screen->resolution = $request->resolution;
+          if (isset($request->equipment_model_installed)) $screen->equipment_model_installed = $request->equipment_model_installed;
+          if (isset($request->teamviewer_details)) $screen->teamviewer_details = $request->teamviewer_details;
+          if (isset($request->activation_date)) $screen->activation_date = $request->activation_date;
           $screen->save();
           return $screen;
         }

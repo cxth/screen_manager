@@ -85,7 +85,7 @@
                     flat tile color="teal"
                     align="right"
                   >
-                    Resolution
+                    Screen Resolution
                   </v-card>
                 </v-col>
                 <v-col lg="8">
@@ -158,6 +158,31 @@
               </template>
             </v-row>
 
+            <v-row no-gutters>
+              <template>
+                <v-col lg="3">
+                  <v-card
+                    class="pa-2 pr-6"
+                    flat tile color="teal"
+                    align="right"
+                  >
+                    Activation Date
+                  </v-card>
+                </v-col>
+                <v-col lg="8">
+                  <v-card
+                    class="pa-2"
+                    flat tile
+                  >
+                    <active_screen_component
+                    :screen_activation_date="screen_activation_date"
+                    :selected="selected"
+                    ></active_screen_component>
+                  </v-card>
+                </v-col>
+              </template>
+            </v-row>
+
           </v-container>
           
         </v-card>
@@ -167,12 +192,16 @@
 </template>
 
 <script>
+import active_screen_component from './ScreenActivatedComponent'
 export default {
+  components: {
+      active_screen_component
+  },
   props:[
     'screen_autologin',
     'screen_now_showing',
     'screen_resolution',
-    'screen_activation_dates',
+    'screen_activation_date',
     'screen_equipment_model_installed',
     'screen_teamviewer_details',
     'selected'
@@ -212,16 +241,16 @@ export default {
           url: `${ this.siteURL }/api/getscreen`,
           data: mydata
       }).then(response => {
-            console.log(response.data);
-            if (response.data != "no-request")
-            {
- 
-            }
-        })
-        .catch(e => {
-            this.errors.push(e)
-            console.log('error getting auto login')
-        });
+          console.log(response.data);
+          if (response.data != "no-request")
+          {
+
+          }
+      })
+      .catch(e => {
+          this.errors.push(e)
+          console.log('error getting auto login')
+      });
     }
   },
   created() {

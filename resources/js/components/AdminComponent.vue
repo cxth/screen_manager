@@ -148,7 +148,7 @@
                       :screen_autologin="screen_autologin"
                       :screen_now_showing="screen_now_showing"
                       :screen_resolution="screen_resolution"
-                      :screen_activation_dates="screen_activation_dates"
+                      :screen_activation_date="screen_activation_date"
                       :screen_equipment_model_installed="screen_equipment_model_installed"
                       :screen_teamviewer_details="screen_teamviewer_details"
                       :selected="selected"
@@ -210,7 +210,7 @@ import add_outlet_component from './AddOutletComponent'
       screen_autologin: null,
       screen_now_showing: null,
       screen_resolution: null,
-      screen_activation_dates: null,
+      screen_activation_date: null,
       screen_equipment_model_installed: null,
       screen_teamviewer_details: null,
 
@@ -225,7 +225,7 @@ import add_outlet_component from './AddOutletComponent'
         screen: null,
         screen_name: null,
         screen_resolution: null,
-        screen_activation_dates: null,
+        //screen_activation_dates: null,
         screen_equipment_model_installed: null,
         screen_teamviewer_details: null,
 
@@ -432,6 +432,7 @@ import add_outlet_component from './AddOutletComponent'
         this.screen_resolution = ''
         this.screen_equipment_model_installed = ''
         this.screen_teamviewer_details = ''
+        this.screen_activation_date = ''
         axios({
             method: 'get',
             url: `${ this.siteURL }/api/getscreen/${ this.selected.screen }`,
@@ -440,7 +441,7 @@ import add_outlet_component from './AddOutletComponent'
             {
               this.testlang = response.data.resolution
               this.screen_resolution = response.data.resolution
-              this.screen_activation_dates = response.data.activation_date
+              this.screen_activation_date = response.data.activation_date
               this.screen_equipment_model_installed = response.data.equipment_model_installed
               this.screen_teamviewer_details = response.data.teamviewer_details
             }
