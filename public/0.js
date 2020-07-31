@@ -524,7 +524,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         // schedule
         screen_schedule: null
       },
-      testlang: '',
       outlets: null,
       media_assets: null,
       links: null,
@@ -651,7 +650,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
         method: 'get',
-        url: "".concat(this.siteURL, "/api/schedule/ss/").concat(screen[1])
+        url: "".concat(this.siteURL, "/api/schedule/ss/").concat(screen)
       }).then(function (response) {
         _this4.selected.link_name = '';
         _this4.selected.mediagroup = '';
@@ -751,7 +750,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         url: "".concat(this.siteURL, "/api/getscreen/").concat(this.selected.screen)
       }).then(function (response) {
         if (response.data) {
-          _this7.testlang = response.data.resolution;
           _this7.screen_resolution = response.data.resolution;
           _this7.screen_activation_date = response.data.activation_date;
           _this7.screen_equipment_model_installed = response.data.equipment_model_installed;
@@ -804,9 +802,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       if (confirm("DANGER! Are you sure you like to DELETE this link?")) {
         axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("".concat(this.siteURL, "/api/l/").concat(event)).then(function (response) {
           alert("link deleted");
-          var screen = ['', _this9.selected.screen];
 
-          _this9.getSelectedScreenInfo(screen);
+          _this9.getSelectedScreenInfo(_this9.selected.screen);
 
           _this9.getMediaAssets();
 
@@ -1516,7 +1513,7 @@ __webpack_require__.r(__webpack_exports__);
         this.getScreenSched();
         this.getScreenAutologin();
         this.getScreenNotes();
-        this.$emit('screenSelect', i);
+        this.$emit('screenSelect', i[1]);
         this.add_screen_panel = false;
       }
     },
@@ -1775,10 +1772,8 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         console.log(response);
         alert("Schedule saved");
-        mydata = {};
-        var screen = ['', _this.selected.screen];
 
-        _this.getSelectedScreenInfo(screen);
+        _this.getSelectedScreenInfo(_this.selected.screen);
 
         _this.getScreenSched(); // refresh for custom URL
 

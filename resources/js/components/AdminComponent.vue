@@ -228,7 +228,7 @@ import add_outlet_component from './AddOutletComponent'
         // schedule
         screen_schedule: null
       },
-      testlang: '',
+      
       outlets: null,
       media_assets: null,
       links: null,
@@ -351,7 +351,7 @@ import add_outlet_component from './AddOutletComponent'
         // get content of screen
         axios({
             method: 'get',
-            url: `${ this.siteURL }/api/schedule/ss/${ screen[1] }`,
+            url: `${ this.siteURL }/api/schedule/ss/${ screen }`,
         }).then(response => {
             this.selected.link_name = ''
             this.selected.mediagroup = ''
@@ -446,7 +446,6 @@ import add_outlet_component from './AddOutletComponent'
         }).then(response => {
             if (response.data)
             {
-              this.testlang = response.data.resolution
               this.screen_resolution = response.data.resolution
               this.screen_activation_date = response.data.activation_date
               this.screen_equipment_model_installed = response.data.equipment_model_installed
@@ -497,8 +496,7 @@ import add_outlet_component from './AddOutletComponent'
           axios.delete(`${ this.siteURL }/api/l/${ event }`)
           .then(response => {
               alert("link deleted");
-              var screen = ['',this.selected.screen]
-              this.getSelectedScreenInfo(screen)
+              this.getSelectedScreenInfo(this.selected.screen)
               this.getMediaAssets()
               this.resetData()
             })

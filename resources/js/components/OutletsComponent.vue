@@ -162,7 +162,7 @@ export default {
         this.getScreenSched()
         this.getScreenAutologin()
         this.getScreenNotes()
-        this.$emit('screenSelect', i)
+        this.$emit('screenSelect', i[1])
         this.add_screen_panel = false;
       }
     },

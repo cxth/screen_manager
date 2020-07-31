@@ -156,9 +156,7 @@ export default {
         }).then(response => {
             console.log(response);
             alert("Schedule saved");
-            mydata = {}
-            var screen = ['',this.selected.screen]
-            this.getSelectedScreenInfo(screen)
+            this.getSelectedScreenInfo(this.selected.screen)
             this.getScreenSched()
             // refresh for custom URL
             this.getMediaAssets()
