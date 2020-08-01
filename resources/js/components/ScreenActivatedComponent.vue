@@ -23,7 +23,7 @@
       ref="picker"
       v-model="date"
       :max="new Date().toISOString().substr(0, 10)"
-      min="1950-01-01"
+      min="2010-01-01"
       @change="save"
     ></v-date-picker>
   </v-menu>
@@ -45,7 +45,7 @@
     },
     methods: {
       save (date) {
-        this.$refs.menu.save(date)
+        
         axios({
           method: 'post',
           url: `${ this.siteURL }/api/getscreen`,
@@ -55,11 +55,14 @@
           }
         }).then(response => {
             console.log(response.data);
+            //this.screen_activation_date = date
         })
         .catch(e => {
             this.errors.push(e)
             console.log('error getting auto login')
         });
+        this.$refs.menu.save(date)
+        this.$emit('save', date)
       },
     },
     created() {
@@ -71,7 +74,9 @@
           return this.screen_activation_date
         },
         set: function (newEvent) {
-
+          // console.log('screen activated new date')
+          // console.log(newEvent)
+          // this.date = newEvent
         }
       }
     }

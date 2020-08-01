@@ -184,6 +184,7 @@
                     <active_screen_component
                     :screen_activation_date="screen_activation_date"
                     :selected="selected"
+                    @save="refreshActivationDate($event)"
                     ></active_screen_component>
                   </v-card>
                 </v-col>
@@ -275,6 +276,9 @@ export default {
       if(confirm("Are you sure you like to rename the screen?")){
         this.saveScreenNotes('name')
       }
+    },
+    refreshActivationDate: function(newActivationDate) {
+      this.$emit('refreshActivationDate',newActivationDate)
     }
   },
   created() {

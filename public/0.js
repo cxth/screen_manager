@@ -478,6 +478,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
 
 
 
@@ -681,6 +684,17 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.selected.screen_name = new_screen_name;
       this.getOutlets();
     },
+    refreshScreenActivation: function refreshScreenActivation(new_activation_date) {
+      console.log('updating activation date...');
+      console.log(new_activation_date);
+      this.screen_activation_date = new_activation_date;
+    },
+    refreshLinks: function refreshLinks(newLinkName) {
+      console.log('refreshing links from admin component..');
+      console.log(newLinkName);
+      this.getMediaAssets();
+      this.getLinks();
+    },
 
     /**
      * @attached to props
@@ -882,8 +896,23 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       });
       return esched;
     }
-  } // methods
-
+  },
+  // methods
+  // computed: {
+  //   outlet: {
+  //     get: function(event) {
+  //       return this.getOutlets()
+  //     },
+  //     set: function(newValue) {
+  //       return this.getOutlets()
+  //     }
+  //   }
+  // },
+  watch: {
+    outlets: function outlets() {
+      console.log('every breath you take, every step you make, ill be watching you..'); //this.getOutlets()
+    }
+  }
 });
 
 /***/ }),
@@ -1152,6 +1181,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -1219,6 +1249,9 @@ __webpack_require__.r(__webpack_exports__);
       if (confirm("Are you sure you like to rename the screen?")) {
         this.saveScreenNotes('name');
       }
+    },
+    refreshActivationDate: function refreshActivationDate(newActivationDate) {
+      this.$emit('refreshActivationDate', newActivationDate);
     }
   },
   created: function created() {
@@ -1329,8 +1362,28 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['media_assets', 'selected', 'links', 'form', 'deleteLink'],
+  props: ['media_assets', 'selected', 'links', 'form', 'deleteLink', 'getLinks'],
+  data: function data() {
+    return {
+      rename_field: false,
+      a: '',
+      b: '',
+      int_link_id: '',
+      int_link_name: '',
+      int_newlink_name: ''
+    };
+  },
   methods: {
     linkSelect: function linkSelect(event) {
       if (event) {
@@ -1341,6 +1394,61 @@ __webpack_require__.r(__webpack_exports__);
         this.selected.link_url = this.links[this.selected.link].url;
         this.form.is_form_valid = false;
         this.$emit('linkSelect', 'deliver some values');
+      }
+    },
+    linkRename: function linkRename(event) {
+      console.log('renaming link');
+      console.log(event);
+      this.int_link_id = event[0];
+      this.int_link_name = event[1];
+      this.a = event[2];
+      this.b = event[3];
+      this.rename_field = true;
+    },
+    setLinkName: function setLinkName() {
+      var _this = this;
+
+      if (this.int_link_name != this.int_newlink_name) {
+        if (!confirm('Are you sure you like rename this link?')) {
+          this.rename_field = false;
+          return;
+        }
+
+        console.log('saving new link name...');
+        console.log(this.int_link_id);
+        console.log(this.int_newlink_name);
+        axios({
+          method: 'patch',
+          url: "".concat(this.siteURL, "/api/l/").concat(this.int_link_id),
+          data: {
+            name: this.int_newlink_name
+          }
+        }).then(function (response) {
+          console.log('link name updated');
+          console.log(response.data);
+
+          if (response.data == "updated") {
+            _this.selected.link_name = _this.int_newlink_name; //this.getLinks()
+
+            _this.$emit('setLinkName', _this.int_newlink_name);
+          }
+        })["catch"](function (e) {
+          _this.errors.push(e);
+        });
+      }
+
+      this.rename_field = false;
+    }
+  },
+  computed: {
+    link_name: {
+      get: function get(event) {
+        return this.int_link_name;
+      },
+      set: function set(newValue) {
+        console.log('setting new link name..');
+        console.log(newValue);
+        this.int_newlink_name = newValue;
       }
     }
   }
@@ -1585,7 +1693,6 @@ __webpack_require__.r(__webpack_exports__);
     save: function save(date) {
       var _this2 = this;
 
-      this.$refs.menu.save(date);
       axios({
         method: 'post',
         url: "".concat(this.siteURL, "/api/getscreen"),
@@ -1594,12 +1701,14 @@ __webpack_require__.r(__webpack_exports__);
           activation_date: date
         }
       }).then(function (response) {
-        console.log(response.data);
+        console.log(response.data); //this.screen_activation_date = date
       })["catch"](function (e) {
         _this2.errors.push(e);
 
         console.log('error getting auto login');
       });
+      this.$refs.menu.save(date);
+      this.$emit('save', date);
     }
   },
   created: function created() {
@@ -1610,7 +1719,10 @@ __webpack_require__.r(__webpack_exports__);
       get: function get(event) {
         return this.screen_activation_date;
       },
-      set: function set(newEvent) {}
+      set: function set(newEvent) {// console.log('screen activated new date')
+        // console.log(newEvent)
+        // this.date = newEvent
+      }
     }
   }
 });
@@ -1805,25 +1917,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ActiveScreensComponent.vue?vue&type=style&index=0&lang=css&":
-/*!****************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ActiveScreensComponent.vue?vue&type=style&index=0&lang=css& ***!
-  \****************************************************************************************************************************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loader/lib/css-base.js */ "./node_modules/css-loader/lib/css-base.js")(false);
-// imports
-
-
-// module
-exports.push([module.i, "\n.material-icons.orange600 { color: #FB8C00;\n}\r\n", ""]);
-
-// exports
-
-
-/***/ }),
-
 /***/ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/CalendarComponent.vue?vue&type=style&index=0&id=56bbe5f8&scoped=true&lang=css&":
 /*!***********************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/CalendarComponent.vue?vue&type=style&index=0&id=56bbe5f8&scoped=true&lang=css& ***!
@@ -1840,36 +1933,6 @@ exports.push([module.i, "\n.my-event[data-v-56bbe5f8] {\n  overflow: hidden;\n  
 
 // exports
 
-
-/***/ }),
-
-/***/ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ActiveScreensComponent.vue?vue&type=style&index=0&lang=css&":
-/*!********************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/style-loader!./node_modules/css-loader??ref--6-1!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src??ref--6-2!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/ActiveScreensComponent.vue?vue&type=style&index=0&lang=css& ***!
-  \********************************************************************************************************************************************************************************************************************************************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-
-var content = __webpack_require__(/*! !../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./ActiveScreensComponent.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ActiveScreensComponent.vue?vue&type=style&index=0&lang=css&");
-
-if(typeof content === 'string') content = [[module.i, content, '']];
-
-var transform;
-var insertInto;
-
-
-
-var options = {"hmr":true}
-
-options.transform = transform
-options.insertInto = undefined;
-
-var update = __webpack_require__(/*! ../../../node_modules/style-loader/lib/addStyles.js */ "./node_modules/style-loader/lib/addStyles.js")(content, options);
-
-if(content.locals) module.exports = content.locals;
-
-if(false) {}
 
 /***/ }),
 
@@ -2173,11 +2236,15 @@ var render = function() {
                   selected: _vm.selected,
                   links: _vm.links,
                   form: _vm.form,
-                  deleteLink: _vm.deleteLink
+                  deleteLink: _vm.deleteLink,
+                  getLinks: _vm.getLinks
                 },
                 on: {
                   linkSelect: function($event) {
                     ;(_vm.screen = $event), _vm.clearnewURL($event)
+                  },
+                  setLinkName: function($event) {
+                    return _vm.refreshLinks($event)
                   }
                 }
               })
@@ -2496,6 +2563,13 @@ var render = function() {
                                           on: {
                                             saveScreenNotes: function($event) {
                                               return _vm.refreshScreen($event)
+                                            },
+                                            refreshActivationDate: function(
+                                              $event
+                                            ) {
+                                              return _vm.refreshScreenActivation(
+                                                $event
+                                              )
                                             }
                                           }
                                         })
@@ -3115,6 +3189,13 @@ var render = function() {
                                         screen_activation_date:
                                           _vm.screen_activation_date,
                                         selected: _vm.selected
+                                      },
+                                      on: {
+                                        save: function($event) {
+                                          return _vm.refreshActivationDate(
+                                            $event
+                                          )
+                                        }
                                       }
                                     })
                                   ],
@@ -3216,28 +3297,65 @@ var render = function() {
                               _c(
                                 "v-list-item-group",
                                 { attrs: { color: "primary" } },
-                                _vm._l(asset.links, function(link, i) {
+                                _vm._l(asset.links, function(link, j) {
                                   return _c(
                                     "v-list-item",
                                     {
-                                      key: i,
+                                      key: j,
                                       attrs: {
                                         id: asset.name + "**" + link.id
                                       },
-                                      on: { click: _vm.linkSelect }
+                                      on: {
+                                        click: _vm.linkSelect,
+                                        dblclick: function($event) {
+                                          return _vm.linkRename([
+                                            link.id,
+                                            link.name,
+                                            i,
+                                            j
+                                          ])
+                                        }
+                                      }
                                     },
                                     [
-                                      _c(
-                                        "v-list-item-content",
-                                        [
-                                          _c("v-list-item-title", {
-                                            domProps: {
-                                              textContent: _vm._s(link.name)
-                                            }
-                                          })
-                                        ],
-                                        1
-                                      ),
+                                      _vm.rename_field &&
+                                      _vm.a == i &&
+                                      _vm.b == j
+                                        ? _c(
+                                            "v-list-item-content",
+                                            [
+                                              _c("v-text-field", {
+                                                attrs: {
+                                                  outlined: "",
+                                                  dense: ""
+                                                },
+                                                on: {
+                                                  blur: function($event) {
+                                                    return _vm.setLinkName()
+                                                  }
+                                                },
+                                                model: {
+                                                  value: _vm.link_name,
+                                                  callback: function($$v) {
+                                                    _vm.link_name = $$v
+                                                  },
+                                                  expression: "link_name"
+                                                }
+                                              })
+                                            ],
+                                            1
+                                          )
+                                        : _c(
+                                            "v-list-item-content",
+                                            [
+                                              _c("v-list-item-title", {
+                                                domProps: {
+                                                  textContent: _vm._s(link.name)
+                                                }
+                                              })
+                                            ],
+                                            1
+                                          ),
                                       _vm._v(" "),
                                       _c(
                                         "v-tooltip",
@@ -3683,7 +3801,7 @@ var render = function() {
         ref: "picker",
         attrs: {
           max: new Date().toISOString().substr(0, 10),
-          min: "1950-01-01"
+          min: "2010-01-01"
         },
         on: { change: _vm.save },
         model: {
@@ -4057,9 +4175,7 @@ function normalizeComponent (
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _ActiveScreensComponent_vue_vue_type_template_id_48e6c887___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ActiveScreensComponent.vue?vue&type=template&id=48e6c887& */ "./resources/js/components/ActiveScreensComponent.vue?vue&type=template&id=48e6c887&");
 /* harmony import */ var _ActiveScreensComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ActiveScreensComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/ActiveScreensComponent.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _ActiveScreensComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./ActiveScreensComponent.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/ActiveScreensComponent.vue?vue&type=style&index=0&lang=css&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -4067,7 +4183,7 @@ __webpack_require__.r(__webpack_exports__);
 
 /* normalize component */
 
-var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__["default"])(
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
   _ActiveScreensComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
   _ActiveScreensComponent_vue_vue_type_template_id_48e6c887___WEBPACK_IMPORTED_MODULE_0__["render"],
   _ActiveScreensComponent_vue_vue_type_template_id_48e6c887___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
@@ -4096,22 +4212,6 @@ component.options.__file = "resources/js/components/ActiveScreensComponent.vue"
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ActiveScreensComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib??ref--4-0!../../../node_modules/vue-loader/lib??vue-loader-options!./ActiveScreensComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ActiveScreensComponent.vue?vue&type=script&lang=js&");
 /* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ActiveScreensComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
-
-/***/ }),
-
-/***/ "./resources/js/components/ActiveScreensComponent.vue?vue&type=style&index=0&lang=css&":
-/*!*********************************************************************************************!*\
-  !*** ./resources/js/components/ActiveScreensComponent.vue?vue&type=style&index=0&lang=css& ***!
-  \*********************************************************************************************/
-/*! no static exports found */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ActiveScreensComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/style-loader!../../../node_modules/css-loader??ref--6-1!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/src??ref--6-2!../../../node_modules/vue-loader/lib??vue-loader-options!./ActiveScreensComponent.vue?vue&type=style&index=0&lang=css& */ "./node_modules/style-loader/index.js!./node_modules/css-loader/index.js?!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/src/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/ActiveScreensComponent.vue?vue&type=style&index=0&lang=css&");
-/* harmony import */ var _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ActiveScreensComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ActiveScreensComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ActiveScreensComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== 'default') (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ActiveScreensComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[key]; }) }(__WEBPACK_IMPORT_KEY__));
- /* harmony default export */ __webpack_exports__["default"] = (_node_modules_style_loader_index_js_node_modules_css_loader_index_js_ref_6_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_src_index_js_ref_6_2_node_modules_vue_loader_lib_index_js_vue_loader_options_ActiveScreensComponent_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default.a); 
 
 /***/ }),
 

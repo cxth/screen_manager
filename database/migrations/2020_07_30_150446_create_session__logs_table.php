@@ -15,11 +15,11 @@ class CreateSessionLogsTable extends Migration
     {
         Schema::create('session__logs', function (Blueprint $table) {
             $table->id();
-            $table->string('screen_id')->unique();
+            $table->string('screen_id')->index();
             $table->unsignedBigInteger('outlet_id')->index();
             $table->integer('link_id')->unsigned()->index();
             $table->unsignedBigInteger('media__asset_id')->index();
-            $table->string('outlet_int_id', 100);
+            $table->string('outlet_int_id', 100)->index();
             $table->string('outlet_name', 100);
             $table->string('media__asset_name', 100);
             $table->timestamps();

@@ -13,9 +13,11 @@
         :links="links"
         :form="form"
         :deleteLink="deleteLink"
+        :getLinks="getLinks"
         @linkSelect="
           screen=$event,
-          clearnewURL($event)"></media_asset_component>
+          clearnewURL($event)"
+        @setLinkName="refreshLinks($event)"></media_asset_component>
     </v-navigation-drawer>
 
     <v-app-bar
@@ -148,6 +150,7 @@
                       :screen_teamviewer_details="screen_teamviewer_details"
                       :selected="selected"
                       @saveScreenNotes="refreshScreen($event)"
+                      @refreshActivationDate="refreshScreenActivation($event)"
                     ></info_component>
 
                   </v-tab-item>
@@ -382,6 +385,19 @@ import add_outlet_component from './AddOutletComponent'
         this.getOutlets()
       },
 
+      refreshScreenActivation: function(new_activation_date) {
+        console.log('updating activation date...')
+        console.log(new_activation_date)
+        this.screen_activation_date = new_activation_date
+      },
+
+      refreshLinks: function(newLinkName) {
+        console.log('refreshing links from admin component..')
+        console.log(newLinkName)
+        this.getMediaAssets()
+        this.getLinks()
+      },
+
       /**
        * @attached to props
        * @on outlet_component
@@ -476,12 +492,12 @@ import add_outlet_component from './AddOutletComponent'
             url: this.newURL
           }
         }).then(response => {
-              alert("Link successfully saved");
-              this.newURL_id = response.data;
-          })
+            alert("Link successfully saved")
+            this.newURL_id = response.data
+        })
           .catch(e => {
-              this.errors.push(e)
-          });
+            this.errors.push(e)
+        });
       },
 
       /**
@@ -578,6 +594,22 @@ import add_outlet_component from './AddOutletComponent'
 
         return esched;
       }
-    } // methods
+    }, // methods
+    // computed: {
+    //   outlet: {
+    //     get: function(event) {
+    //       return this.getOutlets()
+    //     },
+    //     set: function(newValue) {
+    //       return this.getOutlets()
+    //     }
+    //   }
+    // },
+    watch: {
+      outlets: function() {
+        console.log('every breath you take, every step you make, ill be watching you..')
+        //this.getOutlets()
+      }
+    }
   }
 </script>

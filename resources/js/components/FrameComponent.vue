@@ -28,8 +28,8 @@ export default {
     // Fetches posts when the component is created.
     created() {
         this.fetchURL()
-        this.timer = setInterval(this.fetchURL, 12000)
-        // 12000 12 seconds
+        this.timer = setInterval(this.fetchURL, 60000)
+        // 60000 1 minute
         // 300000 5 minutes
     },
 

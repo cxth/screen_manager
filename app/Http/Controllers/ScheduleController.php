@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\ScheduleResource;
 use App\Model\Media_Asset;
 use App\Model\Session;
+use App\Model\Session_Log;
+use App\Session_Log as AppSession_Log;
 //use App\Http\Resources\ScheduleGroupResource;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -70,7 +72,7 @@ class ScheduleController extends Controller
         }
         
         // testing only
-        $screen = Screen::find('BB-401SS1'); //Vasra1
+        //$screen = Screen::find('BB-401SS1'); //Vasra1
         //dd($screen);
 
         if (!$screen)
@@ -79,7 +81,7 @@ class ScheduleController extends Controller
         }
 
         // log request
-        //$this->logSession($screen->id);
+        $this->logSession($screen->id);
 
         $schedule = $this->nowShowing($screen);
         if ($schedule->isEmpty()) {
@@ -89,7 +91,6 @@ class ScheduleController extends Controller
         //dd($schedule[0]->id);
         // active session history log
         $this->logSessionHistory($screen, Schedule::find($schedule[0]->id));
-        return;
         
         return $schedule;
     }
@@ -125,9 +126,15 @@ class ScheduleController extends Controller
       $media_asset_id = Media_Asset::find($media_asset)->id;
       $media_asset_name = Media_Asset::find($media_asset)->name;
 
-      //dd($schedule->link->media__asset_id);
-      dd($screen_id, $outlet_id, $outlet_int, $outlet_name, $link_id, $media_asset_id, $media_asset_name);
-      return [$screen, $schedule];
+      $log = new Session_Log;
+      $log->screen_id = $screen_id;
+      $log->outlet_id = $outlet_id;
+      $log->link_id = $link_id;
+      $log->media__asset_id = $media_asset_id;
+      $log->outlet_int_id = $outlet_int;
+      $log->outlet_name = $outlet_name;
+      $log->media__asset_name = $media_asset_name;
+      $log->save();
 
     }
 

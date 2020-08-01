@@ -21,12 +21,22 @@
                 <!-- <v-list-item-group v-model="screen" color="primary"> -->
                 <v-list-item-group color="primary">
                   <v-list-item
-                    v-for="(link, i) in asset.links"
-                    :key="i"
+                    v-for="(link, j) in asset.links"
+                    :key="j"
                     v-on:click="linkSelect"
+                    v-on:dblclick="linkRename([link.id,link.name,i,j])"
                     :id="asset.name + '**' + link.id"
                   >
-                    <v-list-item-content>
+                    <v-list-item-content v-if="rename_field && a==i && b==j" >
+                      <v-text-field
+                          outlined
+                          dense
+                          v-model="link_name"
+                          v-on:blur="setLinkName()"
+                        ></v-text-field>
+                    </v-list-item-content>
+                    
+                    <v-list-item-content v-else>
                       <v-list-item-title v-text="link.name"></v-list-item-title>
                     </v-list-item-content>
 
@@ -61,8 +71,17 @@ export default {
     'selected',
     'links',
     'form',
-    'deleteLink'
+    'deleteLink',
+    'getLinks'
   ],
+  data: () => ({
+    rename_field: false,
+    a: '',
+    b: '',
+    int_link_id: '',
+    int_link_name: '',
+    int_newlink_name: '',
+  }),
   methods: {
     linkSelect: function (event) {
       if (event) {
@@ -73,6 +92,61 @@ export default {
         this.selected.link_url = this.links[this.selected.link].url;
         this.form.is_form_valid = false 
         this.$emit('linkSelect', 'deliver some values')
+      }
+    },
+    linkRename: function (event) {
+      console.log('renaming link')
+      console.log(event)
+      this.int_link_id = event[0]
+      this.int_link_name = event[1]
+      this.a = event[2]
+      this.b = event[3]
+      this.rename_field = true
+    },
+    setLinkName: function() {
+      if (this.int_link_name != this.int_newlink_name) {
+        if(!confirm('Are you sure you like rename this link?')) {
+          this.rename_field = false
+          return
+        }
+
+        console.log('saving new link name...')
+        console.log(this.int_link_id)
+        console.log(this.int_newlink_name)
+        
+        axios({
+          method: 'patch',
+          url: `${ this.siteURL }/api/l/${ this.int_link_id }`,
+          data: {
+            name: this.int_newlink_name,
+          }
+        }).then(response => {
+            console.log('link name updated')
+            console.log(response.data)
+            if (response.data == "updated") {
+              this.selected.link_name = this.int_newlink_name
+              //this.getLinks()
+              this.$emit('setLinkName', this.int_newlink_name)
+            }
+        })
+          .catch(e => {
+            this.errors.push(e)
+        });
+
+      }
+      this.rename_field = false
+      
+    }
+  },
+  computed: {
+    link_name: {
+      get: function(event) {
+        return this.int_link_name
+      },
+      set: function(newValue) {
+        console.log('setting new link name..')
+        console.log(newValue)
+        this.int_newlink_name = newValue
       }
     }
   }

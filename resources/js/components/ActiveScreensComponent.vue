@@ -108,5 +108,5 @@ import axios from 'axios'
 </script>
 
 <style>
-.material-icons.orange600 { color: #FB8C00; }
+
 </style>

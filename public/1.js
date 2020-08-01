@@ -38,7 +38,7 @@ __webpack_require__.r(__webpack_exports__);
   // Fetches posts when the component is created.
   created: function created() {
     this.fetchURL();
-    this.timer = setInterval(this.fetchURL, 12000); // 12000 12 seconds
+    this.timer = setInterval(this.fetchURL, 60000); // 60000 1 minute
     // 300000 5 minutes
   },
   methods: {
