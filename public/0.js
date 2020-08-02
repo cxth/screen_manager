@@ -653,9 +653,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     getSelectedScreenInfo: function getSelectedScreenInfo(screen) {
       var _this4 = this;
 
-      // console.log(this.selected.outlet);
-      // console.log('the index=')
+      console.log('the selected screen=>');
+      console.log(this.selected.screen_name); // console.log('the index=')
       // console.log(screen[1]);
+
       this.screen_key = screen[1]; // get content of screen
 
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
@@ -778,7 +779,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     getScreenNotes: function getScreenNotes() {
       var _this7 = this;
 
-      console.log('getting notes..');
+      //console.log('getting notes..')
       this.screen_resolution = '';
       this.screen_equipment_model_installed = '';
       this.screen_teamviewer_details = '';
@@ -1235,25 +1236,6 @@ __webpack_require__.r(__webpack_exports__);
         equipment_model_installed: this.int_equipment_model ? this.int_equipment_model : this.screen_equipment_model_installed,
         teamviewer_details: this.int_teamviewer ? this.int_teamviewer : this.screen_teamviewer_details
       };
-
-      if (event == "name") {
-        mydata.description = this.int_screen_name;
-      }
-
-      if (event == "resolution") {
-        mydata.resolution = this.int_resolution;
-      }
-
-      if (event == "equipment") {
-        mydata.equipment_model_installed = this.int_equipment_model;
-      }
-
-      if (event == "teamviewer") {
-        mydata.teamviewer_details = this.int_teamviewer;
-      } // console.log('saving screen info..')
-      // console.log(mydata)
-
-
       axios({
         method: 'post',
         url: "".concat(this.siteURL, "/api/getscreen"),
@@ -1261,14 +1243,24 @@ __webpack_require__.r(__webpack_exports__);
       }).then(function (response) {
         //console.log(response.data);
         if (response.data != "no-request") {}
+
+        _this.int_resolution = '';
+        _this.int_equipment_model = '';
+        _this.int_teamviewer = '';
+        _this.int_screen_name = '';
       })["catch"](function (e) {
         _this.errors.push(e);
 
         console.log('error getting auto login');
       });
-      this.$emit('saveScreenNotes', this.int_screen_name);
+      this.$emit('saveScreenNotes', mydata.description);
     },
     renameScreen: function renameScreen() {
+      if (this.int_screen_name == '') {
+        alert('Enter a valid name');
+        return;
+      }
+
       if (!this.selected.screen) {
         return;
       }
@@ -1420,6 +1412,7 @@ __webpack_require__.r(__webpack_exports__);
         this.selected.link_name = this.links[this.selected.link].name;
         this.selected.link_url = this.links[this.selected.link].url;
         this.form.is_form_valid = false;
+        this.rename_field = false;
         this.$emit('linkSelect', 'deliver some values');
       }
     },
@@ -1638,8 +1631,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     screenSelect: function screenSelect(event) {
-      console.log('selecting screen');
-
+      //console.log('selecting screen');
       if (event) {
         var i = event.currentTarget.id.split('**');
         this.selected.outlet = i[0];
@@ -1766,6 +1758,9 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
 //
 //
 //
@@ -2641,11 +2636,11 @@ var render = function() {
         "v-footer",
         { staticClass: "white--text", attrs: { app: "" } },
         [
-          _c("span", [_vm._v("MSW")]),
+          _c("span"),
           _vm._v(" "),
           _c("v-spacer"),
           _vm._v(" "),
-          _c("span", [_vm._v("© " + _vm._s(new Date().getFullYear()))])
+          _c("span", [_vm._v("MSW © " + _vm._s(new Date().getFullYear()))])
         ],
         1
       )
@@ -3884,8 +3879,13 @@ var render = function() {
               _c(
                 "v-card",
                 {
-                  staticClass: "mx-auto mt-5 pb-10 mb-12",
-                  attrs: { height: "100%", width: "500", outlined: "" }
+                  staticClass: "mx-auto mt-5 pb-10 mb-7",
+                  attrs: {
+                    transition: "scroll-y-transition",
+                    height: "100%",
+                    width: "500",
+                    outlined: ""
+                  }
                 },
                 [
                   _c(
@@ -3894,6 +3894,7 @@ var render = function() {
                     [
                       _c(
                         "v-col",
+                        { staticClass: "ml-5" },
                         [
                           _c(
                             "v-list-item",
@@ -3927,6 +3928,7 @@ var render = function() {
                       _vm._v(" "),
                       _c(
                         "v-col",
+                        { staticClass: "mr-4" },
                         [
                           _c(
                             "v-list-item",
@@ -3963,66 +3965,70 @@ var render = function() {
                     1
                   ),
                   _vm._v(" "),
-                  _c(
-                    "v-row",
-                    {
-                      attrs: {
-                        "no-gutters": "",
-                        align: "center",
-                        justify: "center"
-                      }
-                    },
-                    [
-                      _c(
-                        "v-col",
+                  !_vm.selected.link
+                    ? _c(
+                        "v-row",
                         {
-                          staticStyle: { maxWidth: "280px" },
-                          attrs: { fullscreen: _vm.$vuetify.breakpoint.mobile }
+                          attrs: {
+                            "no-gutters": "",
+                            align: "center",
+                            justify: "center"
+                          }
                         },
                         [
-                          _c("v-text-field", {
-                            attrs: {
-                              label: "or enter URL http://...",
-                              type: "url",
-                              outlined: "",
-                              dense: "",
-                              disabled: !_vm.form.is_form_valid
+                          _c(
+                            "v-col",
+                            {
+                              staticStyle: { maxWidth: "280px" },
+                              attrs: {
+                                fullscreen: _vm.$vuetify.breakpoint.mobile
+                              }
                             },
-                            on: { keyup: _vm.disableMedia },
-                            model: {
-                              value: _vm.newURL,
-                              callback: function($$v) {
-                                _vm.newURL = $$v
-                              },
-                              expression: "newURL"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("v-text-field", {
-                            attrs: {
-                              label: "URL Name",
-                              hint: "give this link a name",
-                              outlined: "",
-                              dense: "",
-                              disabled: !_vm.form.is_form_valid,
-                              rules: [_vm.rules.counter],
-                              counter: "",
-                              maxlength: "50"
-                            },
-                            model: {
-                              value: _vm.newURL_name,
-                              callback: function($$v) {
-                                _vm.newURL_name = $$v
-                              },
-                              expression: "newURL_name"
-                            }
-                          })
+                            [
+                              _c("v-text-field", {
+                                attrs: {
+                                  label: "or enter URL http://...",
+                                  type: "url",
+                                  outlined: "",
+                                  dense: "",
+                                  disabled: !_vm.form.is_form_valid
+                                },
+                                on: { keyup: _vm.disableMedia },
+                                model: {
+                                  value: _vm.newURL,
+                                  callback: function($$v) {
+                                    _vm.newURL = $$v
+                                  },
+                                  expression: "newURL"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("v-text-field", {
+                                attrs: {
+                                  label: "URL Name",
+                                  hint: "give this link a name",
+                                  outlined: "",
+                                  dense: "",
+                                  disabled: !_vm.form.is_form_valid,
+                                  rules: [_vm.rules.counter],
+                                  counter: "",
+                                  maxlength: "50"
+                                },
+                                model: {
+                                  value: _vm.newURL_name,
+                                  callback: function($$v) {
+                                    _vm.newURL_name = $$v
+                                  },
+                                  expression: "newURL_name"
+                                }
+                              })
+                            ],
+                            1
+                          )
                         ],
                         1
                       )
-                    ],
-                    1
-                  ),
+                    : _vm._e(),
                   _vm._v(" "),
                   _c(
                     "v-row",

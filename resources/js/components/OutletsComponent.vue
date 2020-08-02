@@ -153,7 +153,7 @@ export default {
     },
 
     screenSelect: function (event) {
-      console.log('selecting screen');
+      //console.log('selecting screen');
       if (event) {
         var i = event.currentTarget.id.split('**');
         this.selected.outlet = i[0];

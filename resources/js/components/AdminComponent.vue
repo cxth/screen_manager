@@ -176,9 +176,9 @@
       app
       class="white--text"
     >
-      <span>MSW</span>
+      <span></span>
       <v-spacer></v-spacer>
-      <span>&copy; {{ new Date().getFullYear() }}</span>
+      <span>MSW &copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
   </v-app>
 </template>
@@ -356,7 +356,9 @@ import add_outlet_component from './AddOutletComponent'
        * @param Array screen[0] => screen_id, screen[1] => screen_key
        */
       getSelectedScreenInfo: function(screen) {
-        // console.log(this.selected.outlet);
+        
+        console.log('the selected screen=>')
+        console.log(this.selected.screen_name);
         // console.log('the index=')
         // console.log(screen[1]);
         this.screen_key = screen[1]
@@ -478,7 +480,7 @@ import add_outlet_component from './AddOutletComponent'
        * @return screen_resolution, screen_activation_dates, screen_equipment_model_installed, screen_teamviewer_details
        */
       getScreenNotes: function() {
-        console.log('getting notes..')
+        //console.log('getting notes..')
         this.screen_resolution = ''
         this.screen_equipment_model_installed = ''
         this.screen_teamviewer_details = ''

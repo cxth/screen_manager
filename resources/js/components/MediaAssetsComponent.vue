@@ -91,6 +91,7 @@ export default {
         this.selected.link_name = this.links[this.selected.link].name;
         this.selected.link_url = this.links[this.selected.link].url;
         this.form.is_form_valid = false 
+        this.rename_field = false
         this.$emit('linkSelect', 'deliver some values')
       }
     },
