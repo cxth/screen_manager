@@ -54,7 +54,7 @@ return [
     */
 
     //'url' => env('APP_URL', 'http://sm.mswdb.com'),
-    'url' => env('APP_URL', 'http://sm-stage.mswdb.com'),
+    'url' => env('APP_URL', 'https://sm-stage.mswdb.com'),
     //'url' => env('APP_URL', 'http://sm.local'),
     
 
