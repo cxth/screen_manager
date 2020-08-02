@@ -353,7 +353,7 @@ import add_outlet_component from './AddOutletComponent'
        * @on outlet_component
        * @use to get select screen current content
        * @return selected.mediagroup, selected.link_name
-       * @param screen => screen_id
+       * @param Array screen[0] => screen_id, screen[1] => screen_key
        */
       getSelectedScreenInfo: function(screen) {
         // console.log(this.selected.outlet);
@@ -408,11 +408,21 @@ import add_outlet_component from './AddOutletComponent'
         this.screen_activation_date = new_activation_date
       },
 
+      /**
+       * @attached to props
+       * @on media_asset component
+       * @use to refresh data after link rename
+       * @return 
+       */
       refreshLinks: function(newLinkName) {
         console.log('refreshing links from admin component..')
         console.log(newLinkName)
         this.getMediaAssets()
         this.getLinks()
+        // refresh calendar
+        this.getScreenSched()
+        // refresh screen info
+        this.getSelectedScreenInfo([this.selected.screen,this.screen_key])
       },
 
       /**
@@ -434,7 +444,7 @@ import add_outlet_component from './AddOutletComponent'
           })
           .catch(e => {
               this.errors.push(e)
-              console.log('error getting schedule')
+              console.log('error getting schedule for calendar')
           });
       },
 
@@ -531,7 +541,10 @@ import add_outlet_component from './AddOutletComponent'
               alert("link deleted");
               this.getSelectedScreenInfo([this.selected.screen,this.screen_key])
               this.getMediaAssets()
+              // reset all selected media and links
               this.resetData()
+              // refresh calendar
+              this.getScreenSched()
             })
             .catch(e => {
                 this.errors.push(e)

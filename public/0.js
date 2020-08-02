@@ -648,7 +648,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
      * @on outlet_component
      * @use to get select screen current content
      * @return selected.mediagroup, selected.link_name
-     * @param screen => screen_id
+     * @param Array screen[0] => screen_id, screen[1] => screen_key
      */
     getSelectedScreenInfo: function getSelectedScreenInfo(screen) {
       var _this4 = this;
@@ -702,11 +702,22 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       console.log(new_activation_date);
       this.screen_activation_date = new_activation_date;
     },
+
+    /**
+     * @attached to props
+     * @on media_asset component
+     * @use to refresh data after link rename
+     * @return 
+     */
     refreshLinks: function refreshLinks(newLinkName) {
       console.log('refreshing links from admin component..');
       console.log(newLinkName);
       this.getMediaAssets();
-      this.getLinks();
+      this.getLinks(); // refresh calendar
+
+      this.getScreenSched(); // refresh screen info
+
+      this.getSelectedScreenInfo([this.selected.screen, this.screen_key]);
     },
 
     /**
@@ -729,7 +740,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       })["catch"](function (e) {
         _this5.errors.push(e);
 
-        console.log('error getting schedule');
+        console.log('error getting schedule for calendar');
       });
     },
 
@@ -832,9 +843,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
           _this9.getSelectedScreenInfo([_this9.selected.screen, _this9.screen_key]);
 
-          _this9.getMediaAssets();
+          _this9.getMediaAssets(); // reset all selected media and links
 
-          _this9.resetData();
+
+          _this9.resetData(); // refresh calendar
+
+
+          _this9.getScreenSched();
         })["catch"](function (e) {
           _this9.errors.push(e);
         });
@@ -1458,8 +1473,8 @@ __webpack_require__.r(__webpack_exports__);
         return this.int_link_name;
       },
       set: function set(newValue) {
-        console.log('setting new link name..');
-        console.log(newValue);
+        //console.log('setting new link name..')
+        //console.log(newValue)
         this.int_newlink_name = newValue;
       }
     }

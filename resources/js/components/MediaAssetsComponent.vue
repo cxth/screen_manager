@@ -144,8 +144,8 @@ export default {
         return this.int_link_name
       },
       set: function(newValue) {
-        console.log('setting new link name..')
-        console.log(newValue)
+        //console.log('setting new link name..')
+        //console.log(newValue)
         this.int_newlink_name = newValue
       }
     }
