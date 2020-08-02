@@ -86,6 +86,7 @@ class ScheduleController extends Controller
         $schedule = $this->nowShowing($screen);
         if ($schedule->isEmpty()) {
             // @TODO: default image or URL here...
+            return 'no-content';
         }
 
         //dd($schedule[0]->id);

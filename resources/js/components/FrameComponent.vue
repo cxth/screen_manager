@@ -37,14 +37,25 @@ export default {
         fetchURL() {
             axios.get(`${ this.siteURL }/request`)
             .then(response => {
-                //console.log(response.data);
+                // console.log('fetch URL response: ')
+                // console.log(response.data);
+                if (response.data == 'no-content')
+                {
+                  return
+                }
+                         
+                if (response.data.length < 1)
+                {
+                  return
+                }
+
                 var sched = response.data[0];
                 if (sched == "invalid-user")
                 {
                     //console.log("im invalid user");
                     axios.get(`${ this.siteURL }/logout`)
                         .then(response => {
-                            //location.reload();
+                            location.reload();
                         })
                         .catch(e => {
                             this.errors.push(e)
@@ -73,8 +84,8 @@ export default {
             })
             .catch(e => {
                 //this.errors.push(e)
-                console.log('im error');
-                //location.reload();
+                console.log('fetch sched error. reloading..');
+                location.reload();
             })
         },
         cancelAutoUpdate() { clearInterval(this.timer) }

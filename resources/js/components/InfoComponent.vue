@@ -247,15 +247,15 @@ export default {
         mydata.teamviewer_details = this.int_teamviewer
       }
       
-      console.log('saving screen info..')
-      console.log(mydata)
+      // console.log('saving screen info..')
+      // console.log(mydata)
       
       axios({
           method: 'post',
           url: `${ this.siteURL }/api/getscreen`,
           data: mydata
       }).then(response => {
-          console.log(response.data);
+          //console.log(response.data);
           if (response.data != "no-request")
           {
 

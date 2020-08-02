@@ -46,12 +46,22 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/request")).then(function (response) {
-        //console.log(response.data);
+        // console.log('fetch URL response: ')
+        // console.log(response.data);
+        if (response.data == 'no-content') {
+          return;
+        }
+
+        if (response.data.length < 1) {
+          return;
+        }
+
         var sched = response.data[0];
 
         if (sched == "invalid-user") {
           //console.log("im invalid user");
-          axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(_this.siteURL, "/logout")).then(function (response) {//location.reload();
+          axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(_this.siteURL, "/logout")).then(function (response) {
+            location.reload();
           })["catch"](function (e) {
             _this.errors.push(e);
           });
@@ -72,7 +82,8 @@ __webpack_require__.r(__webpack_exports__);
         }
       })["catch"](function (e) {
         //this.errors.push(e)
-        console.log('im error'); //location.reload();
+        console.log('fetch sched error. reloading..');
+        location.reload();
       });
     },
     cancelAutoUpdate: function cancelAutoUpdate() {

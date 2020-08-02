@@ -481,6 +481,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
 
 
 
@@ -510,6 +511,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       screen_activation_date: null,
       screen_equipment_model_installed: null,
       screen_teamviewer_details: null,
+      screen_key: null,
       selected: {
         // media assets
         mediagroup: null,
@@ -585,7 +587,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       var _this = this;
 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/screen/all")).then(function (response) {
-        //console.log(response.data);
         var combined = {};
         response.data.forEach(function (arrayItem) {
           if (!(Object.keys(arrayItem) in combined)) {
@@ -593,8 +594,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           } else {
             combined[Object.keys(arrayItem)].push(Object.values(arrayItem)[0]);
           }
-        });
-        _this.outlets = combined;
+        }); // console.log('final outlets')
+        // console.log(combined)
+
+        _this.outlets = combined; //console.log(this.outlets['eB Vasra (NDM Center)'][0].description)
       })["catch"](function (e) {
         _this.errors.push(e);
 
@@ -645,15 +648,19 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
      * @on outlet_component
      * @use to get select screen current content
      * @return selected.mediagroup, selected.link_name
+     * @param screen => screen_id
      */
     getSelectedScreenInfo: function getSelectedScreenInfo(screen) {
       var _this4 = this;
 
-      console.log('getSelectedScreenInfo...'); // get content of screen
+      // console.log(this.selected.outlet);
+      // console.log('the index=')
+      // console.log(screen[1]);
+      this.screen_key = screen[1]; // get content of screen
 
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
         method: 'get',
-        url: "".concat(this.siteURL, "/api/schedule/ss/").concat(screen)
+        url: "".concat(this.siteURL, "/api/schedule/ss/").concat(screen[0])
       }).then(function (response) {
         _this4.selected.link_name = '';
         _this4.selected.mediagroup = '';
@@ -681,8 +688,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
      * @return selected.screen_name
      */
     refreshScreen: function refreshScreen(new_screen_name) {
-      this.selected.screen_name = new_screen_name;
-      this.getOutlets();
+      this.selected.screen_name = new_screen_name; // console.log('RS selected outlet=>')
+      // console.log(this.selected.outlet)
+      // console.log('RS current key=>')
+      // console.log(this.screen_key)
+      // console.log('RS target=>')
+      // console.log(this.outlets[this.selected.outlet][this.screen_key].description)
+
+      this.outlets[this.selected.outlet][this.screen_key].description = new_screen_name; //this.getOutlets()
     },
     refreshScreenActivation: function refreshScreenActivation(new_activation_date) {
       console.log('updating activation date...');
@@ -817,7 +830,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("".concat(this.siteURL, "/api/l/").concat(event)).then(function (response) {
           alert("link deleted");
 
-          _this9.getSelectedScreenInfo(_this9.selected.screen);
+          _this9.getSelectedScreenInfo([_this9.selected.screen, _this9.screen_key]);
 
           _this9.getMediaAssets();
 
@@ -909,8 +922,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   //   }
   // },
   watch: {
-    outlets: function outlets() {
-      console.log('every breath you take, every step you make, ill be watching you..'); //this.getOutlets()
+    outlets: function outlets() {//console.log('every breath you take, every step you make, ill be watching you..')
+      //this.getOutlets()
     }
   }
 });
@@ -1222,17 +1235,16 @@ __webpack_require__.r(__webpack_exports__);
 
       if (event == "teamviewer") {
         mydata.teamviewer_details = this.int_teamviewer;
-      }
+      } // console.log('saving screen info..')
+      // console.log(mydata)
 
-      console.log('saving screen info..');
-      console.log(mydata);
+
       axios({
         method: 'post',
         url: "".concat(this.siteURL, "/api/getscreen"),
         data: mydata
       }).then(function (response) {
-        console.log(response.data);
-
+        //console.log(response.data);
         if (response.data != "no-request") {}
       })["catch"](function (e) {
         _this.errors.push(e);
@@ -1620,8 +1632,9 @@ __webpack_require__.r(__webpack_exports__);
         this.selected.screen_name = i[2];
         this.getScreenSched();
         this.getScreenAutologin();
-        this.getScreenNotes();
-        this.$emit('screenSelect', i[1]);
+        this.getScreenNotes(); // i[1] - screen ID, i[3] - screen key
+
+        this.$emit('screenSelect', [i[1], i[3]]);
         this.add_screen_panel = false;
       }
     },
@@ -1825,8 +1838,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['selected', 'form', 'is_form_valid', 'clear_URL', 'momentNow', 'resetData', 'getSelectedScreenInfo', 'getScreenSched', 'getMediaAssets', 'getLinks'],
+  props: ['selected', 'form', 'is_form_valid', 'clear_URL', 'momentNow', 'resetData', 'getSelectedScreenInfo', 'screen_key', 'getScreenSched', 'getMediaAssets', 'getLinks'],
   data: function data() {
     return {
       newURL: "",
@@ -1885,7 +1899,7 @@ __webpack_require__.r(__webpack_exports__);
         console.log(response);
         alert("Schedule saved");
 
-        _this.getSelectedScreenInfo(_this.selected.screen);
+        _this.getSelectedScreenInfo([_this.selected.screen, _this.screen_key]);
 
         _this.getScreenSched(); // refresh for custom URL
 
@@ -2508,6 +2522,7 @@ var render = function() {
                                             resetData: _vm.resetData,
                                             getSelectedScreenInfo:
                                               _vm.getSelectedScreenInfo,
+                                            screen_key: _vm.screen_key,
                                             getScreenSched: _vm.getScreenSched,
                                             getMediaAssets: _vm.getMediaAssets,
                                             getLinks: _vm.getLinks
@@ -3611,7 +3626,9 @@ var render = function() {
                                             "**" +
                                             screen.id +
                                             "**" +
-                                            screen.description
+                                            screen.description +
+                                            "**" +
+                                            screen_i
                                         },
                                         on: { click: _vm.screenSelect }
                                       },
@@ -3950,7 +3967,7 @@ var render = function() {
                         [
                           _c("v-text-field", {
                             attrs: {
-                              label: "or enter URL",
+                              label: "or enter URL http://...",
                               type: "url",
                               outlined: "",
                               dense: "",
@@ -3969,6 +3986,7 @@ var render = function() {
                           _c("v-text-field", {
                             attrs: {
                               label: "URL Name",
+                              hint: "give this link a name",
                               outlined: "",
                               dense: "",
                               disabled: !_vm.form.is_form_valid,

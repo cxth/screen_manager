@@ -127,6 +127,7 @@
                       :momentNow="momentNow"
                       :resetData="resetData"
                       :getSelectedScreenInfo="getSelectedScreenInfo"
+                      :screen_key="screen_key"
                       :getScreenSched="getScreenSched"
                       :getMediaAssets="getMediaAssets"
                       :getLinks="getLinks">
@@ -213,6 +214,8 @@ import add_outlet_component from './AddOutletComponent'
       screen_equipment_model_installed: null,
       screen_teamviewer_details: null,
 
+      screen_key: null,
+
       selected: {
         // media assets
         mediagroup: null,
@@ -288,7 +291,6 @@ import add_outlet_component from './AddOutletComponent'
       getOutlets() {
         axios.get(`${ this.siteURL }/api/screen/all`)
         .then(response => {
-            //console.log(response.data);
             let combined = {};
             response.data.forEach(function (arrayItem) {
               if (!(Object.keys(arrayItem) in combined)) {
@@ -298,7 +300,10 @@ import add_outlet_component from './AddOutletComponent'
                 combined[Object.keys(arrayItem)].push(Object.values(arrayItem)[0]);
               }
             });
+            // console.log('final outlets')
+            // console.log(combined)
             this.outlets = combined;
+            //console.log(this.outlets['eB Vasra (NDM Center)'][0].description)
         })
         .catch(e => {
             this.errors.push(e)
@@ -348,13 +353,18 @@ import add_outlet_component from './AddOutletComponent'
        * @on outlet_component
        * @use to get select screen current content
        * @return selected.mediagroup, selected.link_name
+       * @param screen => screen_id
        */
       getSelectedScreenInfo: function(screen) {
-        console.log('getSelectedScreenInfo...')
+        // console.log(this.selected.outlet);
+        // console.log('the index=')
+        // console.log(screen[1]);
+        this.screen_key = screen[1]
+
         // get content of screen
         axios({
             method: 'get',
-            url: `${ this.siteURL }/api/schedule/ss/${ screen }`,
+            url: `${ this.siteURL }/api/schedule/ss/${ screen[0] }`,
         }).then(response => {
             this.selected.link_name = ''
             this.selected.mediagroup = ''
@@ -382,7 +392,14 @@ import add_outlet_component from './AddOutletComponent'
        */
       refreshScreen: function(new_screen_name) {
         this.selected.screen_name = new_screen_name
-        this.getOutlets()
+        // console.log('RS selected outlet=>')
+        // console.log(this.selected.outlet)
+        // console.log('RS current key=>')
+        // console.log(this.screen_key)
+        // console.log('RS target=>')
+        // console.log(this.outlets[this.selected.outlet][this.screen_key].description)
+        this.outlets[this.selected.outlet][this.screen_key].description = new_screen_name
+        //this.getOutlets()
       },
 
       refreshScreenActivation: function(new_activation_date) {
@@ -512,7 +529,7 @@ import add_outlet_component from './AddOutletComponent'
           axios.delete(`${ this.siteURL }/api/l/${ event }`)
           .then(response => {
               alert("link deleted");
-              this.getSelectedScreenInfo(this.selected.screen)
+              this.getSelectedScreenInfo([this.selected.screen,this.screen_key])
               this.getMediaAssets()
               this.resetData()
             })
@@ -607,7 +624,7 @@ import add_outlet_component from './AddOutletComponent'
     // },
     watch: {
       outlets: function() {
-        console.log('every breath you take, every step you make, ill be watching you..')
+        //console.log('every breath you take, every step you make, ill be watching you..')
         //this.getOutlets()
       }
     }

@@ -48,7 +48,7 @@
                 :fullscreen="$vuetify.breakpoint.mobile"
               >
                   <v-text-field
-                    label="or enter URL"
+                    label="or enter URL http://..."
                     type="url"
                     outlined
                     dense
@@ -59,6 +59,7 @@
 
                   <v-text-field
                     label="URL Name"
+                    hint="give this link a name"
                     outlined
                     dense
                     v-model="newURL_name"
@@ -95,6 +96,7 @@ export default {
     'momentNow',
     'resetData',
     'getSelectedScreenInfo',
+    'screen_key',
     'getScreenSched',
     'getMediaAssets',
     'getLinks'
@@ -156,7 +158,7 @@ export default {
         }).then(response => {
             console.log(response);
             alert("Schedule saved");
-            this.getSelectedScreenInfo(this.selected.screen)
+            this.getSelectedScreenInfo([this.selected.screen,this.screen_key])
             this.getScreenSched()
             // refresh for custom URL
             this.getMediaAssets()
