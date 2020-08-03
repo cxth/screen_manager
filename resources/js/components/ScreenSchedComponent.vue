@@ -51,11 +51,12 @@
                   :fullscreen="$vuetify.breakpoint.mobile"
                 >
                   <v-text-field
-                    label="or enter URL http://..."
+                    label="or enter URL https://..."
                     type="url"
                     outlined
                     dense
                     @keyup="disableMedia"
+                    :rules="[rules.url]"
                     v-model="newURL"
                     :disabled="!form.is_form_valid"
                   ></v-text-field>
@@ -109,6 +110,10 @@ export default {
     newURL_name: "",
     rules: {
       counter: value => value.length <= 50 || 'Max 50 characters',
+      url: value => {
+        const pattern = /^https:\/\//
+        return pattern.test(value) || 'URL should start in https://'
+      },
     }
   }),
   watch: {
@@ -131,6 +136,11 @@ export default {
           if (this.newURL=="" || this.newURL_name=="")
           {
             alert('Please complete URL fields');
+            return;
+          }
+
+          if (/^https:\/\//.test(this.newURL) == false) {
+            alert('URL should be in https://');
             return;
           }
         

@@ -1858,6 +1858,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['selected', 'form', 'is_form_valid', 'clear_URL', 'momentNow', 'resetData', 'getSelectedScreenInfo', 'screen_key', 'getScreenSched', 'getMediaAssets', 'getLinks'],
   data: function data() {
@@ -1867,6 +1868,10 @@ __webpack_require__.r(__webpack_exports__);
       rules: {
         counter: function counter(value) {
           return value.length <= 50 || 'Max 50 characters';
+        },
+        url: function url(value) {
+          var pattern = /^https:\/\//;
+          return pattern.test(value) || 'URL should start in https://';
         }
       }
     };
@@ -1890,6 +1895,11 @@ __webpack_require__.r(__webpack_exports__);
         // check URL & name
         if (this.newURL == "" || this.newURL_name == "") {
           alert('Please complete URL fields');
+          return;
+        }
+
+        if (/^https:\/\//.test(this.newURL) == false) {
+          alert('URL should be in https://');
           return;
         }
 
@@ -3996,10 +4006,11 @@ var render = function() {
                             [
                               _c("v-text-field", {
                                 attrs: {
-                                  label: "or enter URL http://...",
+                                  label: "or enter URL https://...",
                                   type: "url",
                                   outlined: "",
                                   dense: "",
+                                  rules: [_vm.rules.url],
                                   disabled: !_vm.form.is_form_valid
                                 },
                                 on: { keyup: _vm.disableMedia },

@@ -96916,8 +96916,8 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.mixin({
   data: function data() {
     return {
       //siteURL:'http://sm.mswdb.com'
-      siteURL: 'https://sm-stage.mswdb.com' //siteURL:'http://sm.local'
-      //siteURL:'http://localhost'
+      //siteURL:'https://sm-stage.mswdb.com'
+      siteURL: 'http://sm.local' //siteURL:'http://localhost'
 
     };
   }
