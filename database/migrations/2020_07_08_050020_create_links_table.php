@@ -19,6 +19,7 @@ class CreateLinksTable extends Migration
             $table->string('name', 200);
             $table->string('url', 2083)->nullable();
             $table->text('description')->nullable();
+            $table->softDeletes();
             $table->timestamps();
 
             // Foreign KEY!!!
