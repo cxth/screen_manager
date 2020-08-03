@@ -225,50 +225,43 @@ export default {
 
       let mydata = {
         id: this.selected.screen,
+
         description: this.int_screen_name ? this.int_screen_name : this.selected.screen_name,
         resolution: this.int_resolution ? this.int_resolution : this.screen_resolution,
         equipment_model_installed: this.int_equipment_model ? this.int_equipment_model : this.screen_equipment_model_installed,
         teamviewer_details: this.int_teamviewer ? this.int_teamviewer : this.screen_teamviewer_details
       }
-      if (event == "name")
-      {
-        mydata.description = this.int_screen_name
-      }
-      if (event == "resolution")
-      {
-        mydata.resolution = this.int_resolution
-      }
-      if (event == "equipment")
-      {
-        mydata.equipment_model_installed = this.int_equipment_model
-      }
-      if (event == "teamviewer")
-      {
-        mydata.teamviewer_details = this.int_teamviewer
-      }
-      
-      console.log('saving screen info..')
-      console.log(mydata)
-      
+
       axios({
           method: 'post',
           url: `${ this.siteURL }/api/getscreen`,
           data: mydata
       }).then(response => {
-          console.log(response.data);
+          //console.log(response.data);
           if (response.data != "no-request")
           {
-
           }
+
+          this.int_resolution = ''
+          this.int_equipment_model = ''
+          this.int_teamviewer = ''
+          this.int_screen_name = ''
       })
       .catch(e => {
           this.errors.push(e)
           console.log('error getting auto login')
       });
 
-      this.$emit('saveScreenNotes',this.int_screen_name)
+      this.$emit('saveScreenNotes',mydata.description)
     },
     renameScreen: function() {
+      
+      if (this.int_screen_name == '')
+      {
+        alert('Enter a valid name')
+        return
+      }
+      
       if (!this.selected.screen)
       {
         return

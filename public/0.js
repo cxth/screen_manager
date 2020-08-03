@@ -481,6 +481,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
 
 
 
@@ -510,6 +511,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       screen_activation_date: null,
       screen_equipment_model_installed: null,
       screen_teamviewer_details: null,
+      screen_key: null,
       selected: {
         // media assets
         mediagroup: null,
@@ -585,7 +587,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       var _this = this;
 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/screen/all")).then(function (response) {
-        //console.log(response.data);
         var combined = {};
         response.data.forEach(function (arrayItem) {
           if (!(Object.keys(arrayItem) in combined)) {
@@ -593,12 +594,17 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           } else {
             combined[Object.keys(arrayItem)].push(Object.values(arrayItem)[0]);
           }
-        });
-        _this.outlets = combined;
+        }); // console.log('final outlets')
+        // console.log(combined)
+
+        _this.outlets = combined; //console.log(this.outlets['eB Vasra (NDM Center)'][0].description)
       })["catch"](function (e) {
         _this.errors.push(e);
 
-        console.log('error getting outlet list');
+        console.log('error getting outlet list. reloading..');
+        setTimeout(function () {
+          location.reload();
+        }, 5000);
       });
     },
 
@@ -615,7 +621,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       })["catch"](function (e) {
         _this2.errors.push(e);
 
-        console.log('error getting media assets');
+        console.log('error getting media assets. reloading..');
+        setTimeout(function () {
+          location.reload();
+        }, 5000);
       });
     },
 
@@ -636,7 +645,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       })["catch"](function (e) {
         _this3.errors.push(e);
 
-        console.log('error getting links');
+        console.log('error getting links. reloading..');
+        setTimeout(function () {
+          location.reload();
+        }, 5000);
       });
     },
 
@@ -645,15 +657,20 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
      * @on outlet_component
      * @use to get select screen current content
      * @return selected.mediagroup, selected.link_name
+     * @param Array screen[0] => screen_id, screen[1] => screen_key
      */
     getSelectedScreenInfo: function getSelectedScreenInfo(screen) {
       var _this4 = this;
 
-      console.log('getSelectedScreenInfo...'); // get content of screen
+      console.log('the selected screen=>');
+      console.log(this.selected.screen_name); // console.log('the index=')
+      // console.log(screen[1]);
+
+      this.screen_key = screen[1]; // get content of screen
 
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
         method: 'get',
-        url: "".concat(this.siteURL, "/api/schedule/ss/").concat(screen)
+        url: "".concat(this.siteURL, "/api/schedule/ss/").concat(screen[0])
       }).then(function (response) {
         _this4.selected.link_name = '';
         _this4.selected.mediagroup = '';
@@ -681,19 +698,36 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
      * @return selected.screen_name
      */
     refreshScreen: function refreshScreen(new_screen_name) {
-      this.selected.screen_name = new_screen_name;
-      this.getOutlets();
+      this.selected.screen_name = new_screen_name; // console.log('RS selected outlet=>')
+      // console.log(this.selected.outlet)
+      // console.log('RS current key=>')
+      // console.log(this.screen_key)
+      // console.log('RS target=>')
+      // console.log(this.outlets[this.selected.outlet][this.screen_key].description)
+
+      this.outlets[this.selected.outlet][this.screen_key].description = new_screen_name; //this.getOutlets()
     },
     refreshScreenActivation: function refreshScreenActivation(new_activation_date) {
       console.log('updating activation date...');
       console.log(new_activation_date);
       this.screen_activation_date = new_activation_date;
     },
+
+    /**
+     * @attached to props
+     * @on media_asset component
+     * @use to refresh data after link rename
+     * @return 
+     */
     refreshLinks: function refreshLinks(newLinkName) {
       console.log('refreshing links from admin component..');
       console.log(newLinkName);
       this.getMediaAssets();
-      this.getLinks();
+      this.getLinks(); // refresh calendar
+
+      this.getScreenSched(); // refresh screen info
+
+      this.getSelectedScreenInfo([this.selected.screen, this.screen_key]);
     },
 
     /**
@@ -716,7 +750,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       })["catch"](function (e) {
         _this5.errors.push(e);
 
-        console.log('error getting schedule');
+        console.log('error getting schedule for calendar');
       });
     },
 
@@ -754,7 +788,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     getScreenNotes: function getScreenNotes() {
       var _this7 = this;
 
-      console.log('getting notes..');
+      //console.log('getting notes..')
       this.screen_resolution = '';
       this.screen_equipment_model_installed = '';
       this.screen_teamviewer_details = '';
@@ -817,11 +851,15 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("".concat(this.siteURL, "/api/l/").concat(event)).then(function (response) {
           alert("link deleted");
 
-          _this9.getSelectedScreenInfo(_this9.selected.screen);
+          _this9.getSelectedScreenInfo([_this9.selected.screen, _this9.screen_key]);
 
-          _this9.getMediaAssets();
+          _this9.getMediaAssets(); // reset all selected media and links
 
-          _this9.resetData();
+
+          _this9.resetData(); // refresh calendar
+
+
+          _this9.getScreenSched();
         })["catch"](function (e) {
           _this9.errors.push(e);
         });
@@ -909,8 +947,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   //   }
   // },
   watch: {
-    outlets: function outlets() {
-      console.log('every breath you take, every step you make, ill be watching you..'); //this.getOutlets()
+    outlets: function outlets() {//console.log('every breath you take, every step you make, ill be watching you..')
+      //this.getOutlets()
     }
   }
 });
@@ -1207,41 +1245,31 @@ __webpack_require__.r(__webpack_exports__);
         equipment_model_installed: this.int_equipment_model ? this.int_equipment_model : this.screen_equipment_model_installed,
         teamviewer_details: this.int_teamviewer ? this.int_teamviewer : this.screen_teamviewer_details
       };
-
-      if (event == "name") {
-        mydata.description = this.int_screen_name;
-      }
-
-      if (event == "resolution") {
-        mydata.resolution = this.int_resolution;
-      }
-
-      if (event == "equipment") {
-        mydata.equipment_model_installed = this.int_equipment_model;
-      }
-
-      if (event == "teamviewer") {
-        mydata.teamviewer_details = this.int_teamviewer;
-      }
-
-      console.log('saving screen info..');
-      console.log(mydata);
       axios({
         method: 'post',
         url: "".concat(this.siteURL, "/api/getscreen"),
         data: mydata
       }).then(function (response) {
-        console.log(response.data);
-
+        //console.log(response.data);
         if (response.data != "no-request") {}
+
+        _this.int_resolution = '';
+        _this.int_equipment_model = '';
+        _this.int_teamviewer = '';
+        _this.int_screen_name = '';
       })["catch"](function (e) {
         _this.errors.push(e);
 
         console.log('error getting auto login');
       });
-      this.$emit('saveScreenNotes', this.int_screen_name);
+      this.$emit('saveScreenNotes', mydata.description);
     },
     renameScreen: function renameScreen() {
+      if (this.int_screen_name == '') {
+        alert('Enter a valid name');
+        return;
+      }
+
       if (!this.selected.screen) {
         return;
       }
@@ -1393,6 +1421,7 @@ __webpack_require__.r(__webpack_exports__);
         this.selected.link_name = this.links[this.selected.link].name;
         this.selected.link_url = this.links[this.selected.link].url;
         this.form.is_form_valid = false;
+        this.rename_field = false;
         this.$emit('linkSelect', 'deliver some values');
       }
     },
@@ -1446,8 +1475,8 @@ __webpack_require__.r(__webpack_exports__);
         return this.int_link_name;
       },
       set: function set(newValue) {
-        console.log('setting new link name..');
-        console.log(newValue);
+        //console.log('setting new link name..')
+        //console.log(newValue)
         this.int_newlink_name = newValue;
       }
     }
@@ -1611,8 +1640,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     screenSelect: function screenSelect(event) {
-      console.log('selecting screen');
-
+      //console.log('selecting screen');
       if (event) {
         var i = event.currentTarget.id.split('**');
         this.selected.outlet = i[0];
@@ -1620,8 +1648,9 @@ __webpack_require__.r(__webpack_exports__);
         this.selected.screen_name = i[2];
         this.getScreenSched();
         this.getScreenAutologin();
-        this.getScreenNotes();
-        this.$emit('screenSelect', i[1]);
+        this.getScreenNotes(); // i[1] - screen ID, i[3] - screen key
+
+        this.$emit('screenSelect', [i[1], i[3]]);
         this.add_screen_panel = false;
       }
     },
@@ -1825,8 +1854,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['selected', 'form', 'is_form_valid', 'clear_URL', 'momentNow', 'resetData', 'getSelectedScreenInfo', 'getScreenSched', 'getMediaAssets', 'getLinks'],
+  props: ['selected', 'form', 'is_form_valid', 'clear_URL', 'momentNow', 'resetData', 'getSelectedScreenInfo', 'screen_key', 'getScreenSched', 'getMediaAssets', 'getLinks'],
   data: function data() {
     return {
       newURL: "",
@@ -1885,7 +1918,7 @@ __webpack_require__.r(__webpack_exports__);
         console.log(response);
         alert("Schedule saved");
 
-        _this.getSelectedScreenInfo(_this.selected.screen);
+        _this.getSelectedScreenInfo([_this.selected.screen, _this.screen_key]);
 
         _this.getScreenSched(); // refresh for custom URL
 
@@ -2508,6 +2541,7 @@ var render = function() {
                                             resetData: _vm.resetData,
                                             getSelectedScreenInfo:
                                               _vm.getSelectedScreenInfo,
+                                            screen_key: _vm.screen_key,
                                             getScreenSched: _vm.getScreenSched,
                                             getMediaAssets: _vm.getMediaAssets,
                                             getLinks: _vm.getLinks
@@ -2611,11 +2645,11 @@ var render = function() {
         "v-footer",
         { staticClass: "white--text", attrs: { app: "" } },
         [
-          _c("span", [_vm._v("MSW")]),
+          _c("span"),
           _vm._v(" "),
           _c("v-spacer"),
           _vm._v(" "),
-          _c("span", [_vm._v("© " + _vm._s(new Date().getFullYear()))])
+          _c("span", [_vm._v("MSW © " + _vm._s(new Date().getFullYear()))])
         ],
         1
       )
@@ -3611,7 +3645,9 @@ var render = function() {
                                             "**" +
                                             screen.id +
                                             "**" +
-                                            screen.description
+                                            screen.description +
+                                            "**" +
+                                            screen_i
                                         },
                                         on: { click: _vm.screenSelect }
                                       },
@@ -3852,8 +3888,13 @@ var render = function() {
               _c(
                 "v-card",
                 {
-                  staticClass: "mx-auto mt-5 pb-10 mb-12",
-                  attrs: { height: "100%", width: "500", outlined: "" }
+                  staticClass: "mx-auto mt-5 pb-10 mb-7",
+                  attrs: {
+                    transition: "scroll-y-transition",
+                    height: "100%",
+                    width: "500",
+                    outlined: ""
+                  }
                 },
                 [
                   _c(
@@ -3862,6 +3903,7 @@ var render = function() {
                     [
                       _c(
                         "v-col",
+                        { staticClass: "ml-5" },
                         [
                           _c(
                             "v-list-item",
@@ -3895,6 +3937,7 @@ var render = function() {
                       _vm._v(" "),
                       _c(
                         "v-col",
+                        { staticClass: "mr-4" },
                         [
                           _c(
                             "v-list-item",
@@ -3931,65 +3974,70 @@ var render = function() {
                     1
                   ),
                   _vm._v(" "),
-                  _c(
-                    "v-row",
-                    {
-                      attrs: {
-                        "no-gutters": "",
-                        align: "center",
-                        justify: "center"
-                      }
-                    },
-                    [
-                      _c(
-                        "v-col",
+                  !_vm.selected.link
+                    ? _c(
+                        "v-row",
                         {
-                          staticStyle: { maxWidth: "280px" },
-                          attrs: { fullscreen: _vm.$vuetify.breakpoint.mobile }
+                          attrs: {
+                            "no-gutters": "",
+                            align: "center",
+                            justify: "center"
+                          }
                         },
                         [
-                          _c("v-text-field", {
-                            attrs: {
-                              label: "or enter URL",
-                              type: "url",
-                              outlined: "",
-                              dense: "",
-                              disabled: !_vm.form.is_form_valid
+                          _c(
+                            "v-col",
+                            {
+                              staticStyle: { maxWidth: "280px" },
+                              attrs: {
+                                fullscreen: _vm.$vuetify.breakpoint.mobile
+                              }
                             },
-                            on: { keyup: _vm.disableMedia },
-                            model: {
-                              value: _vm.newURL,
-                              callback: function($$v) {
-                                _vm.newURL = $$v
-                              },
-                              expression: "newURL"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("v-text-field", {
-                            attrs: {
-                              label: "URL Name",
-                              outlined: "",
-                              dense: "",
-                              disabled: !_vm.form.is_form_valid,
-                              rules: [_vm.rules.counter],
-                              counter: "",
-                              maxlength: "50"
-                            },
-                            model: {
-                              value: _vm.newURL_name,
-                              callback: function($$v) {
-                                _vm.newURL_name = $$v
-                              },
-                              expression: "newURL_name"
-                            }
-                          })
+                            [
+                              _c("v-text-field", {
+                                attrs: {
+                                  label: "or enter URL http://...",
+                                  type: "url",
+                                  outlined: "",
+                                  dense: "",
+                                  disabled: !_vm.form.is_form_valid
+                                },
+                                on: { keyup: _vm.disableMedia },
+                                model: {
+                                  value: _vm.newURL,
+                                  callback: function($$v) {
+                                    _vm.newURL = $$v
+                                  },
+                                  expression: "newURL"
+                                }
+                              }),
+                              _vm._v(" "),
+                              _c("v-text-field", {
+                                attrs: {
+                                  label: "URL Name",
+                                  hint: "give this link a name",
+                                  outlined: "",
+                                  dense: "",
+                                  disabled: !_vm.form.is_form_valid,
+                                  rules: [_vm.rules.counter],
+                                  counter: "",
+                                  maxlength: "50"
+                                },
+                                model: {
+                                  value: _vm.newURL_name,
+                                  callback: function($$v) {
+                                    _vm.newURL_name = $$v
+                                  },
+                                  expression: "newURL_name"
+                                }
+                              })
+                            ],
+                            1
+                          )
                         ],
                         1
                       )
-                    ],
-                    1
-                  ),
+                    : _vm._e(),
                   _vm._v(" "),
                   _c(
                     "v-row",

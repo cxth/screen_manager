@@ -127,6 +127,7 @@
                       :momentNow="momentNow"
                       :resetData="resetData"
                       :getSelectedScreenInfo="getSelectedScreenInfo"
+                      :screen_key="screen_key"
                       :getScreenSched="getScreenSched"
                       :getMediaAssets="getMediaAssets"
                       :getLinks="getLinks">
@@ -175,9 +176,9 @@
       app
       class="white--text"
     >
-      <span>MSW</span>
+      <span></span>
       <v-spacer></v-spacer>
-      <span>&copy; {{ new Date().getFullYear() }}</span>
+      <span>MSW &copy; {{ new Date().getFullYear() }}</span>
     </v-footer>
   </v-app>
 </template>
@@ -212,6 +213,8 @@ import add_outlet_component from './AddOutletComponent'
       screen_activation_date: null,
       screen_equipment_model_installed: null,
       screen_teamviewer_details: null,
+
+      screen_key: null,
 
       selected: {
         // media assets
@@ -288,7 +291,6 @@ import add_outlet_component from './AddOutletComponent'
       getOutlets() {
         axios.get(`${ this.siteURL }/api/screen/all`)
         .then(response => {
-            //console.log(response.data);
             let combined = {};
             response.data.forEach(function (arrayItem) {
               if (!(Object.keys(arrayItem) in combined)) {
@@ -298,11 +300,17 @@ import add_outlet_component from './AddOutletComponent'
                 combined[Object.keys(arrayItem)].push(Object.values(arrayItem)[0]);
               }
             });
+            // console.log('final outlets')
+            // console.log(combined)
             this.outlets = combined;
+            //console.log(this.outlets['eB Vasra (NDM Center)'][0].description)
         })
         .catch(e => {
             this.errors.push(e)
-            console.log('error getting outlet list')
+            console.log('error getting outlet list. reloading..')
+            setTimeout(function() {
+              location.reload();
+            }, 5000)
         })
       },
 
@@ -318,7 +326,10 @@ import add_outlet_component from './AddOutletComponent'
           })
           .catch(e => {
               this.errors.push(e)
-              console.log('error getting media assets')
+              console.log('error getting media assets. reloading..')
+              setTimeout(function() {
+                location.reload();
+              }, 5000)
           })
       },
 
@@ -339,7 +350,10 @@ import add_outlet_component from './AddOutletComponent'
           })
           .catch(e => {
               this.errors.push(e)
-              console.log('error getting links')
+              console.log('error getting links. reloading..')
+              setTimeout(function() {
+                location.reload();
+              }, 5000)
           })
       },
 
@@ -348,13 +362,20 @@ import add_outlet_component from './AddOutletComponent'
        * @on outlet_component
        * @use to get select screen current content
        * @return selected.mediagroup, selected.link_name
+       * @param Array screen[0] => screen_id, screen[1] => screen_key
        */
       getSelectedScreenInfo: function(screen) {
-        console.log('getSelectedScreenInfo...')
+        
+        console.log('the selected screen=>')
+        console.log(this.selected.screen_name);
+        // console.log('the index=')
+        // console.log(screen[1]);
+        this.screen_key = screen[1]
+
         // get content of screen
         axios({
             method: 'get',
-            url: `${ this.siteURL }/api/schedule/ss/${ screen }`,
+            url: `${ this.siteURL }/api/schedule/ss/${ screen[0] }`,
         }).then(response => {
             this.selected.link_name = ''
             this.selected.mediagroup = ''
@@ -382,7 +403,14 @@ import add_outlet_component from './AddOutletComponent'
        */
       refreshScreen: function(new_screen_name) {
         this.selected.screen_name = new_screen_name
-        this.getOutlets()
+        // console.log('RS selected outlet=>')
+        // console.log(this.selected.outlet)
+        // console.log('RS current key=>')
+        // console.log(this.screen_key)
+        // console.log('RS target=>')
+        // console.log(this.outlets[this.selected.outlet][this.screen_key].description)
+        this.outlets[this.selected.outlet][this.screen_key].description = new_screen_name
+        //this.getOutlets()
       },
 
       refreshScreenActivation: function(new_activation_date) {
@@ -391,11 +419,21 @@ import add_outlet_component from './AddOutletComponent'
         this.screen_activation_date = new_activation_date
       },
 
+      /**
+       * @attached to props
+       * @on media_asset component
+       * @use to refresh data after link rename
+       * @return 
+       */
       refreshLinks: function(newLinkName) {
         console.log('refreshing links from admin component..')
         console.log(newLinkName)
         this.getMediaAssets()
         this.getLinks()
+        // refresh calendar
+        this.getScreenSched()
+        // refresh screen info
+        this.getSelectedScreenInfo([this.selected.screen,this.screen_key])
       },
 
       /**
@@ -417,7 +455,7 @@ import add_outlet_component from './AddOutletComponent'
           })
           .catch(e => {
               this.errors.push(e)
-              console.log('error getting schedule')
+              console.log('error getting schedule for calendar')
           });
       },
 
@@ -451,7 +489,7 @@ import add_outlet_component from './AddOutletComponent'
        * @return screen_resolution, screen_activation_dates, screen_equipment_model_installed, screen_teamviewer_details
        */
       getScreenNotes: function() {
-        console.log('getting notes..')
+        //console.log('getting notes..')
         this.screen_resolution = ''
         this.screen_equipment_model_installed = ''
         this.screen_teamviewer_details = ''
@@ -512,9 +550,12 @@ import add_outlet_component from './AddOutletComponent'
           axios.delete(`${ this.siteURL }/api/l/${ event }`)
           .then(response => {
               alert("link deleted");
-              this.getSelectedScreenInfo(this.selected.screen)
+              this.getSelectedScreenInfo([this.selected.screen,this.screen_key])
               this.getMediaAssets()
+              // reset all selected media and links
               this.resetData()
+              // refresh calendar
+              this.getScreenSched()
             })
             .catch(e => {
                 this.errors.push(e)
@@ -607,7 +648,7 @@ import add_outlet_component from './AddOutletComponent'
     // },
     watch: {
       outlets: function() {
-        console.log('every breath you take, every step you make, ill be watching you..')
+        //console.log('every breath you take, every step you make, ill be watching you..')
         //this.getOutlets()
       }
     }

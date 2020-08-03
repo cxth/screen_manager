@@ -91,6 +91,7 @@ export default {
         this.selected.link_name = this.links[this.selected.link].name;
         this.selected.link_url = this.links[this.selected.link].url;
         this.form.is_form_valid = false 
+        this.rename_field = false
         this.$emit('linkSelect', 'deliver some values')
       }
     },
@@ -144,8 +145,8 @@ export default {
         return this.int_link_name
       },
       set: function(newValue) {
-        console.log('setting new link name..')
-        console.log(newValue)
+        //console.log('setting new link name..')
+        //console.log(newValue)
         this.int_newlink_name = newValue
       }
     }

@@ -6,29 +6,31 @@
       pb="3"
     >
       <v-col class="shrink">
-        <v-card
-            class="mx-auto mt-5 pb-10 mb-12"
+        <v-card transition="scroll-y-transition"
+            class="mx-auto mt-5 pb-10 mb-7"
             height="100%"
             width="500"
-            outlined
+            outlined 
           >
             <v-row 
               no-gutters
               class="mb-5"
             >
-                <v-col>
+                <v-col class="ml-5">
                   <v-list-item three-line>
                     <v-list-item-content>
                       <div class="overline mb-4">SCREEN</div>
+                      
                       <v-list-item-subtitle>{{ selected.outlet }}</v-list-item-subtitle>
                       <v-list-item-title class="headline mb-4">{{ selected.screen_name }}</v-list-item-title>
                     </v-list-item-content>
                   </v-list-item>
                 </v-col>
-                <v-col>
+                <v-col class="mr-4">
                   <v-list-item three-line>
                     <v-list-item-content>
                       <div class="overline mb-4">CONTENT</div>
+                      
                       <v-list-item-subtitle>{{ selected.mediagroup }}</v-list-item-subtitle>
                       <v-list-item-title class="headline mb-4">{{ selected.link_name }}</v-list-item-title>
                     </v-list-item-content>
@@ -42,13 +44,14 @@
             <v-row no-gutters 
                 align="center"
                 justify="center"
+                v-if="!selected.link"
             >
-              <v-col 
-                style="maxWidth: 280px"
-                :fullscreen="$vuetify.breakpoint.mobile"
-              >
+                <v-col 
+                  style="maxWidth: 280px"
+                  :fullscreen="$vuetify.breakpoint.mobile"
+                >
                   <v-text-field
-                    label="or enter URL"
+                    label="or enter URL http://..."
                     type="url"
                     outlined
                     dense
@@ -59,6 +62,7 @@
 
                   <v-text-field
                     label="URL Name"
+                    hint="give this link a name"
                     outlined
                     dense
                     v-model="newURL_name"
@@ -95,6 +99,7 @@ export default {
     'momentNow',
     'resetData',
     'getSelectedScreenInfo',
+    'screen_key',
     'getScreenSched',
     'getMediaAssets',
     'getLinks'
@@ -156,7 +161,7 @@ export default {
         }).then(response => {
             console.log(response);
             alert("Schedule saved");
-            this.getSelectedScreenInfo(this.selected.screen)
+            this.getSelectedScreenInfo([this.selected.screen,this.screen_key])
             this.getScreenSched()
             // refresh for custom URL
             this.getMediaAssets()
