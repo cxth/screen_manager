@@ -307,7 +307,10 @@ import add_outlet_component from './AddOutletComponent'
         })
         .catch(e => {
             this.errors.push(e)
-            console.log('error getting outlet list')
+            console.log('error getting outlet list. reloading..')
+            setTimeout(function() {
+              location.reload();
+            }, 5000)
         })
       },
 
@@ -323,7 +326,10 @@ import add_outlet_component from './AddOutletComponent'
           })
           .catch(e => {
               this.errors.push(e)
-              console.log('error getting media assets')
+              console.log('error getting media assets. reloading..')
+              setTimeout(function() {
+                location.reload();
+              }, 5000)
           })
       },
 
@@ -344,7 +350,10 @@ import add_outlet_component from './AddOutletComponent'
           })
           .catch(e => {
               this.errors.push(e)
-              console.log('error getting links')
+              console.log('error getting links. reloading..')
+              setTimeout(function() {
+                location.reload();
+              }, 5000)
           })
       },
 

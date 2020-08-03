@@ -601,7 +601,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       })["catch"](function (e) {
         _this.errors.push(e);
 
-        console.log('error getting outlet list');
+        console.log('error getting outlet list. reloading..');
+        setTimeout(function () {
+          location.reload();
+        }, 5000);
       });
     },
 
@@ -618,7 +621,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       })["catch"](function (e) {
         _this2.errors.push(e);
 
-        console.log('error getting media assets');
+        console.log('error getting media assets. reloading..');
+        setTimeout(function () {
+          location.reload();
+        }, 5000);
       });
     },
 
@@ -639,7 +645,10 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       })["catch"](function (e) {
         _this3.errors.push(e);
 
-        console.log('error getting links');
+        console.log('error getting links. reloading..');
+        setTimeout(function () {
+          location.reload();
+        }, 5000);
       });
     },
 
