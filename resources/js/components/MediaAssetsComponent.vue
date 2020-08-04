@@ -41,14 +41,15 @@
                     </v-list-item-content>
 
                     <v-tooltip left>
-                      <template v-if="asset.name === 'Custom Links'" v-slot:activator="{ on, attrs }">
+                      <!-- <template v-if="asset.name === 'Custom Links'" v-slot:activator="{ on, attrs }"> -->
+                      <template v-slot:activator="{ on, attrs }">
                         <v-list-item-icon 
                           class="ml-5"
                           v-bind="attrs"
                           v-on="on"
                           v-on:click="deleteLink(link.id)"
                         >
-                          <v-icon>mdi-server-remove</v-icon>
+                          <v-icon color="red">mdi-minus-circle</v-icon>
                         </v-list-item-icon>
                       </template>
                       <span>delete link</span>

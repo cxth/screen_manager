@@ -355,7 +355,7 @@ class ScheduleController extends Controller
         {
             $link = Link::create(
                 [
-                    'media__asset_id' => 100,
+                    'media__asset_id' => $request->media__asset_id,
                     'name' => $request->link_name,
                     'url' => $request->url
                 ]

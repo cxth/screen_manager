@@ -51,7 +51,7 @@
                   :fullscreen="$vuetify.breakpoint.mobile"
                 >
                   <v-text-field
-                    label="or enter URL https://..."
+                    label="enter URL https://..."
                     type="url"
                     outlined
                     dense
@@ -61,7 +61,7 @@
                     :disabled="!form.is_form_valid"
                   ></v-text-field>
 
-                  <v-text-field
+                  <v-text-field v-if="newURL"
                     label="URL Name"
                     hint="give this link a name"
                     outlined
@@ -72,6 +72,17 @@
                     counter
                     maxlength="50"
                   ></v-text-field>
+
+                  <v-select v-if="newURL_name"
+                    v-model="media_asset_id"
+                    :items="media_items"
+                    item-text="name"
+                    item-value="id"
+                    label="Select Group"
+                    outlined
+                    dense
+                    single-line
+                  ></v-select>
 
                 </v-col>
             </v-row>
@@ -94,6 +105,7 @@
 export default {
   props: [
     'selected',
+    'media_assets',
     'form',
     'is_form_valid',
     'clear_URL',
@@ -106,6 +118,7 @@ export default {
     'getLinks'
   ],
   data: () => ({
+    media_asset_id: 100, //default for 'custom links'
     newURL: "",
     newURL_name: "",
     rules: {
@@ -122,8 +135,25 @@ export default {
       this.newURL_name = ''
     }
   },
+  computed: {
+    media_items: {
+      get: function(event) {
+        let datax = []
+        this.media_assets.map((media_assets, index) => {
+          datax.push({id: media_assets.id, name: media_assets.name})
+        })
+        return datax
+      },
+      set: function(newValue) {
+      }
+    }
+  },
   methods: {
       addSched: function(event) {
+
+        console.log('selected group')
+        console.log(this.media_asset_id)
+
         if (this.selected.screen == null)
         {
           alert('No screen selected');
@@ -148,6 +178,7 @@ export default {
               screen_id: this.selected.screen,
               link_name: this.newURL_name,
               url: this.newURL,
+              media__asset_id: this.media_asset_id,
               show_datetime: this.momentNow()
           }
         }

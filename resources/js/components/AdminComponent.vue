@@ -122,6 +122,7 @@
                   <v-tab-item v-if="selected.screen">
                     <screensched_component
                       :selected="selected"
+                      :media_assets="media_assets"
                       :form="form"
                       :clear_URL="clear_URL"
                       :momentNow="momentNow"
@@ -322,7 +323,22 @@ import add_outlet_component from './AddOutletComponent'
       getMediaAssets() {
         axios.get(`${ this.siteURL }/api/media/all`)
           .then(response => {
+              //console.log('media all=>')
+              //console.log(response.data)
               this.media_assets = response.data;
+
+              let datax = []
+              this.media_assets.map((media_assets, index) => {
+                
+                //console.log(media_assets.name)
+                datax.push({id: media_assets.id, name: media_assets.name})
+                // if (index == 'name') {
+                //   datax.push(media_assets)
+                // }
+              })
+              //console.log('media all name only=>')
+              //console.log(datax)
+
           })
           .catch(e => {
               this.errors.push(e)
