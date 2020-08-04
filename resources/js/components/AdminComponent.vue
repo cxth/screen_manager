@@ -291,6 +291,7 @@ import add_outlet_component from './AddOutletComponent'
        * @return this.outlets Array
        */
       getOutlets() {
+
         axios.get(`${ this.siteURL }/api/screen/all`)
         .then(response => {
             let combined = {};

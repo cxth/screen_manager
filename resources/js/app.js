@@ -26,10 +26,7 @@ Vue.directive('resize', {
 Vue.mixin({
     data: function() {
         return {
-            siteURL:'https://sm.mswdb.com'
-            //siteURL:'https://sm-stage.mswdb.com'
-            //siteURL:'http://sm.local'
-            //siteURL:'http://localhost'
+            siteURL: `https://${ window.location.hostname }`
         }
     }
 })
