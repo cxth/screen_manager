@@ -483,6 +483,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
 
 
 
@@ -597,6 +598,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           }
         }); // console.log('final outlets')
         // console.log(combined)
+        // return combined
 
         _this.outlets = combined; //console.log(this.outlets['eB Vasra (NDM Center)'][0].description)
       })["catch"](function (e) {
@@ -858,7 +860,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
      * @on 
      * @use 
      * @return 
-     * TODO
      */
     deleteLink: function deleteLink(event) {
       var _this9 = this;
@@ -883,6 +884,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       return;
     },
+
+    /**
+    * @attached on deleteScreen
+    * @on Info_Component
+    * @use delete screen
+    * @return null
+    */
+    deleteScreen: function deleteScreen() {},
 
     /**
      * @attached on props
@@ -966,6 +975,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     outlets: function outlets() {//console.log('every breath you take, every step you make, ill be watching you..')
       //this.getOutlets()
     }
+  },
+  computed: {// outlets: {
+    //   get: function(event) {
+    //     return this.getOutlets()
+    //   },
+    //   set: function(newValue) {
+    //   }
+    // }
   }
 });
 
@@ -1236,6 +1253,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -1296,6 +1318,26 @@ __webpack_require__.r(__webpack_exports__);
     },
     refreshActivationDate: function refreshActivationDate(newActivationDate) {
       this.$emit('refreshActivationDate', newActivationDate);
+    },
+    deleteScreen: function deleteScreen(event) {
+      var _this2 = this;
+
+      if (!confirm('DANGER: This will remove all schedules and login for this screen. \r\nAre you sure you want to DELETE this screen?')) {
+        return;
+      } // console.log('IM DELETE THIS');
+      // console.log(this.selected.screen)
+      //this.selected.screen = ''
+
+
+      axios["delete"]("".concat(this.siteURL, "/api/screen/").concat(this.selected.screen)).then(function (response) {
+        console.log('axios delete screen');
+        console.log(response.data);
+        alert('Screen deleted. click OK to reload the page.');
+        location.reload();
+      })["catch"](function (e) {
+        _this2.errors.push(e);
+      });
+      this.$emit('deleteScreen', []);
     }
   },
   created: function created() {
@@ -1613,6 +1655,7 @@ __webpack_require__.r(__webpack_exports__);
   props: ['outlets', 'selected', 'getScreenSched', 'getScreenAutologin', 'getScreenNotes', 'getOutlets'],
   data: function data() {
     return {
+      deleted: 'BB-401SS6',
       add_screen_panel: false,
       newScreen: "",
       rules: {
@@ -2663,6 +2706,9 @@ var render = function() {
                                               return _vm.refreshScreenActivation(
                                                 $event
                                               )
+                                            },
+                                            deleteScreen: function($event) {
+                                              return _vm.deleteScreen($event)
                                             }
                                           }
                                         })
@@ -2873,7 +2919,25 @@ var render = function() {
                         1
                       ),
                       _vm._v(" "),
-                      _c("v-spacer")
+                      _c("v-spacer"),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: { icon: "" },
+                          on: {
+                            click: function($event) {
+                              return _vm.deleteScreen()
+                            }
+                          }
+                        },
+                        [
+                          _c("v-icon", { attrs: { color: "red" } }, [
+                            _vm._v("mdi-delete-circle")
+                          ])
+                        ],
+                        1
+                      )
                     ],
                     1
                   ),
@@ -3494,7 +3558,7 @@ var render = function() {
                                                           },
                                                           [
                                                             _vm._v(
-                                                              "mdi-minus-circle"
+                                                              "mdi-delete-circle"
                                                             )
                                                           ]
                                                         )

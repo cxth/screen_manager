@@ -195,6 +195,11 @@ class ScheduleController extends Controller
       if ($param[0] == $this->encryptText($param[1]))
       {
         $user = User::where('username', $param[1])->first();
+        if ($user == null)
+        {
+          return redirect('/bye');
+        }
+        
         if ($user->id)
         {
           Auth::logout();

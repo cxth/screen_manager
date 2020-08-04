@@ -31,6 +31,7 @@ Route::post('/getscreen','ScreenController@updateData');
 Route::get('/screen/all','ScreenController@listAll');
 Route::get('/screen/active','ScreenController@getActive');
 Route::post('/screen/login','ScheduleController@getScreenAutologin');
+Route::delete('/screen/{screen}','ScreenController@destroy');
 
 
 //Route::apiResource('/m/{medium}/link','LinkController');

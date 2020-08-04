@@ -109,6 +109,7 @@ export default {
   ],
   data() {
     return {
+      deleted: 'BB-401SS6',
       add_screen_panel: false,
       newScreen: "",
       rules: {

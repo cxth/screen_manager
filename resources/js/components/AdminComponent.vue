@@ -153,6 +153,7 @@
                       :selected="selected"
                       @saveScreenNotes="refreshScreen($event)"
                       @refreshActivationDate="refreshScreenActivation($event)"
+                      @deleteScreen="deleteScreen($event)"
                     ></info_component>
 
                   </v-tab-item>
@@ -303,6 +304,7 @@ import add_outlet_component from './AddOutletComponent'
             });
             // console.log('final outlets')
             // console.log(combined)
+           // return combined
             this.outlets = combined;
             //console.log(this.outlets['eB Vasra (NDM Center)'][0].description)
         })
@@ -559,7 +561,6 @@ import add_outlet_component from './AddOutletComponent'
        * @on 
        * @use 
        * @return 
-       * TODO
        */
       deleteLink: function(event) {
         if(confirm("DANGER! Are you sure you like to DELETE this link?")) {        
@@ -578,6 +579,16 @@ import add_outlet_component from './AddOutletComponent'
             });
         }
         return;
+      },
+
+       /**
+       * @attached on deleteScreen
+       * @on Info_Component
+       * @use delete screen
+       * @return null
+       */
+      deleteScreen: function() {
+       
       },
 
       /**
@@ -667,6 +678,16 @@ import add_outlet_component from './AddOutletComponent'
         //console.log('every breath you take, every step you make, ill be watching you..')
         //this.getOutlets()
       }
+    },
+    computed: {
+      // outlets: {
+      //   get: function(event) {
+      //     return this.getOutlets()
+      //   },
+      //   set: function(newValue) {
+
+      //   }
+      // }
     }
   }
 </script>

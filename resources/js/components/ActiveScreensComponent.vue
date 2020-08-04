@@ -96,6 +96,7 @@ import axios from 'axios'
             }
         })
         .catch(e => {
+            
             this.errors.push(e)
         })
       },

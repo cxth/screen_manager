@@ -49,7 +49,7 @@
                           v-on="on"
                           v-on:click="deleteLink(link.id)"
                         >
-                          <v-icon color="red">mdi-minus-circle</v-icon>
+                          <v-icon color="red">mdi-delete-circle</v-icon>
                         </v-list-item-icon>
                       </template>
                       <span>delete link</span>
