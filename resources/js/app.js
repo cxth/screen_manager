@@ -27,8 +27,8 @@ Vue.mixin({
     data: function() {
         return {
             //siteURL:'http://sm.mswdb.com'
-            siteURL:'https://sm-stage.mswdb.com'
-            //siteURL:'http://sm.local'
+            //siteURL:'https://sm-stage.mswdb.com'
+            siteURL:'http://sm.local'
             //siteURL:'http://localhost'
         }
     }
