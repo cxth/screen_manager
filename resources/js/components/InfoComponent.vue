@@ -26,11 +26,18 @@
               ></v-text-field>
             </v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-btn icon
-              @click="deleteScreen()"
-            >
-              <v-icon color="red">mdi-delete-circle</v-icon>
-            </v-btn>
+            <v-tooltip right>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon
+                  @click="deleteScreen()"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <v-icon color="red">mdi-delete-circle</v-icon>
+                </v-btn>
+              </template>
+              <span>delete this screen</span>
+            </v-tooltip>
           </v-toolbar>
 
           <v-container class="pa-6"
