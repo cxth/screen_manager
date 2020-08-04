@@ -482,6 +482,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
 
 
 
@@ -596,6 +598,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           }
         }); // console.log('final outlets')
         // console.log(combined)
+        // return combined
 
         _this.outlets = combined; //console.log(this.outlets['eB Vasra (NDM Center)'][0].description)
       })["catch"](function (e) {
@@ -617,7 +620,22 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       var _this2 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/media/all")).then(function (response) {
+        //console.log('media all=>')
+        //console.log(response.data)
         _this2.media_assets = response.data;
+        var datax = [];
+
+        _this2.media_assets.map(function (media_assets, index) {
+          //console.log(media_assets.name)
+          datax.push({
+            id: media_assets.id,
+            name: media_assets.name
+          }); // if (index == 'name') {
+          //   datax.push(media_assets)
+          // }
+        }); //console.log('media all name only=>')
+        //console.log(datax)
+
       })["catch"](function (e) {
         _this2.errors.push(e);
 
@@ -842,7 +860,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
      * @on 
      * @use 
      * @return 
-     * TODO
      */
     deleteLink: function deleteLink(event) {
       var _this9 = this;
@@ -867,6 +884,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       return;
     },
+
+    /**
+    * @attached on deleteScreen
+    * @on Info_Component
+    * @use delete screen
+    * @return null
+    */
+    deleteScreen: function deleteScreen() {},
 
     /**
      * @attached on props
@@ -950,6 +975,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     outlets: function outlets() {//console.log('every breath you take, every step you make, ill be watching you..')
       //this.getOutlets()
     }
+  },
+  computed: {// outlets: {
+    //   get: function(event) {
+    //     return this.getOutlets()
+    //   },
+    //   set: function(newValue) {
+    //   }
+    // }
   }
 });
 
@@ -1220,6 +1253,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -1280,6 +1325,26 @@ __webpack_require__.r(__webpack_exports__);
     },
     refreshActivationDate: function refreshActivationDate(newActivationDate) {
       this.$emit('refreshActivationDate', newActivationDate);
+    },
+    deleteScreen: function deleteScreen(event) {
+      var _this2 = this;
+
+      if (!confirm('DANGER: This will remove all schedules and login for this screen. \r\nAre you sure you want to DELETE this screen?')) {
+        return;
+      } // console.log('IM DELETE THIS');
+      // console.log(this.selected.screen)
+      //this.selected.screen = ''
+
+
+      axios["delete"]("".concat(this.siteURL, "/api/screen/").concat(this.selected.screen)).then(function (response) {
+        console.log('axios delete screen');
+        console.log(response.data);
+        alert('Screen deleted. click OK to reload the page.');
+        location.reload();
+      })["catch"](function (e) {
+        _this2.errors.push(e);
+      });
+      this.$emit('deleteScreen', []);
     }
   },
   created: function created() {
@@ -1400,6 +1465,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['media_assets', 'selected', 'links', 'form', 'deleteLink', 'getLinks'],
   data: function data() {
@@ -1421,7 +1487,6 @@ __webpack_require__.r(__webpack_exports__);
         this.selected.link_name = this.links[this.selected.link].name;
         this.selected.link_url = this.links[this.selected.link].url;
         this.form.is_form_valid = false;
-        this.rename_field = false;
         this.$emit('linkSelect', 'deliver some values');
       }
     },
@@ -1597,6 +1662,7 @@ __webpack_require__.r(__webpack_exports__);
   props: ['outlets', 'selected', 'getScreenSched', 'getScreenAutologin', 'getScreenNotes', 'getOutlets'],
   data: function data() {
     return {
+      deleted: 'BB-401SS6',
       add_screen_panel: false,
       newScreen: "",
       rules: {
@@ -1859,10 +1925,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['selected', 'form', 'is_form_valid', 'clear_URL', 'momentNow', 'resetData', 'getSelectedScreenInfo', 'screen_key', 'getScreenSched', 'getMediaAssets', 'getLinks'],
+  props: ['selected', 'media_assets', 'form', 'is_form_valid', 'clear_URL', 'momentNow', 'resetData', 'getSelectedScreenInfo', 'screen_key', 'getScreenSched', 'getMediaAssets', 'getLinks'],
   data: function data() {
     return {
+      media_asset_id: 100,
+      //default for 'custom links'
       newURL: "",
       newURL_name: "",
       rules: {
@@ -1882,9 +1961,27 @@ __webpack_require__.r(__webpack_exports__);
       this.newURL_name = '';
     }
   },
+  computed: {
+    media_items: {
+      get: function get(event) {
+        var datax = [];
+        this.media_assets.map(function (media_assets, index) {
+          datax.push({
+            id: media_assets.id,
+            name: media_assets.name
+          });
+        });
+        return datax;
+      },
+      set: function set(newValue) {}
+    }
+  },
   methods: {
     addSched: function addSched(event) {
       var _this = this;
+
+      console.log('selected group');
+      console.log(this.media_asset_id);
 
       if (this.selected.screen == null) {
         alert('No screen selected');
@@ -1907,6 +2004,7 @@ __webpack_require__.r(__webpack_exports__);
           screen_id: this.selected.screen,
           link_name: this.newURL_name,
           url: this.newURL,
+          media__asset_id: this.media_asset_id,
           show_datetime: this.momentNow()
         };
       } else {
@@ -2545,6 +2643,7 @@ var render = function() {
                                         _c("screensched_component", {
                                           attrs: {
                                             selected: _vm.selected,
+                                            media_assets: _vm.media_assets,
                                             form: _vm.form,
                                             clear_URL: _vm.clear_URL,
                                             momentNow: _vm.momentNow,
@@ -2614,6 +2713,9 @@ var render = function() {
                                               return _vm.refreshScreenActivation(
                                                 $event
                                               )
+                                            },
+                                            deleteScreen: function($event) {
+                                              return _vm.deleteScreen($event)
                                             }
                                           }
                                         })
@@ -2824,7 +2926,56 @@ var render = function() {
                         1
                       ),
                       _vm._v(" "),
-                      _c("v-spacer")
+                      _c("v-spacer"),
+                      _vm._v(" "),
+                      _c(
+                        "v-tooltip",
+                        {
+                          attrs: { right: "" },
+                          scopedSlots: _vm._u([
+                            {
+                              key: "activator",
+                              fn: function(ref) {
+                                var on = ref.on
+                                var attrs = ref.attrs
+                                return [
+                                  _c(
+                                    "v-btn",
+                                    _vm._g(
+                                      _vm._b(
+                                        {
+                                          attrs: { icon: "" },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.deleteScreen()
+                                            }
+                                          }
+                                        },
+                                        "v-btn",
+                                        attrs,
+                                        false
+                                      ),
+                                      on
+                                    ),
+                                    [
+                                      _c(
+                                        "v-icon",
+                                        { attrs: { color: "red" } },
+                                        [_vm._v("mdi-delete-circle")]
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ]
+                              }
+                            }
+                          ])
+                        },
+                        [
+                          _vm._v(" "),
+                          _c("span", [_vm._v("delete this screen")])
+                        ]
+                      )
                     ],
                     1
                   ),
@@ -3407,49 +3558,54 @@ var render = function() {
                                           attrs: { left: "" },
                                           scopedSlots: _vm._u(
                                             [
-                                              asset.name === "Custom Links"
-                                                ? {
-                                                    key: "activator",
-                                                    fn: function(ref) {
-                                                      var on = ref.on
-                                                      var attrs = ref.attrs
-                                                      return [
-                                                        _c(
+                                              {
+                                                key: "activator",
+                                                fn: function(ref) {
+                                                  var on = ref.on
+                                                  var attrs = ref.attrs
+                                                  return [
+                                                    _c(
+                                                      "v-list-item-icon",
+                                                      _vm._g(
+                                                        _vm._b(
+                                                          {
+                                                            staticClass: "ml-5",
+                                                            on: {
+                                                              click: function(
+                                                                $event
+                                                              ) {
+                                                                return _vm.deleteLink(
+                                                                  link.id
+                                                                )
+                                                              }
+                                                            }
+                                                          },
                                                           "v-list-item-icon",
-                                                          _vm._g(
-                                                            _vm._b(
-                                                              {
-                                                                staticClass:
-                                                                  "ml-5",
-                                                                on: {
-                                                                  click: function(
-                                                                    $event
-                                                                  ) {
-                                                                    return _vm.deleteLink(
-                                                                      link.id
-                                                                    )
-                                                                  }
-                                                                }
-                                                              },
-                                                              "v-list-item-icon",
-                                                              attrs,
-                                                              false
-                                                            ),
-                                                            on
-                                                          ),
+                                                          attrs,
+                                                          false
+                                                        ),
+                                                        on
+                                                      ),
+                                                      [
+                                                        _c(
+                                                          "v-icon",
+                                                          {
+                                                            attrs: {
+                                                              color: "red"
+                                                            }
+                                                          },
                                                           [
-                                                            _c("v-icon", [
-                                                              _vm._v(
-                                                                "mdi-server-remove"
-                                                              )
-                                                            ])
-                                                          ],
-                                                          1
+                                                            _vm._v(
+                                                              "mdi-delete-circle"
+                                                            )
+                                                          ]
                                                         )
-                                                      ]
-                                                    }
-                                                  }
-                                                : null
+                                                      ],
+                                                      1
+                                                    )
+                                                  ]
+                                                }
+                                              }
                                             ],
                                             null,
                                             true
@@ -4006,7 +4162,7 @@ var render = function() {
                             [
                               _c("v-text-field", {
                                 attrs: {
-                                  label: "or enter URL https://...",
+                                  label: "enter URL https://...",
                                   type: "url",
                                   outlined: "",
                                   dense: "",
@@ -4023,25 +4179,48 @@ var render = function() {
                                 }
                               }),
                               _vm._v(" "),
-                              _c("v-text-field", {
-                                attrs: {
-                                  label: "URL Name",
-                                  hint: "give this link a name",
-                                  outlined: "",
-                                  dense: "",
-                                  disabled: !_vm.form.is_form_valid,
-                                  rules: [_vm.rules.counter],
-                                  counter: "",
-                                  maxlength: "50"
-                                },
-                                model: {
-                                  value: _vm.newURL_name,
-                                  callback: function($$v) {
-                                    _vm.newURL_name = $$v
-                                  },
-                                  expression: "newURL_name"
-                                }
-                              })
+                              _vm.newURL
+                                ? _c("v-text-field", {
+                                    attrs: {
+                                      label: "URL Name",
+                                      hint: "give this link a name",
+                                      outlined: "",
+                                      dense: "",
+                                      disabled: !_vm.form.is_form_valid,
+                                      rules: [_vm.rules.counter],
+                                      counter: "",
+                                      maxlength: "50"
+                                    },
+                                    model: {
+                                      value: _vm.newURL_name,
+                                      callback: function($$v) {
+                                        _vm.newURL_name = $$v
+                                      },
+                                      expression: "newURL_name"
+                                    }
+                                  })
+                                : _vm._e(),
+                              _vm._v(" "),
+                              _vm.newURL_name
+                                ? _c("v-select", {
+                                    attrs: {
+                                      items: _vm.media_items,
+                                      "item-text": "name",
+                                      "item-value": "id",
+                                      label: "Select Group",
+                                      outlined: "",
+                                      dense: "",
+                                      "single-line": ""
+                                    },
+                                    model: {
+                                      value: _vm.media_asset_id,
+                                      callback: function($$v) {
+                                        _vm.media_asset_id = $$v
+                                      },
+                                      expression: "media_asset_id"
+                                    }
+                                  })
+                                : _vm._e()
                             ],
                             1
                           )

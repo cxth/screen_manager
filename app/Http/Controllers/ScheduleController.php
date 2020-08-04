@@ -195,6 +195,11 @@ class ScheduleController extends Controller
       if ($param[0] == $this->encryptText($param[1]))
       {
         $user = User::where('username', $param[1])->first();
+        if ($user == null)
+        {
+          return redirect('/bye');
+        }
+        
         if ($user->id)
         {
           Auth::logout();
@@ -355,7 +360,7 @@ class ScheduleController extends Controller
         {
             $link = Link::create(
                 [
-                    'media__asset_id' => 100,
+                    'media__asset_id' => $request->media__asset_id,
                     'name' => $request->link_name,
                     'url' => $request->url
                 ]

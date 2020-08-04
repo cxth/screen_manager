@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\ScreenResource;
 use App\Http\Resources\SessionResource;
+use App\Model\Schedule;
+use Illuminate\Foundation\Auth\User as AuthUser;
 use Symfony\Component\HttpFoundation\Response;
 
 class ScreenController extends Controller
@@ -173,8 +175,20 @@ class ScreenController extends Controller
      * @param  \App\Model\Screen  $screen
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Outlet $outlet, Screen $screen)
+    public function destroy(Screen $screen)
     {
+        // delete users
+        $user = User::where('username', '=', $screen->id)->firstOrFail();
+        if ($user == null)
+        {
+          return;
+        }
+        
+        // delete user
+        User::find($user->id)->delete();
+        // delete schedule
+        Schedule::where('screen_id', '=', $screen->id)->delete();
+        // delete screen
         $screen->delete();
         return response(null, Response::HTTP_NO_CONTENT);
     }

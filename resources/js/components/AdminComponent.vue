@@ -122,6 +122,7 @@
                   <v-tab-item v-if="selected.screen">
                     <screensched_component
                       :selected="selected"
+                      :media_assets="media_assets"
                       :form="form"
                       :clear_URL="clear_URL"
                       :momentNow="momentNow"
@@ -152,6 +153,7 @@
                       :selected="selected"
                       @saveScreenNotes="refreshScreen($event)"
                       @refreshActivationDate="refreshScreenActivation($event)"
+                      @deleteScreen="deleteScreen($event)"
                     ></info_component>
 
                   </v-tab-item>
@@ -289,6 +291,7 @@ import add_outlet_component from './AddOutletComponent'
        * @return this.outlets Array
        */
       getOutlets() {
+
         axios.get(`${ this.siteURL }/api/screen/all`)
         .then(response => {
             let combined = {};
@@ -302,6 +305,7 @@ import add_outlet_component from './AddOutletComponent'
             });
             // console.log('final outlets')
             // console.log(combined)
+           // return combined
             this.outlets = combined;
             //console.log(this.outlets['eB Vasra (NDM Center)'][0].description)
         })
@@ -322,7 +326,22 @@ import add_outlet_component from './AddOutletComponent'
       getMediaAssets() {
         axios.get(`${ this.siteURL }/api/media/all`)
           .then(response => {
+              //console.log('media all=>')
+              //console.log(response.data)
               this.media_assets = response.data;
+
+              let datax = []
+              this.media_assets.map((media_assets, index) => {
+                
+                //console.log(media_assets.name)
+                datax.push({id: media_assets.id, name: media_assets.name})
+                // if (index == 'name') {
+                //   datax.push(media_assets)
+                // }
+              })
+              //console.log('media all name only=>')
+              //console.log(datax)
+
           })
           .catch(e => {
               this.errors.push(e)
@@ -543,7 +562,6 @@ import add_outlet_component from './AddOutletComponent'
        * @on 
        * @use 
        * @return 
-       * TODO
        */
       deleteLink: function(event) {
         if(confirm("DANGER! Are you sure you like to DELETE this link?")) {        
@@ -562,6 +580,16 @@ import add_outlet_component from './AddOutletComponent'
             });
         }
         return;
+      },
+
+       /**
+       * @attached on deleteScreen
+       * @on Info_Component
+       * @use delete screen
+       * @return null
+       */
+      deleteScreen: function() {
+       
       },
 
       /**
@@ -651,6 +679,16 @@ import add_outlet_component from './AddOutletComponent'
         //console.log('every breath you take, every step you make, ill be watching you..')
         //this.getOutlets()
       }
+    },
+    computed: {
+      // outlets: {
+      //   get: function(event) {
+      //     return this.getOutlets()
+      //   },
+      //   set: function(newValue) {
+
+      //   }
+      // }
     }
   }
 </script>

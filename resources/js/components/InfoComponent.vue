@@ -26,6 +26,18 @@
               ></v-text-field>
             </v-toolbar-title>
             <v-spacer></v-spacer>
+            <v-tooltip right>
+              <template v-slot:activator="{ on, attrs }">
+                <v-btn icon
+                  @click="deleteScreen()"
+                  v-bind="attrs"
+                  v-on="on"
+                >
+                  <v-icon color="red">mdi-delete-circle</v-icon>
+                </v-btn>
+              </template>
+              <span>delete this screen</span>
+            </v-tooltip>
           </v-toolbar>
 
           <v-container class="pa-6"
@@ -269,9 +281,34 @@ export default {
       if(confirm("Are you sure you like to rename the screen?")){
         this.saveScreenNotes('name')
       }
+
     },
     refreshActivationDate: function(newActivationDate) {
       this.$emit('refreshActivationDate',newActivationDate)
+    },
+    deleteScreen: function(event) {
+
+      if (!confirm('DANGER: This will remove all schedules and login for this screen. \r\nAre you sure you want to DELETE this screen?')) {
+        return;
+      }
+
+      // console.log('IM DELETE THIS');
+      // console.log(this.selected.screen)
+      //this.selected.screen = ''
+      axios.delete(`${ this.siteURL }/api/screen/${ this.selected.screen }`)
+      .then(response => {
+          console.log('axios delete screen')
+          console.log(response.data)
+
+          alert('Screen deleted. click OK to reload the page.');
+          location.reload()
+
+        })
+        .catch(e => {
+          this.errors.push(e)
+        });
+
+      this.$emit('deleteScreen', [])
     }
   },
   created() {
