@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\ScreenResource;
 use App\Http\Resources\SessionResource;
 use App\Model\Schedule;
-use Illuminate\Foundation\Auth\User as AuthUser;
+use App\Model\Session_Log;
 use Symfony\Component\HttpFoundation\Response;
 
 class ScreenController extends Controller
@@ -185,11 +185,18 @@ class ScreenController extends Controller
         }
         
         // delete user
-        User::find($user->id)->delete();
+        //User::find($user->id)->delete();
+        User::find($user->id)->forceDelete();
         // delete schedule
         Schedule::where('screen_id', '=', $screen->id)->delete();
         // delete screen
-        $screen->delete();
+        //$screen->delete();
+        $screen->forceDelete();
+        //delete on session
+        Session::where('screen_id', '=', $screen->id)->delete();
+        Session_Log::where('screen_id', '=', $screen->id)->delete();
+
+        session(['uscreen' => null]);
         return response(null, Response::HTTP_NO_CONTENT);
     }
 }

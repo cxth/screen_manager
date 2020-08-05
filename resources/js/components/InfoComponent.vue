@@ -12,32 +12,57 @@
           <v-toolbar
             class="grey darken-4"
             flat
-            dense
             dark
           >
             <v-toolbar-title>
               <!-- {{ selected.screen_name }} -->
               <v-text-field
                 single-line
-                class="pt-8"
+                class="pt-4 ma-2"
                 v-model="screen_name"
                 append-outer-icon="mdi-pencil"
                 @click:append-outer="renameScreen('name')"
               ></v-text-field>
             </v-toolbar-title>
             <v-spacer></v-spacer>
-            <v-tooltip right>
-              <template v-slot:activator="{ on, attrs }">
-                <v-btn icon
-                  @click="deleteScreen()"
-                  v-bind="attrs"
-                  v-on="on"
-                >
-                  <v-icon color="red">mdi-delete-circle</v-icon>
-                </v-btn>
-              </template>
-              <span>delete this screen</span>
-            </v-tooltip>
+
+            <template v-if="this.selected.outlet_screen > 1">
+              <v-tooltip right>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    tile outlined 
+                    color="danger"
+                    class="ma-2 white--text"
+                    @click="toDeleteScreen()"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    Delete Screen
+                  </v-btn>
+                </template>
+                <span>delete this screen</span>
+              </v-tooltip>
+            </template>
+
+            <template>
+              <v-tooltip right>
+                <template v-slot:activator="{ on, attrs }">
+                  <v-btn
+                    tile outlined 
+                    color="error"
+                    class="ma-2 white--text"
+                    @click="toDeactivateOutlet()"
+                    v-bind="attrs"
+                    v-on="on"
+                  >
+                    Deactivate Outlet
+                  </v-btn>
+                </template>
+                <span>delete this screen</span>
+              </v-tooltip>
+            </template>
+
+
           </v-toolbar>
 
           <v-container class="pa-6"
@@ -234,22 +259,18 @@ export default {
   }),
   methods: {
     saveScreenNotes: function(event) {
-
       let mydata = {
         id: this.selected.screen,
-
         description: this.int_screen_name ? this.int_screen_name : this.selected.screen_name,
         resolution: this.int_resolution ? this.int_resolution : this.screen_resolution,
         equipment_model_installed: this.int_equipment_model ? this.int_equipment_model : this.screen_equipment_model_installed,
         teamviewer_details: this.int_teamviewer ? this.int_teamviewer : this.screen_teamviewer_details
       }
-
       axios({
           method: 'post',
           url: `${ this.siteURL }/api/getscreen`,
           data: mydata
       }).then(response => {
-          //console.log(response.data);
           if (response.data != "no-request")
           {
           }
@@ -261,13 +282,11 @@ export default {
       })
       .catch(e => {
           this.errors.push(e)
-          console.log('error getting auto login')
       });
-
       this.$emit('saveScreenNotes',mydata.description)
     },
+    
     renameScreen: function() {
-      
       if (this.int_screen_name == '')
       {
         alert('Enter a valid name')
@@ -278,38 +297,82 @@ export default {
       {
         return
       }
-      if(confirm("Are you sure you like to rename the screen?")){
+
+      if (confirm("Are you sure you like to rename the screen?")){
         this.saveScreenNotes('name')
       }
-
     },
+
     refreshActivationDate: function(newActivationDate) {
       this.$emit('refreshActivationDate',newActivationDate)
     },
-    deleteScreen: function(event) {
+
+
+    toDeleteScreen: function() {
 
       if (!confirm('DANGER: This will remove all schedules and login for this screen. \r\nAre you sure you want to DELETE this screen?')) {
         return;
       }
 
-      // console.log('IM DELETE THIS');
-      // console.log(this.selected.screen)
-      //this.selected.screen = ''
-      axios.delete(`${ this.siteURL }/api/screen/${ this.selected.screen }`)
-      .then(response => {
-          console.log('axios delete screen')
-          console.log(response.data)
+      var screen = this.selected.screen
+      this.deleteScreen(screen)
+      
+      alert('Screen deleted. click OK to reload the page.');
+      setTimeout(function() {
+        location.reload();
+      }, 1500)
+    },
 
-          alert('Screen deleted. click OK to reload the page.');
-          location.reload()
+    toDeactivateOutlet: function() {
+
+      if (!confirm('DANGER: This will remove all screens and schedules for this outlet . \r\nAre you sure you want to DEACTIVATE this outlet?')) {
+        return;
+      }
+
+        // get screen IDs
+        axios.get(`${ this.siteURL }/api/getscreens/${ this.selected.outlet_id }`)
+        .then(response => {
+
+          var screens = response.data
+          screens.forEach((val, key, map) => {
+            this.deleteScreen(val.id)
+          });
+
+          this.deactivateOutlet(this.selected.outlet_id)
+          alert('Outlet has been deactivated. Click OK to reload the page.')
+          setTimeout(function() {
+            location.reload();
+          }, 1500)
 
         })
         .catch(e => {
           this.errors.push(e)
-        });
+        })
+    },
 
-      this.$emit('deleteScreen', [])
+    deleteScreen: function(screen) {
+      
+      axios.delete(`${ this.siteURL }/api/screen/${ screen }`)
+      .then(response => {
+
+      })
+      .catch(e => {
+        this.errors.push(e)
+      });
+    },
+
+    deactivateOutlet: function(outlet) {
+
+      axios.delete(`${ this.siteURL }/api/outlet/${ outlet }`)
+      .then(response => {
+
+      })
+      .catch(e => {
+        this.errors.push(e)
+      });
     }
+
+
   },
   created() {
     this.int_resolution = this.screen_resolution

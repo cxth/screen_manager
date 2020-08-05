@@ -153,7 +153,6 @@
                       :selected="selected"
                       @saveScreenNotes="refreshScreen($event)"
                       @refreshActivationDate="refreshScreenActivation($event)"
-                      @deleteScreen="deleteScreen($event)"
                     ></info_component>
 
                   </v-tab-item>
@@ -226,6 +225,9 @@ import add_outlet_component from './AddOutletComponent'
         link_url: null,
         // outlet list
         outlet: null,
+        outlet_id: null,
+        outlet_screen: null,
+
         screen: null,
         screen_name: null,
         screen_resolution: null,
@@ -303,9 +305,7 @@ import add_outlet_component from './AddOutletComponent'
                 combined[Object.keys(arrayItem)].push(Object.values(arrayItem)[0]);
               }
             });
-            // console.log('final outlets')
-            // console.log(combined)
-           // return combined
+
             this.outlets = combined;
             //console.log(this.outlets['eB Vasra (NDM Center)'][0].description)
         })
@@ -326,22 +326,7 @@ import add_outlet_component from './AddOutletComponent'
       getMediaAssets() {
         axios.get(`${ this.siteURL }/api/media/all`)
           .then(response => {
-              //console.log('media all=>')
-              //console.log(response.data)
-              this.media_assets = response.data;
-
-              let datax = []
-              this.media_assets.map((media_assets, index) => {
-                
-                //console.log(media_assets.name)
-                datax.push({id: media_assets.id, name: media_assets.name})
-                // if (index == 'name') {
-                //   datax.push(media_assets)
-                // }
-              })
-              //console.log('media all name only=>')
-              //console.log(datax)
-
+              this.media_assets = response.data
           })
           .catch(e => {
               this.errors.push(e)
@@ -385,11 +370,8 @@ import add_outlet_component from './AddOutletComponent'
        */
       getSelectedScreenInfo: function(screen) {
         
-        console.log('the selected screen=>')
-        console.log(this.selected.screen_name);
-        // console.log('the index=')
-        // console.log(screen[1]);
         this.screen_key = screen[1]
+        this.countOutletScreens()
 
         // get content of screen
         axios({
@@ -402,7 +384,6 @@ import add_outlet_component from './AddOutletComponent'
             this.form.is_form_valid = true
             if (response.data.length > 0)
             {
-              console.log(response.data)
               this.selected.link_name = response.data[0][this.selected.outlet].link_name
               this.screen_now_showing = response.data[0][this.selected.outlet].link_name
               this.selected.mediagroup = response.data[0][this.selected.outlet].media_asset_name
@@ -415,6 +396,24 @@ import add_outlet_component from './AddOutletComponent'
       },
 
       /**
+       * @attached to getSelectedScreenInfo()
+       * @on same class
+       * @use count screen in selected outlet
+       * @return int
+       */
+      countOutletScreens: function() {
+        axios({
+            method: 'get',
+            url: `${ this.siteURL }/api/countscreens/${ this.selected.outlet_id }`,
+        }).then(response => {
+            this.selected.outlet_screen = response.data
+        }).catch(e => {
+            this.errors.push(e)
+            console.log('error countOutletScreens')
+        });
+      },
+
+      /**
        * @attached to saveScreenNotes()
        * @on info_component
        * @use to get new screen name
@@ -422,19 +421,16 @@ import add_outlet_component from './AddOutletComponent'
        */
       refreshScreen: function(new_screen_name) {
         this.selected.screen_name = new_screen_name
-        // console.log('RS selected outlet=>')
-        // console.log(this.selected.outlet)
-        // console.log('RS current key=>')
-        // console.log(this.screen_key)
-        // console.log('RS target=>')
-        // console.log(this.outlets[this.selected.outlet][this.screen_key].description)
         this.outlets[this.selected.outlet][this.screen_key].description = new_screen_name
-        //this.getOutlets()
       },
 
+      /**
+       * @attached to refreshActivationDate()
+       * @on info_component
+       * @use to refresh activation date on update
+       * @return this.screen_activation_date
+       */
       refreshScreenActivation: function(new_activation_date) {
-        console.log('updating activation date...')
-        console.log(new_activation_date)
         this.screen_activation_date = new_activation_date
       },
 
@@ -445,14 +441,10 @@ import add_outlet_component from './AddOutletComponent'
        * @return 
        */
       refreshLinks: function(newLinkName) {
-        console.log('refreshing links from admin component..')
-        console.log(newLinkName)
         this.getMediaAssets()
         this.getLinks()
-        // refresh calendar
-        this.getScreenSched()
-        // refresh screen info
-        this.getSelectedScreenInfo([this.selected.screen,this.screen_key])
+        this.getScreenSched() // refresh calendar
+        this.getSelectedScreenInfo([this.selected.screen,this.screen_key]) // refresh screen info
       },
 
       /**
@@ -469,7 +461,7 @@ import add_outlet_component from './AddOutletComponent'
             if (response.data)
             {
               this.selected.screen_schedule = response.data;
-              this.calendar.events = this.eventsFormat()
+              this.calendar.events = this.eventsFormat() 
             }
           })
           .catch(e => {
@@ -492,7 +484,6 @@ import add_outlet_component from './AddOutletComponent'
               screen_id: this.selected.screen
             }
         }).then(response => {
-              //console.log(response.data);
               this.screen_autologin = `${ this.siteURL }/client?r=${ response.data }`;
           })
           .catch(e => {
@@ -531,36 +522,12 @@ import add_outlet_component from './AddOutletComponent'
           });
       },
 
-      /**
-       * @attached 
-       * @on 
-       * @use 
-       * @return 
-       * TODO
-       */
-      addLink: function(event) {
-        var newlink = null;
-        axios({
-          method: 'post',
-          url: `${ this.siteURL }/api/l`,
-          data: {
-            media__asset_id: 100,
-            name: this.newURL_name,
-            url: this.newURL
-          }
-        }).then(response => {
-            alert("Link successfully saved")
-            this.newURL_id = response.data
-        })
-          .catch(e => {
-            this.errors.push(e)
-        });
-      },
+      
 
       /**
-       * @attached 
-       * @on 
-       * @use 
+       * @attached deleteLink()
+       * @on media asset component
+       * @use delete link on media asset list
        * @return 
        */
       deleteLink: function(event) {
@@ -570,10 +537,8 @@ import add_outlet_component from './AddOutletComponent'
               alert("link deleted");
               this.getSelectedScreenInfo([this.selected.screen,this.screen_key])
               this.getMediaAssets()
-              // reset all selected media and links
-              this.resetData()
-              // refresh calendar
-              this.getScreenSched()
+              this.resetData() // reset all selected media and links
+              this.getScreenSched()  // refresh calendar
             })
             .catch(e => {
                 this.errors.push(e)
@@ -582,16 +547,7 @@ import add_outlet_component from './AddOutletComponent'
         return;
       },
 
-       /**
-       * @attached on deleteScreen
-       * @on Info_Component
-       * @use delete screen
-       * @return null
-       */
-      deleteScreen: function() {
-       
-      },
-
+ 
       /**
        * @attached on props
        * @on screen_sched component
@@ -664,6 +620,7 @@ import add_outlet_component from './AddOutletComponent'
         return esched;
       }
     }, // methods
+    
     // computed: {
     //   outlet: {
     //     get: function(event) {
@@ -674,21 +631,6 @@ import add_outlet_component from './AddOutletComponent'
     //     }
     //   }
     // },
-    watch: {
-      outlets: function() {
-        //console.log('every breath you take, every step you make, ill be watching you..')
-        //this.getOutlets()
-      }
-    },
-    computed: {
-      // outlets: {
-      //   get: function(event) {
-      //     return this.getOutlets()
-      //   },
-      //   set: function(newValue) {
 
-      //   }
-      // }
-    }
   }
 </script>

@@ -65,9 +65,6 @@ export default {
     addOutlet: function(e) {
       this.errors = [];
 
-      console.log('adding outlet');
-      console.log(this.newOutlet_name);
-      console.log(this.newOutlet_id);
       if (this.newOutlet_id == "" || this.newOutlet_name == "")
       {
         alert('Please fill outlet name and ID fields.');
@@ -87,10 +84,16 @@ export default {
             outlet_id: this.newOutlet_id,
           }
       }).then(response => {
-          console.log('from add outlet api');
-          console.log(response.data)
+
+          if (response.data == 'outlet-exist')
+          {
+            alert('Outlet ID: ' + this.newOutlet_id + ' already exist');
+          }
+          else
+          {
+            alert('Outlet successfully added');
+          }
           this.getOutlets();
-          alert('Outlet successfully added');
           this.clearNewOutlet()
         })
         .catch(e => {

@@ -151,9 +151,6 @@ export default {
   methods: {
       addSched: function(event) {
 
-        console.log('selected group')
-        console.log(this.media_asset_id)
-
         if (this.selected.screen == null)
         {
           alert('No screen selected');
@@ -162,7 +159,6 @@ export default {
         
         if (this.selected.link == null)
         {
-          // check URL & name
           if (this.newURL=="" || this.newURL_name=="")
           {
             alert('Please complete URL fields');
@@ -192,7 +188,7 @@ export default {
           }
         }
         
-        console.log('final mydata ');
+        console.log('saving schedule: ');
         console.log(mydata);
         
         axios({

@@ -28,64 +28,66 @@ export default {
     // Fetches posts when the component is created.
     created() {
         this.fetchURL()
-        this.timer = setInterval(this.fetchURL, 60000)
-        // 60000 1 minute
-        // 300000 5 minutes
+        this.timer = setInterval(this.fetchURL, this.fetchTimeout)
     },
 
     methods: {
         fetchURL() {
             axios.get(`${ this.siteURL }/request`)
             .then(response => {
-                // console.log('fetch URL response: ')
-                // console.log(response.data);
-                if (response.data == 'no-content')
+                console.log('fetch URL response: ')
+                console.log(response.data);
+            
+                if (response.data[0] == 'invalid-user')
                 {
-                  return
-                }
-                         
-                if (response.data.length < 1)
-                {
-                  return
+                    setTimeout(function() {
+                      location.reload();
+                    }, 3000)
                 }
 
-                var sched = response.data[0];
-                if (sched == "invalid-user")
+                if (response.data[0] == 'deactivated-user')
                 {
-                    //console.log("im invalid user");
-                    axios.get(`${ this.siteURL }/logout`)
-                        .then(response => {
-                            location.reload();
-                        })
-                        .catch(e => {
-                            this.errors.push(e)
-                        })
+                    setTimeout(function() {
+                      window.location.href =`${ this.fetchURL }/deactivated`
+                    }, 3000)
                 }
-                if (sched) 
+
+                if (response.data[0] == 'no-content')
                 {
-                    console.log('welcome ' + sched.screen_id);
-                    console.log('showing: ' + sched.show_datetime + ' - ' + sched.expire_datetime
-                            + ' url: (' + sched.id + ') ' + sched.url);
-                    if (sched.id && sched.id != this.url_id) 
-                    {
-                        this.url_id = sched.id
-                        this.url = sched.url
-                    }
-                    else
-                    {
-                        console.log(`(${ sched.id }) no change in content`);
-                    }        
+                  console.log('geturl is empty'); // schedule has been deleted
+                  var sched = {
+                    screen_id: 'default',
+                    show_datetime: 'no-sched',
+                    expire_datetime: 'no-sched',
+                    id: 999, //not working if null
+                    url: '../img/default.jpg'
+                  }
                 }
                 else
                 {
-                    console.log('geturl is empty');
+                  var sched = response.data[0];
                 }
-                
+                         
+                // console.log('welcome ' + sched.screen_id);
+                // console.log('showing: ' + sched.show_datetime + ' - ' + sched.expire_datetime
+                //         + ' url: (' + sched.id + ') ' + sched.url);
+
+                console.log('current url id ' + this.url_id)
+                console.log('sched url id ' + sched.id)
+
+
+                if (sched.id && sched.id != this.url_id) 
+                {
+                    this.url_id = sched.id
+                    this.url = sched.url
+                }
+                else
+                {
+                    console.log(`(${ sched.id }) no change in content`);
+                }         
             })
             .catch(e => {
-                //this.errors.push(e)
-                console.log('fetch sched error. reloading..');
-                location.reload();
+
             })
         },
         cancelAutoUpdate() { clearInterval(this.timer) }

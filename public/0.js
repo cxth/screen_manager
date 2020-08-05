@@ -80,14 +80,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       timer: ''
     };
   },
-  created: function created() {
-    this.getActiveScreens();
+  created: function created() {//this.getActiveScreens()
   },
   mounted: function mounted() {
     var _this = this;
 
     // check every 5 minutes - 300000
     // check every minutes - 60000
+    this.getActiveScreens();
     window.setInterval(function () {
       _this.getActiveScreens();
     }, 300000);
@@ -96,7 +96,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     getActiveScreens: function getActiveScreens(event) {
       var _this2 = this;
 
-      console.log('getting active screens..');
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/screen/active")).then(function (response) {
         if (response.data.length > 0) {
           var data = [];
@@ -118,6 +117,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           console.log('no active screen');
         }
       })["catch"](function (e) {
+        // setTimeout(function() {
+        //     this.getActiveScreens()
+        //   }, 3000)
         _this2.errors.push(e);
       });
     },
@@ -214,9 +216,6 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       this.errors = [];
-      console.log('adding outlet');
-      console.log(this.newOutlet_name);
-      console.log(this.newOutlet_id);
 
       if (this.newOutlet_id == "" || this.newOutlet_name == "") {
         alert('Please fill outlet name and ID fields.');
@@ -236,12 +235,13 @@ __webpack_require__.r(__webpack_exports__);
           outlet_id: this.newOutlet_id
         }
       }).then(function (response) {
-        console.log('from add outlet api');
-        console.log(response.data);
+        if (response.data == 'outlet-exist') {
+          alert('Outlet ID: ' + _this.newOutlet_id + ' already exist');
+        } else {
+          alert('Outlet successfully added');
+        }
 
         _this.getOutlets();
-
-        alert('Outlet successfully added');
 
         _this.clearNewOutlet();
       })["catch"](function (e) {
@@ -483,7 +483,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
-//
 
 
 
@@ -522,6 +521,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         link_url: null,
         // outlet list
         outlet: null,
+        outlet_id: null,
+        outlet_screen: null,
         screen: null,
         screen_name: null,
         screen_resolution: null,
@@ -596,10 +597,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           } else {
             combined[Object.keys(arrayItem)].push(Object.values(arrayItem)[0]);
           }
-        }); // console.log('final outlets')
-        // console.log(combined)
-        // return combined
-
+        });
         _this.outlets = combined; //console.log(this.outlets['eB Vasra (NDM Center)'][0].description)
       })["catch"](function (e) {
         _this.errors.push(e);
@@ -620,22 +618,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       var _this2 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/media/all")).then(function (response) {
-        //console.log('media all=>')
-        //console.log(response.data)
         _this2.media_assets = response.data;
-        var datax = [];
-
-        _this2.media_assets.map(function (media_assets, index) {
-          //console.log(media_assets.name)
-          datax.push({
-            id: media_assets.id,
-            name: media_assets.name
-          }); // if (index == 'name') {
-          //   datax.push(media_assets)
-          // }
-        }); //console.log('media all name only=>')
-        //console.log(datax)
-
       })["catch"](function (e) {
         _this2.errors.push(e);
 
@@ -680,11 +663,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     getSelectedScreenInfo: function getSelectedScreenInfo(screen) {
       var _this4 = this;
 
-      console.log('the selected screen=>');
-      console.log(this.selected.screen_name); // console.log('the index=')
-      // console.log(screen[1]);
-
-      this.screen_key = screen[1]; // get content of screen
+      this.screen_key = screen[1];
+      this.countOutletScreens(); // get content of screen
 
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
         method: 'get',
@@ -696,7 +676,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         _this4.form.is_form_valid = true;
 
         if (response.data.length > 0) {
-          console.log(response.data);
           _this4.selected.link_name = response.data[0][_this4.selected.outlet].link_name;
           _this4.screen_now_showing = response.data[0][_this4.selected.outlet].link_name;
           _this4.selected.mediagroup = response.data[0][_this4.selected.outlet].media_asset_name;
@@ -710,24 +689,44 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     },
 
     /**
+     * @attached to getSelectedScreenInfo()
+     * @on same class
+     * @use count screen in selected outlet
+     * @return int
+     */
+    countOutletScreens: function countOutletScreens() {
+      var _this5 = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default()({
+        method: 'get',
+        url: "".concat(this.siteURL, "/api/countscreens/").concat(this.selected.outlet_id)
+      }).then(function (response) {
+        _this5.selected.outlet_screen = response.data;
+      })["catch"](function (e) {
+        _this5.errors.push(e);
+
+        console.log('error countOutletScreens');
+      });
+    },
+
+    /**
      * @attached to saveScreenNotes()
      * @on info_component
      * @use to get new screen name
      * @return selected.screen_name
      */
     refreshScreen: function refreshScreen(new_screen_name) {
-      this.selected.screen_name = new_screen_name; // console.log('RS selected outlet=>')
-      // console.log(this.selected.outlet)
-      // console.log('RS current key=>')
-      // console.log(this.screen_key)
-      // console.log('RS target=>')
-      // console.log(this.outlets[this.selected.outlet][this.screen_key].description)
-
-      this.outlets[this.selected.outlet][this.screen_key].description = new_screen_name; //this.getOutlets()
+      this.selected.screen_name = new_screen_name;
+      this.outlets[this.selected.outlet][this.screen_key].description = new_screen_name;
     },
+
+    /**
+     * @attached to refreshActivationDate()
+     * @on info_component
+     * @use to refresh activation date on update
+     * @return this.screen_activation_date
+     */
     refreshScreenActivation: function refreshScreenActivation(new_activation_date) {
-      console.log('updating activation date...');
-      console.log(new_activation_date);
       this.screen_activation_date = new_activation_date;
     },
 
@@ -738,14 +737,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
      * @return 
      */
     refreshLinks: function refreshLinks(newLinkName) {
-      console.log('refreshing links from admin component..');
-      console.log(newLinkName);
       this.getMediaAssets();
-      this.getLinks(); // refresh calendar
+      this.getLinks();
+      this.getScreenSched(); // refresh calendar
 
-      this.getScreenSched(); // refresh screen info
-
-      this.getSelectedScreenInfo([this.selected.screen, this.screen_key]);
+      this.getSelectedScreenInfo([this.selected.screen, this.screen_key]); // refresh screen info
     },
 
     /**
@@ -755,18 +751,18 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
      * @return selected.screen_schedule, calendar.events, screen_now_showing
      */
     getScreenSched: function getScreenSched() {
-      var _this5 = this;
+      var _this6 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
         method: 'get',
         url: "".concat(this.siteURL, "/api/schedule/ss/").concat(this.selected.screen)
       }).then(function (response) {
         if (response.data) {
-          _this5.selected.screen_schedule = response.data;
-          _this5.calendar.events = _this5.eventsFormat();
+          _this6.selected.screen_schedule = response.data;
+          _this6.calendar.events = _this6.eventsFormat();
         }
       })["catch"](function (e) {
-        _this5.errors.push(e);
+        _this6.errors.push(e);
 
         console.log('error getting schedule for calendar');
       });
@@ -779,7 +775,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
      * @return screen_autologin
      */
     getScreenAutologin: function getScreenAutologin() {
-      var _this6 = this;
+      var _this7 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
         method: 'post',
@@ -788,10 +784,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
           screen_id: this.selected.screen
         }
       }).then(function (response) {
-        //console.log(response.data);
-        _this6.screen_autologin = "".concat(_this6.siteURL, "/client?r=").concat(response.data);
+        _this7.screen_autologin = "".concat(_this7.siteURL, "/client?r=").concat(response.data);
       })["catch"](function (e) {
-        _this6.errors.push(e);
+        _this7.errors.push(e);
 
         console.log('error getting auto login');
       });
@@ -804,7 +799,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
      * @return screen_resolution, screen_activation_dates, screen_equipment_model_installed, screen_teamviewer_details
      */
     getScreenNotes: function getScreenNotes() {
-      var _this7 = this;
+      var _this8 = this;
 
       //console.log('getting notes..')
       this.screen_resolution = '';
@@ -816,49 +811,22 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         url: "".concat(this.siteURL, "/api/getscreen/").concat(this.selected.screen)
       }).then(function (response) {
         if (response.data) {
-          _this7.screen_resolution = response.data.resolution;
-          _this7.screen_activation_date = response.data.activation_date;
-          _this7.screen_equipment_model_installed = response.data.equipment_model_installed;
-          _this7.screen_teamviewer_details = response.data.teamviewer_details;
+          _this8.screen_resolution = response.data.resolution;
+          _this8.screen_activation_date = response.data.activation_date;
+          _this8.screen_equipment_model_installed = response.data.equipment_model_installed;
+          _this8.screen_teamviewer_details = response.data.teamviewer_details;
         }
       })["catch"](function (e) {
-        _this7.errors.push(e);
+        _this8.errors.push(e);
 
         console.log('error getting schedule');
       });
     },
 
     /**
-     * @attached 
-     * @on 
-     * @use 
-     * @return 
-     * TODO
-     */
-    addLink: function addLink(event) {
-      var _this8 = this;
-
-      var newlink = null;
-      axios__WEBPACK_IMPORTED_MODULE_0___default()({
-        method: 'post',
-        url: "".concat(this.siteURL, "/api/l"),
-        data: {
-          media__asset_id: 100,
-          name: this.newURL_name,
-          url: this.newURL
-        }
-      }).then(function (response) {
-        alert("Link successfully saved");
-        _this8.newURL_id = response.data;
-      })["catch"](function (e) {
-        _this8.errors.push(e);
-      });
-    },
-
-    /**
-     * @attached 
-     * @on 
-     * @use 
+     * @attached deleteLink()
+     * @on media asset component
+     * @use delete link on media asset list
      * @return 
      */
     deleteLink: function deleteLink(event) {
@@ -870,13 +838,13 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
           _this9.getSelectedScreenInfo([_this9.selected.screen, _this9.screen_key]);
 
-          _this9.getMediaAssets(); // reset all selected media and links
+          _this9.getMediaAssets();
+
+          _this9.resetData(); // reset all selected media and links
 
 
-          _this9.resetData(); // refresh calendar
+          _this9.getScreenSched(); // refresh calendar
 
-
-          _this9.getScreenSched();
         })["catch"](function (e) {
           _this9.errors.push(e);
         });
@@ -884,14 +852,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       return;
     },
-
-    /**
-    * @attached on deleteScreen
-    * @on Info_Component
-    * @use delete screen
-    * @return null
-    */
-    deleteScreen: function deleteScreen() {},
 
     /**
      * @attached on props
@@ -959,8 +919,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       });
       return esched;
     }
-  },
-  // methods
+  } // methods
   // computed: {
   //   outlet: {
   //     get: function(event) {
@@ -971,19 +930,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   //     }
   //   }
   // },
-  watch: {
-    outlets: function outlets() {//console.log('every breath you take, every step you make, ill be watching you..')
-      //this.getOutlets()
-    }
-  },
-  computed: {// outlets: {
-    //   get: function(event) {
-    //     return this.getOutlets()
-    //   },
-    //   set: function(newValue) {
-    //   }
-    // }
-  }
+
 });
 
 /***/ }),
@@ -1265,6 +1212,31 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
@@ -1295,7 +1267,6 @@ __webpack_require__.r(__webpack_exports__);
         url: "".concat(this.siteURL, "/api/getscreen"),
         data: mydata
       }).then(function (response) {
-        //console.log(response.data);
         if (response.data != "no-request") {}
 
         _this.int_resolution = '';
@@ -1304,8 +1275,6 @@ __webpack_require__.r(__webpack_exports__);
         _this.int_screen_name = '';
       })["catch"](function (e) {
         _this.errors.push(e);
-
-        console.log('error getting auto login');
       });
       this.$emit('saveScreenNotes', mydata.description);
     },
@@ -1326,25 +1295,55 @@ __webpack_require__.r(__webpack_exports__);
     refreshActivationDate: function refreshActivationDate(newActivationDate) {
       this.$emit('refreshActivationDate', newActivationDate);
     },
-    deleteScreen: function deleteScreen(event) {
-      var _this2 = this;
-
+    toDeleteScreen: function toDeleteScreen() {
       if (!confirm('DANGER: This will remove all schedules and login for this screen. \r\nAre you sure you want to DELETE this screen?')) {
         return;
-      } // console.log('IM DELETE THIS');
-      // console.log(this.selected.screen)
-      //this.selected.screen = ''
+      }
 
-
-      axios["delete"]("".concat(this.siteURL, "/api/screen/").concat(this.selected.screen)).then(function (response) {
-        console.log('axios delete screen');
-        console.log(response.data);
-        alert('Screen deleted. click OK to reload the page.');
+      var screen = this.selected.screen;
+      this.deleteScreen(screen);
+      alert('Screen deleted. click OK to reload the page.');
+      setTimeout(function () {
         location.reload();
+      }, 1500);
+    },
+    toDeactivateOutlet: function toDeactivateOutlet() {
+      var _this2 = this;
+
+      if (!confirm('DANGER: This will remove all screens and schedules for this outlet . \r\nAre you sure you want to DEACTIVATE this outlet?')) {
+        return;
+      } // get screen IDs
+
+
+      axios.get("".concat(this.siteURL, "/api/getscreens/").concat(this.selected.outlet_id)).then(function (response) {
+        var screens = response.data;
+        screens.forEach(function (val, key, map) {
+          _this2.deleteScreen(val.id);
+        });
+
+        _this2.deactivateOutlet(_this2.selected.outlet_id);
+
+        alert('Outlet has been deactivated. Click OK to reload the page.');
+        setTimeout(function () {
+          location.reload();
+        }, 1500);
       })["catch"](function (e) {
         _this2.errors.push(e);
       });
-      this.$emit('deleteScreen', []);
+    },
+    deleteScreen: function deleteScreen(screen) {
+      var _this3 = this;
+
+      axios["delete"]("".concat(this.siteURL, "/api/screen/").concat(screen)).then(function (response) {})["catch"](function (e) {
+        _this3.errors.push(e);
+      });
+    },
+    deactivateOutlet: function deactivateOutlet(outlet) {
+      var _this4 = this;
+
+      axios["delete"]("".concat(this.siteURL, "/api/outlet/").concat(outlet)).then(function (response) {})["catch"](function (e) {
+        _this4.errors.push(e);
+      });
     }
   },
   created: function created() {
@@ -1491,8 +1490,6 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     linkRename: function linkRename(event) {
-      console.log('renaming link');
-      console.log(event);
       this.int_link_id = event[0];
       this.int_link_name = event[1];
       this.a = event[2];
@@ -1508,9 +1505,6 @@ __webpack_require__.r(__webpack_exports__);
           return;
         }
 
-        console.log('saving new link name...');
-        console.log(this.int_link_id);
-        console.log(this.int_newlink_name);
         axios({
           method: 'patch',
           url: "".concat(this.siteURL, "/api/l/").concat(this.int_link_id),
@@ -1518,11 +1512,8 @@ __webpack_require__.r(__webpack_exports__);
             name: this.int_newlink_name
           }
         }).then(function (response) {
-          console.log('link name updated');
-          console.log(response.data);
-
           if (response.data == "updated") {
-            _this.selected.link_name = _this.int_newlink_name; //this.getLinks()
+            _this.selected.link_name = _this.int_newlink_name;
 
             _this.$emit('setLinkName', _this.int_newlink_name);
           }
@@ -1540,8 +1531,6 @@ __webpack_require__.r(__webpack_exports__);
         return this.int_link_name;
       },
       set: function set(newValue) {
-        //console.log('setting new link name..')
-        //console.log(newValue)
         this.int_newlink_name = newValue;
       }
     }
@@ -1706,15 +1695,15 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     screenSelect: function screenSelect(event) {
-      //console.log('selecting screen');
       if (event) {
         var i = event.currentTarget.id.split('**');
         this.selected.outlet = i[0];
         this.selected.screen = i[1];
         this.selected.screen_name = i[2];
+        this.selected.outlet_id = i[4];
         this.getScreenSched();
         this.getScreenAutologin();
-        this.getScreenNotes(); // i[1] - screen ID, i[3] - screen key
+        this.getScreenNotes(); // i[1] - screen ID, i[3] - screen key, 1[4] - outlet-ID
 
         this.$emit('screenSelect', [i[1], i[3]]);
         this.add_screen_panel = false;
@@ -1795,9 +1784,7 @@ __webpack_require__.r(__webpack_exports__);
           id: this.selected.screen,
           activation_date: date
         }
-      }).then(function (response) {
-        console.log(response.data); //this.screen_activation_date = date
-      })["catch"](function (e) {
+      }).then(function (response) {})["catch"](function (e) {
         _this2.errors.push(e);
 
         console.log('error getting auto login');
@@ -1814,10 +1801,7 @@ __webpack_require__.r(__webpack_exports__);
       get: function get(event) {
         return this.screen_activation_date;
       },
-      set: function set(newEvent) {// console.log('screen activated new date')
-        // console.log(newEvent)
-        // this.date = newEvent
-      }
+      set: function set(newEvent) {}
     }
   }
 });
@@ -1980,16 +1964,12 @@ __webpack_require__.r(__webpack_exports__);
     addSched: function addSched(event) {
       var _this = this;
 
-      console.log('selected group');
-      console.log(this.media_asset_id);
-
       if (this.selected.screen == null) {
         alert('No screen selected');
         return;
       }
 
       if (this.selected.link == null) {
-        // check URL & name
         if (this.newURL == "" || this.newURL_name == "") {
           alert('Please complete URL fields');
           return;
@@ -2016,7 +1996,7 @@ __webpack_require__.r(__webpack_exports__);
         };
       }
 
-      console.log('final mydata ');
+      console.log('saving schedule: ');
       console.log(mydata);
       axios({
         method: 'post',
@@ -2713,9 +2693,6 @@ var render = function() {
                                               return _vm.refreshScreenActivation(
                                                 $event
                                               )
-                                            },
-                                            deleteScreen: function($event) {
-                                              return _vm.deleteScreen($event)
                                             }
                                           }
                                         })
@@ -2897,14 +2874,14 @@ var render = function() {
                     "v-toolbar",
                     {
                       staticClass: "grey darken-4",
-                      attrs: { flat: "", dense: "", dark: "" }
+                      attrs: { flat: "", dark: "" }
                     },
                     [
                       _c(
                         "v-toolbar-title",
                         [
                           _c("v-text-field", {
-                            staticClass: "pt-8",
+                            staticClass: "pt-4 ma-2",
                             attrs: {
                               "single-line": "",
                               "append-outer-icon": "mdi-pencil"
@@ -2928,56 +2905,121 @@ var render = function() {
                       _vm._v(" "),
                       _c("v-spacer"),
                       _vm._v(" "),
-                      _c(
-                        "v-tooltip",
-                        {
-                          attrs: { right: "" },
-                          scopedSlots: _vm._u([
-                            {
-                              key: "activator",
-                              fn: function(ref) {
-                                var on = ref.on
-                                var attrs = ref.attrs
-                                return [
-                                  _c(
-                                    "v-btn",
-                                    _vm._g(
-                                      _vm._b(
-                                        {
-                                          attrs: { icon: "" },
-                                          on: {
-                                            click: function($event) {
-                                              return _vm.deleteScreen()
+                      this.selected.outlet_screen > 1
+                        ? [
+                            _c(
+                              "v-tooltip",
+                              {
+                                attrs: { right: "" },
+                                scopedSlots: _vm._u(
+                                  [
+                                    {
+                                      key: "activator",
+                                      fn: function(ref) {
+                                        var on = ref.on
+                                        var attrs = ref.attrs
+                                        return [
+                                          _c(
+                                            "v-btn",
+                                            _vm._g(
+                                              _vm._b(
+                                                {
+                                                  staticClass:
+                                                    "ma-2 white--text",
+                                                  attrs: {
+                                                    tile: "",
+                                                    outlined: "",
+                                                    color: "danger"
+                                                  },
+                                                  on: {
+                                                    click: function($event) {
+                                                      return _vm.toDeleteScreen()
+                                                    }
+                                                  }
+                                                },
+                                                "v-btn",
+                                                attrs,
+                                                false
+                                              ),
+                                              on
+                                            ),
+                                            [
+                                              _vm._v(
+                                                "\n                  Delete Screen\n                "
+                                              )
+                                            ]
+                                          )
+                                        ]
+                                      }
+                                    }
+                                  ],
+                                  null,
+                                  false,
+                                  3633734366
+                                )
+                              },
+                              [
+                                _vm._v(" "),
+                                _c("span", [_vm._v("delete this screen")])
+                              ]
+                            )
+                          ]
+                        : _vm._e(),
+                      _vm._v(" "),
+                      [
+                        _c(
+                          "v-tooltip",
+                          {
+                            attrs: { right: "" },
+                            scopedSlots: _vm._u([
+                              {
+                                key: "activator",
+                                fn: function(ref) {
+                                  var on = ref.on
+                                  var attrs = ref.attrs
+                                  return [
+                                    _c(
+                                      "v-btn",
+                                      _vm._g(
+                                        _vm._b(
+                                          {
+                                            staticClass: "ma-2 white--text",
+                                            attrs: {
+                                              tile: "",
+                                              outlined: "",
+                                              color: "error"
+                                            },
+                                            on: {
+                                              click: function($event) {
+                                                return _vm.toDeactivateOutlet()
+                                              }
                                             }
-                                          }
-                                        },
-                                        "v-btn",
-                                        attrs,
-                                        false
+                                          },
+                                          "v-btn",
+                                          attrs,
+                                          false
+                                        ),
+                                        on
                                       ),
-                                      on
-                                    ),
-                                    [
-                                      _c(
-                                        "v-icon",
-                                        { attrs: { color: "red" } },
-                                        [_vm._v("mdi-delete-circle")]
-                                      )
-                                    ],
-                                    1
-                                  )
-                                ]
+                                      [
+                                        _vm._v(
+                                          "\n                  Deactivate Outlet\n                "
+                                        )
+                                      ]
+                                    )
+                                  ]
+                                }
                               }
-                            }
-                          ])
-                        },
-                        [
-                          _vm._v(" "),
-                          _c("span", [_vm._v("delete this screen")])
-                        ]
-                      )
+                            ])
+                          },
+                          [
+                            _vm._v(" "),
+                            _c("span", [_vm._v("delete this screen")])
+                          ]
+                        )
+                      ]
                     ],
-                    1
+                    2
                   ),
                   _vm._v(" "),
                   _c(
@@ -3813,7 +3855,9 @@ var render = function() {
                                             "**" +
                                             screen.description +
                                             "**" +
-                                            screen_i
+                                            screen_i +
+                                            "**" +
+                                            item[0].outlet_id
                                         },
                                         on: { click: _vm.screenSelect }
                                       },
