@@ -96,8 +96,6 @@ export default {
       }
     },
     linkRename: function (event) {
-      console.log('renaming link')
-      console.log(event)
       this.int_link_id = event[0]
       this.int_link_name = event[1]
       this.a = event[2]
@@ -110,11 +108,7 @@ export default {
           this.rename_field = false
           return
         }
-
-        console.log('saving new link name...')
-        console.log(this.int_link_id)
-        console.log(this.int_newlink_name)
-        
+    
         axios({
           method: 'patch',
           url: `${ this.siteURL }/api/l/${ this.int_link_id }`,
@@ -122,11 +116,9 @@ export default {
             name: this.int_newlink_name,
           }
         }).then(response => {
-            console.log('link name updated')
-            console.log(response.data)
+     
             if (response.data == "updated") {
               this.selected.link_name = this.int_newlink_name
-              //this.getLinks()
               this.$emit('setLinkName', this.int_newlink_name)
             }
         })
@@ -136,8 +128,8 @@ export default {
 
       }
       this.rename_field = false
-      
     }
+
   },
   computed: {
     link_name: {
@@ -145,8 +137,6 @@ export default {
         return this.int_link_name
       },
       set: function(newValue) {
-        //console.log('setting new link name..')
-        //console.log(newValue)
         this.int_newlink_name = newValue
       }
     }

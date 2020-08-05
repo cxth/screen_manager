@@ -54,8 +54,7 @@
             activation_date: date
           }
         }).then(response => {
-            console.log(response.data);
-            //this.screen_activation_date = date
+
         })
         .catch(e => {
             this.errors.push(e)
@@ -74,9 +73,7 @@
           return this.screen_activation_date
         },
         set: function (newEvent) {
-          // console.log('screen activated new date')
-          // console.log(newEvent)
-          // this.date = newEvent
+
         }
       }
     }

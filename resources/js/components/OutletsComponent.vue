@@ -65,7 +65,7 @@
                       v-for="(screen, screen_i) in item"
                       :key="screen_i"
                       v-on:click="screenSelect"
-                      :id="screen.outlet_name + '**' + screen.id + '**' + screen.description + '**' + screen_i" 
+                      :id="screen.outlet_name + '**' + screen.id + '**' + screen.description + '**' + screen_i + '**' + item[0].outlet_id"
                     >
                       <v-list-item-content>
                         <v-list-item-title v-text="screen.description"></v-list-item-title>
@@ -154,16 +154,16 @@ export default {
     },
 
     screenSelect: function (event) {
-      //console.log('selecting screen');
       if (event) {
         var i = event.currentTarget.id.split('**');
         this.selected.outlet = i[0];
         this.selected.screen = i[1];
         this.selected.screen_name = i[2];
+        this.selected.outlet_id = i[4];
         this.getScreenSched()
         this.getScreenAutologin()
         this.getScreenNotes()
-        // i[1] - screen ID, i[3] - screen key
+        // i[1] - screen ID, i[3] - screen key, 1[4] - outlet-ID
         this.$emit('screenSelect', [i[1],i[3]])
         this.add_screen_panel = false;
       }

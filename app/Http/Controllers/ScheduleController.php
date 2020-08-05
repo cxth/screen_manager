@@ -59,34 +59,38 @@ class ScheduleController extends Controller
     {
         if (!Auth::user())
         {
-            return redirect('/login');
+            return ['invalid-user'];
         }
 
-        $screen = Screen::find(Auth::user()->username);
-        
-        // catch view screen from admin 
-        $uscreen = session('uscreen');
-        if (Auth::user()->username == 'admin' && $uscreen != null)
+        // admin view
+        if (Auth::user()->username == 'admin')
         {
+            // catch view screen from admin 
+            $uscreen = session('uscreen');
             $screen = Screen::find($uscreen);
+            if (!$screen)
+            {
+              session(['uscreen' => null]);
+              return ['deactivated-user'];
+            }
+        }
+        else
+        {
+          // auto-login
+          $screen = Screen::find(Auth::user()->username);
+          if (!$screen)
+          {
+            return ['invalid-user'];
+          }
         }
         
-        // testing only
-        //$screen = Screen::find('BB-401SS1'); //Vasra1
-        //dd($screen);
-
-        if (!$screen)
-        {
-            return ["invalid-user"];
-        }
-
         // log request
         $this->logSession($screen->id);
 
         $schedule = $this->nowShowing($screen);
         if ($schedule->isEmpty()) {
             // @TODO: default image or URL here...
-            return 'no-content';
+            return ['no-content'];
         }
 
         //dd($schedule[0]->id);

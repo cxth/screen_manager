@@ -22,11 +22,18 @@ Vue.directive('resize', {
   }
 })
 
+var fetch_timeout = 60000 // 1 minute
+if (window.location.hostname == 'sm.local')
+{
+  fetch_timeout = 8000 // 8 seconds
+}
+
 // declare global variable here
 Vue.mixin({
     data: function() {
         return {
-            siteURL: `https://${ window.location.hostname }`
+            siteURL: `https://${ window.location.hostname }`,
+            fetchTimeout: fetch_timeout
         }
     }
 })

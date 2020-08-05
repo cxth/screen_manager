@@ -55,11 +55,12 @@ import axios from 'axios'
       timer: ''
     }),
     created: function () {
-       this.getActiveScreens()
+       //this.getActiveScreens()
     },
     mounted: function () {
       // check every 5 minutes - 300000
       // check every minutes - 60000
+      this.getActiveScreens()
       window.setInterval(() => {
           this.getActiveScreens();
       },300000);
@@ -67,7 +68,6 @@ import axios from 'axios'
     methods: {
       getActiveScreens: function(event) {
 
-        console.log('getting active screens..')
         axios.get(`${ this.siteURL }/api/screen/active`)
         .then(response => {
             if (response.data.length > 0) {
@@ -96,7 +96,9 @@ import axios from 'axios'
             }
         })
         .catch(e => {
-            
+            // setTimeout(function() {
+            //     this.getActiveScreens()
+            //   }, 3000)
             this.errors.push(e)
         })
       },

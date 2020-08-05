@@ -14,6 +14,33 @@ use Symfony\Component\HttpFoundation\Response;
 
 class OutletController extends Controller
 {
+    
+    /**
+     * Count screens on the selected outlet
+     *
+     * @return Integer
+     */
+    public function countScreens($outlet_id)
+    {
+        //return $outlet_id;
+        //$count = App\Flight::where('active', 1)->count();
+        return Screen::where('outlet_id', $outlet_id)->count();
+    }
+
+
+    /**
+     * Get screen_ID on the selected outlet
+     *
+     * @return Integer
+     */
+    public function getScreens($outlet_id)
+    {
+        //return $outlet_id;
+        //$count = App\Flight::where('active', 1)->count();
+        return Screen::where('outlet_id', $outlet_id)->get('id');
+    }
+
+  
     /**
      * Display a listing of the outlets.
      *
@@ -35,6 +62,55 @@ class OutletController extends Controller
     }
 
     /**
+     * Reactivate outlet
+     */
+    public function reactivate($outlet_id)
+    {
+        //user
+        //screen
+        // get all screens --NO--
+        // $screen = Screen::withTrashed()
+        //     ->where('outlet_id', $outlet_id)
+        //     ->get('id');
+
+        // return $screen;
+
+        //outlet
+        Outlet::withTrashed()
+          ->where('id', $outlet_id)
+          ->restore();
+    }
+
+    /**
+     * Check outlet ID status
+     */
+    public function check($outlet_intid)
+    {
+        //return $outlet_intid;
+        $outlet =  Outlet::withTrashed()
+          ->where('int_id', $outlet_intid)
+          ->get();
+
+        //return $outlet[0]->deleted_at;
+        // return empty($deleted);
+        if (!$outlet->isEmpty())
+        {
+          // check if deactivated
+          if ($outlet[0]->deleted_at != null)
+          {
+            $this->reactivate($outlet[0]->id);
+            return 'outlet-reactivated';
+          }
+          else
+          {
+            return 'outlet-exist';
+          }
+        }
+        return 'no-record';
+ 
+    }
+
+    /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -42,8 +118,15 @@ class OutletController extends Controller
      */
     public function store(Request $request)
     {
+        //return $request;
         
         $outlet_intid = strtoupper($request->outlet_id);
+
+        // check if deactivated
+        if ($this->check($outlet_intid) == 'outlet-exist')
+        {
+          return 'outlet-exist';
+        }
 
         // create Outlet
         $outlet = Outlet::firstOrCreate(
