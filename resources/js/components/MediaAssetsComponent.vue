@@ -33,6 +33,7 @@
                           dense
                           v-model="link_name"
                           v-on:blur="setLinkName()"
+                          autofocus 
                         ></v-text-field>
                     </v-list-item-content>
                     
@@ -40,7 +41,7 @@
                       <v-list-item-title v-text="link.name"></v-list-item-title>
                     </v-list-item-content>
 
-                    <v-tooltip left>
+                    <v-tooltip v-if="!rename_field" left>
                       <!-- <template v-if="asset.name === 'Custom Links'" v-slot:activator="{ on, attrs }"> -->
                       <template v-slot:activator="{ on, attrs }">
                         <v-list-item-icon 
@@ -54,6 +55,7 @@
                       </template>
                       <span>delete link</span>
                     </v-tooltip>
+
                   </v-list-item>
                 </v-list-item-group>
               </v-list>
@@ -101,6 +103,7 @@ export default {
       this.a = event[2]
       this.b = event[3]
       this.rename_field = true
+      //this.$refs.linkname.focus()
     },
     setLinkName: function() {
       if (this.int_link_name != this.int_newlink_name) {

@@ -1465,6 +1465,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['media_assets', 'selected', 'links', 'form', 'deleteLink', 'getLinks'],
   data: function data() {
@@ -1494,7 +1496,7 @@ __webpack_require__.r(__webpack_exports__);
       this.int_link_name = event[1];
       this.a = event[2];
       this.b = event[3];
-      this.rename_field = true;
+      this.rename_field = true; //this.$refs.linkname.focus()
     },
     setLinkName: function setLinkName() {
       var _this = this;
@@ -3564,7 +3566,8 @@ var render = function() {
                                               _c("v-text-field", {
                                                 attrs: {
                                                   outlined: "",
-                                                  dense: ""
+                                                  dense: "",
+                                                  autofocus: ""
                                                 },
                                                 on: {
                                                   blur: function($event) {
@@ -3594,70 +3597,75 @@ var render = function() {
                                             1
                                           ),
                                       _vm._v(" "),
-                                      _c(
-                                        "v-tooltip",
-                                        {
-                                          attrs: { left: "" },
-                                          scopedSlots: _vm._u(
-                                            [
-                                              {
-                                                key: "activator",
-                                                fn: function(ref) {
-                                                  var on = ref.on
-                                                  var attrs = ref.attrs
-                                                  return [
-                                                    _c(
-                                                      "v-list-item-icon",
-                                                      _vm._g(
-                                                        _vm._b(
-                                                          {
-                                                            staticClass: "ml-5",
-                                                            on: {
-                                                              click: function(
-                                                                $event
-                                                              ) {
-                                                                return _vm.deleteLink(
-                                                                  link.id
-                                                                )
-                                                              }
-                                                            }
-                                                          },
-                                                          "v-list-item-icon",
-                                                          attrs,
-                                                          false
-                                                        ),
-                                                        on
-                                                      ),
-                                                      [
+                                      !_vm.rename_field
+                                        ? _c(
+                                            "v-tooltip",
+                                            {
+                                              attrs: { left: "" },
+                                              scopedSlots: _vm._u(
+                                                [
+                                                  {
+                                                    key: "activator",
+                                                    fn: function(ref) {
+                                                      var on = ref.on
+                                                      var attrs = ref.attrs
+                                                      return [
                                                         _c(
-                                                          "v-icon",
-                                                          {
-                                                            attrs: {
-                                                              color: "red"
-                                                            }
-                                                          },
+                                                          "v-list-item-icon",
+                                                          _vm._g(
+                                                            _vm._b(
+                                                              {
+                                                                staticClass:
+                                                                  "ml-5",
+                                                                on: {
+                                                                  click: function(
+                                                                    $event
+                                                                  ) {
+                                                                    return _vm.deleteLink(
+                                                                      link.id
+                                                                    )
+                                                                  }
+                                                                }
+                                                              },
+                                                              "v-list-item-icon",
+                                                              attrs,
+                                                              false
+                                                            ),
+                                                            on
+                                                          ),
                                                           [
-                                                            _vm._v(
-                                                              "mdi-delete-circle"
+                                                            _c(
+                                                              "v-icon",
+                                                              {
+                                                                attrs: {
+                                                                  color: "red"
+                                                                }
+                                                              },
+                                                              [
+                                                                _vm._v(
+                                                                  "mdi-delete-circle"
+                                                                )
+                                                              ]
                                                             )
-                                                          ]
+                                                          ],
+                                                          1
                                                         )
-                                                      ],
-                                                      1
-                                                    )
-                                                  ]
-                                                }
-                                              }
-                                            ],
-                                            null,
-                                            true
+                                                      ]
+                                                    }
+                                                  }
+                                                ],
+                                                null,
+                                                true
+                                              )
+                                            },
+                                            [
+                                              _vm._v(" "),
+                                              _c("span", [
+                                                _vm._v("delete link")
+                                              ])
+                                            ]
                                           )
-                                        },
-                                        [
-                                          _vm._v(" "),
-                                          _c("span", [_vm._v("delete link")])
-                                        ]
-                                      )
+                                        : _vm._e()
                                     ],
                                     1
                                   )
