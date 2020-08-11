@@ -52,6 +52,26 @@ class FileController extends Controller
         return File::all();
     }
 
+    /**
+     * Host and Render Clip
+     *
+     * @return html
+     */
+    public function watch()
+    {
+      $request = $_REQUEST;
+
+      if (!isset($request['v']))
+      {
+        return ['Invalid request parameter'];
+      }
+
+      $data['video'] = asset($request['v']);
+
+      return view('player', $data);
+    }
+
+
     // Helper
     public function getVideoURL($path)
     {

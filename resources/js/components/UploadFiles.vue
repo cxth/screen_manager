@@ -12,84 +12,39 @@
         {{ progress }}%
       </div>
     </div>
-
-    <!-- <label class="btn btn-default"> -->
-      <!-- <input type="file" ref="file" @change="selectFile" /> -->
-      <v-container class="ma-5">
-        <v-file-input 
-          show-size 
-          v-model="vfile"
-          accept="video/*" 
-          label="File input"
-          prepend-icon="mdi-file-video"
-          ref="file" 
-          @change="selectFile"
-          
-        >
-        </v-file-input>
-         <v-text-field
-            label="Video Name"
-            v-model="vname"
-            prepend-icon="mdi-rename-box"
-          ></v-text-field>
-        
-            <!-- <button class="btn btn-success"  @click="upload">
-              Upload
-            </button> -->
-          <div class="text-center">
-            <v-btn rounded color="primary" dark @click="upload">Upload</v-btn>
-          </div>
-      </v-container>
- 
-    <!-- </label> -->
-
+    <v-container class="ma-5">
+      <v-file-input 
+        show-size 
+        v-model="vfile"
+        accept="video/*" 
+        label="File input"
+        prepend-icon="mdi-file-video"
+        ref="file" 
+        @change="selectFile"
+      >
+      </v-file-input>
+      <v-text-field
+        label="Video Name"
+        v-model="vname"
+        prepend-icon="mdi-rename-box"
+      >
+      </v-text-field>
+      <div class="text-center">
+        <v-btn rounded color="primary" dark @click="upload">Upload</v-btn>
+      </div>
+    </v-container>
     <div class="alert alert-light" role="alert">{{ message }}</div>
-
-    <!-- <v-divider></v-divider>
-    <div class="card">
-      <div class="card-header">List of Files</div>
-      <ul class="list-group list-group-flush">
-        <li
-          class="list-group-item"
-          v-for="(file, index) in fileInfos"
-          :key="index"
-        >
-          <a :href="file.path">{{ file.name }}</a>
-        </li>
-      </ul>
-    </div> -->
-
     <v-divider></v-divider>
-
     <template>
       <v-card
         class="mx-auto"
         max-width="100%"
       >
-      
         <v-container class="py-0">
           <v-row
             align="center"
             justify="start"
           >
-            <!-- <v-col
-              v-for="(selection, i) in selections"
-              :key="selection.text"
-              class="shrink"
-            >
-              <v-chip
-                :disabled="loading"
-                close
-                @click:close="selected.splice(i, 1)"
-              >
-                <v-icon
-                  left
-                  v-text="selection.icon"
-                ></v-icon>
-                {{ selection.text }}
-              </v-chip>
-            </v-col> -->
-
             <v-col v-if="!allSelected" cols="12">
               <v-text-field
                 ref="search"
@@ -104,9 +59,7 @@
             </v-col>
           </v-row>
         </v-container>
-
         <v-divider v-if="!allSelected"></v-divider>
-
         <v-list
           class="result"
         >
@@ -123,8 +76,9 @@
                 rounded dense
                 color="indigo" 
                 dark
+                @click="openLink(item.path)"
               >
-                Copy URL
+                Open Link
               </v-btn>
               <div>
                 <v-list-item> 
@@ -134,9 +88,7 @@
             </v-list-item>
           </template>
         </v-list>
-
         <v-divider></v-divider>
-
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
@@ -149,13 +101,11 @@
         </v-card-actions>
       </v-card>
     </template>
-
   </div>
 </template>
 
 <script>
 import UploadService from "../services/UploadFilesService";
-
 export default {
   name: "upload-files",
   data() {
@@ -164,149 +114,94 @@ export default {
       currentFile: undefined,
       progress: 0,
       message: "",
-
       fileInfos: [],
       vfile: [],
       vname: '',
-
-      // example
-      items: [
-        // {
-        //   text: 'Nature',
-        //   icon: 'mdi-nature',
-        // },
-        // {
-        //   text: 'Nightlife',
-        //   icon: 'mdi-glass-wine',
-        // },
-        // {
-        //   text: 'November',
-        //   icon: 'mdi-calendar-range',
-        // },
-        // {
-        //   text: 'Portland',
-        //   icon: 'mdi-map-marker',
-        // },
-        // {
-        //   text: 'Biking',
-        //   icon: 'mdi-bike',
-        // },
-      ],
+      items: [],
       loading: false,
       search: '',
       selected: [],
-
     };
   },
   methods: {
     selectFile() {
-      
-      // console.log(this.$refs.file.files)
-      // this.selectedFiles = this.$refs.file.files;
-
-      console.log(this.vname)
-      console.log(this.vfile)
       this.selectedFiles = this.vfile;
     },
-
     upload() {
-    
       this.progress = 0;
-
-      //this.currentFile = this.selectedFiles.item(0);
-
       this.currentFile = this.selectedFiles;
-        
       UploadService.upload(this.currentFile, this.vname, event => {
         this.progress = Math.round((100 * event.loaded) / event.total);
       })
-        .then(response => {
-          console.log('im uploading')
-          console.log(response.data)
-          this.message = response.data.message;
-          return UploadService.getFiles();
-        })
-        .then(files => {
-          //this.fileInfos = files.data;
-          this.items = files.data;
-        })
-        .catch(() => {
-          this.progress = 0;
-          this.message = "Could not upload the file!";
-          this.currentFile = undefined;
-        });
-
+      .then(response => {
+        console.log('im uploading')
+        console.log(response.data)
+        this.message = response.data.message;
+        return UploadService.getFiles();
+      })
+      .then(files => {
+        //this.fileInfos = files.data;
+        this.items = files.data;
+      })
+      .catch(() => {
+        this.progress = 0;
+        this.message = "Could not upload the file!";
+        this.currentFile = undefined;
+      });
       this.selectedFiles = undefined;
-      
       alert('File uploaded')
       this.vfile = []
       this.vname = ''
     },
-
+    openLink: function(link) {
+      window.open(`${ this.siteURL }/watch?v=${ link }`);
+    },
     dateDay: function(value) {
       if (value) {
         return dayjs(String(value)).format('MMM D')
       }
     },
-
-    // example
     next () {
       this.loading = true
-
       setTimeout(() => {
         this.search = ''
         this.selected = []
         this.loading = false
       }, 2000)
     },
-
-
   },
   mounted() {
     UploadService.getFiles().then(response => {
-      //this.fileInfos = response.data;
       this.items = response.data;
     });
-
-    
   },
 
-  // --example
   computed: {
     allSelected () {
       return this.selected.length === this.items.length
     },
     categories () {
       const search = this.search.toLowerCase()
-
       if (!search) return this.items
-
       return this.items.filter(item => {
         const text = item.name.toLowerCase()
-
         return text.indexOf(search) > -1
       })
     },
     selections () {
       const selections = []
-
       for (const selection of this.selected) {
         selections.push(selection)
       }
-
       return selections
     },
   },
-
+  
   watch: {
     selected () {
       this.search = ''
     },
   },
-
-
-
-
 };
 </script>
 

@@ -2268,55 +2268,6 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "upload-files",
@@ -2329,28 +2280,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       fileInfos: [],
       vfile: [],
       vname: '',
-      // example
-      items: [// {
-        //   text: 'Nature',
-        //   icon: 'mdi-nature',
-        // },
-        // {
-        //   text: 'Nightlife',
-        //   icon: 'mdi-glass-wine',
-        // },
-        // {
-        //   text: 'November',
-        //   icon: 'mdi-calendar-range',
-        // },
-        // {
-        //   text: 'Portland',
-        //   icon: 'mdi-map-marker',
-        // },
-        // {
-        //   text: 'Biking',
-        //   icon: 'mdi-bike',
-        // },
-      ],
+      items: [],
       loading: false,
       search: '',
       selected: []
@@ -2358,17 +2288,12 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   },
   methods: {
     selectFile: function selectFile() {
-      // console.log(this.$refs.file.files)
-      // this.selectedFiles = this.$refs.file.files;
-      console.log(this.vname);
-      console.log(this.vfile);
       this.selectedFiles = this.vfile;
     },
     upload: function upload() {
       var _this = this;
 
-      this.progress = 0; //this.currentFile = this.selectedFiles.item(0);
-
+      this.progress = 0;
       this.currentFile = this.selectedFiles;
       _services_UploadFilesService__WEBPACK_IMPORTED_MODULE_0__["default"].upload(this.currentFile, this.vname, function (event) {
         _this.progress = Math.round(100 * event.loaded / event.total);
@@ -2390,12 +2315,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.vfile = [];
       this.vname = '';
     },
+    openLink: function openLink(link) {
+      window.open("".concat(this.siteURL, "/watch?v=").concat(link));
+    },
     dateDay: function dateDay(value) {
       if (value) {
         return dayjs(String(value)).format('MMM D');
       }
     },
-    // example
     next: function next() {
       var _this2 = this;
 
@@ -2411,11 +2338,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     var _this3 = this;
 
     _services_UploadFilesService__WEBPACK_IMPORTED_MODULE_0__["default"].getFiles().then(function (response) {
-      //this.fileInfos = response.data;
       _this3.items = response.data;
     });
   },
-  // --example
   computed: {
     allSelected: function allSelected() {
       return this.selected.length === this.items.length;
@@ -5119,9 +5044,18 @@ var render = function() {
                                   dense: "",
                                   color: "indigo",
                                   dark: ""
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.openLink(item.path)
+                                  }
                                 }
                               },
-                              [_vm._v("\n              Copy URL\n            ")]
+                              [
+                                _vm._v(
+                                  "\n              Open Link\n            "
+                                )
+                              ]
                             ),
                             _vm._v(" "),
                             _c(
