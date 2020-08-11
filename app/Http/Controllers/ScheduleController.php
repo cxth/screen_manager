@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\ScheduleResource;
 use App\Model\Media_Asset;
-use App\Model\Session;
+use App\Model\Screen_Session;
 use App\Model\Session_Log;
 use App\Session_Log as AppSession_Log;
 //use App\Http\Resources\ScheduleGroupResource;
@@ -108,7 +108,7 @@ class ScheduleController extends Controller
      */
     public function logSession($screen_id)
     {
-      Session::updateOrCreate(
+      Screen_Session::updateOrCreate(
         ['screen_id' => $screen_id],
         ['request_log' => Carbon::now()]
       );

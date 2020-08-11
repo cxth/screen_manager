@@ -6,7 +6,7 @@ use App\Model\Outlet;
 use App\Model\Screen;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SessionResource extends JsonResource
+class ScreenSessionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

@@ -6,12 +6,12 @@ use App\User;
 use Carbon\Carbon;
 use App\Model\Outlet;
 use App\Model\Screen;
-use App\Model\Session;
+use App\Model\Screen_Session;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\ScreenResource;
-use App\Http\Resources\SessionResource;
+use App\Http\Resources\ScreenSessionResource;
 use App\Model\Schedule;
 use App\Model\Session_Log;
 use Symfony\Component\HttpFoundation\Response;
@@ -48,8 +48,8 @@ class ScreenController extends Controller
     public function getActive()
     {
         $minutes = env('SCREEN_ACTIVE_TIMEOUT', 15); 
-        $result = Session::where('request_log', '>=', Carbon::now()->subMinutes($minutes)->toDateTimeString())->get();   
-        return SessionResource::collection($result);
+        $result = Screen_Session::where('request_log', '>=', Carbon::now()->subMinutes($minutes)->toDateTimeString())->get();   
+        return ScreenSessionResource::collection($result);
     }
     
     /**
@@ -193,7 +193,7 @@ class ScreenController extends Controller
         //$screen->delete();
         $screen->forceDelete();
         //delete on session
-        Session::where('screen_id', '=', $screen->id)->delete();
+        Screen_Session::where('screen_id', '=', $screen->id)->delete();
         Session_Log::where('screen_id', '=', $screen->id)->delete();
 
         session(['uscreen' => null]);
