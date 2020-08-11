@@ -21,12 +21,15 @@
         prepend-icon="mdi-file-video"
         ref="file" 
         @change="selectFile"
+        :rules="[rules.required]"
       >
       </v-file-input>
       <v-text-field
         label="Video Name"
         v-model="vname"
         prepend-icon="mdi-rename-box"
+        :rules="[rules.required]"
+        suffix="required"
       >
       </v-text-field>
       <div class="text-center">
@@ -59,7 +62,6 @@
             </v-col>
           </v-row>
         </v-container>
-        <v-divider v-if="!allSelected"></v-divider>
         <v-list
           class="result"
         >
@@ -76,7 +78,7 @@
                 rounded dense
                 color="indigo" 
                 dark
-                @click="openLink(item.path)"
+                @click="openClip(item.path)"
               >
                 Open Link
               </v-btn>
@@ -85,6 +87,15 @@
                   {{ item.name }} &dash; {{ dateDay(item.created_at) }}
                 </v-list-item>
               </div>
+              <v-spacer></v-spacer>
+              <v-btn class="ma-2" 
+                outlined dense
+                color="red" 
+                dark
+                @click="deleteClip(item.id)"
+              >
+                Delete
+              </v-btn>
             </v-list-item>
           </template>
         </v-list>
@@ -121,6 +132,9 @@ export default {
       loading: false,
       search: '',
       selected: [],
+      rules: {
+        required: value => !!value || 'Required.'
+      }
     };
   },
   methods: {
@@ -128,6 +142,18 @@ export default {
       this.selectedFiles = this.vfile;
     },
     upload() {
+
+      if (!this.selectFile) 
+      {
+        return
+      }
+
+      if (!this.vname) 
+      {
+        return
+      }
+      
+
       this.progress = 0;
       this.currentFile = this.selectedFiles;
       UploadService.upload(this.currentFile, this.vname, event => {
@@ -142,19 +168,36 @@ export default {
       .then(files => {
         //this.fileInfos = files.data;
         this.items = files.data;
+        alert('File uploaded')
+        this.selectedFiles = undefined;
+        this.vfile = []
+        this.vname = ''
       })
       .catch(() => {
         this.progress = 0;
         this.message = "Could not upload the file!";
         this.currentFile = undefined;
       });
-      this.selectedFiles = undefined;
-      alert('File uploaded')
-      this.vfile = []
-      this.vname = ''
     },
-    openLink: function(link) {
+    openClip: function(link) {
       window.open(`${ this.siteURL }/watch?v=${ link }`);
+    },
+    deleteClip: function(id) {
+      if (!confirm('Are you sure you like to delete this clip?')) {
+        return;
+      }
+      console.log(id)
+      axios.delete(`${ this.siteURL }/api/clip/delete/${ id }`)
+      .then(response => {
+        console.log(response.data)
+        alert('Clip deleted')
+        UploadService.getFiles().then(response => {
+          this.items = response.data;
+        });
+      })
+      .catch(e => {
+        this.errors.push(e)
+      });
     },
     dateDay: function(value) {
       if (value) {
@@ -196,7 +239,7 @@ export default {
       return selections
     },
   },
-  
+
   watch: {
     selected () {
       this.search = ''

@@ -66,5 +66,6 @@ Route::get('/schedule/now/{screen}','ScheduleController@nowShowing');
 
 Route::post('/upload','FileController@upload');
 Route::get('/get','FileController@get');
+Route::delete('/clip/delete/{file}','FileController@delete');
 
 

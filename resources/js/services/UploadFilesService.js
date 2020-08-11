@@ -1,5 +1,5 @@
 var http = axios.create({
-  baseURL: "https://sm.local/",
+  baseURL: `https://${ window.location.hostname }`,
   headers: {
     "Content-type": "application/json"
   }

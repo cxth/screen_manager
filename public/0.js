@@ -2268,6 +2268,17 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "upload-files",
@@ -2283,7 +2294,12 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       items: [],
       loading: false,
       search: '',
-      selected: []
+      selected: [],
+      rules: {
+        required: function required(value) {
+          return !!value || 'Required.';
+        }
+      }
     };
   },
   methods: {
@@ -2292,6 +2308,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     },
     upload: function upload() {
       var _this = this;
+
+      if (!this.selectFile) {
+        return;
+      }
+
+      if (!this.vname) {
+        return;
+      }
 
       this.progress = 0;
       this.currentFile = this.selectedFiles;
@@ -2305,18 +2329,36 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       }).then(function (files) {
         //this.fileInfos = files.data;
         _this.items = files.data;
+        alert('File uploaded');
+        _this.selectedFiles = undefined;
+        _this.vfile = [];
+        _this.vname = '';
       })["catch"](function () {
         _this.progress = 0;
         _this.message = "Could not upload the file!";
         _this.currentFile = undefined;
       });
-      this.selectedFiles = undefined;
-      alert('File uploaded');
-      this.vfile = [];
-      this.vname = '';
     },
-    openLink: function openLink(link) {
+    openClip: function openClip(link) {
       window.open("".concat(this.siteURL, "/watch?v=").concat(link));
+    },
+    deleteClip: function deleteClip(id) {
+      var _this2 = this;
+
+      if (!confirm('Are you sure you like to delete this clip?')) {
+        return;
+      }
+
+      console.log(id);
+      axios["delete"]("".concat(this.siteURL, "/api/clip/delete/").concat(id)).then(function (response) {
+        console.log(response.data);
+        alert('Clip deleted');
+        _services_UploadFilesService__WEBPACK_IMPORTED_MODULE_0__["default"].getFiles().then(function (response) {
+          _this2.items = response.data;
+        });
+      })["catch"](function (e) {
+        _this2.errors.push(e);
+      });
     },
     dateDay: function dateDay(value) {
       if (value) {
@@ -2324,21 +2366,21 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       }
     },
     next: function next() {
-      var _this2 = this;
+      var _this3 = this;
 
       this.loading = true;
       setTimeout(function () {
-        _this2.search = '';
-        _this2.selected = [];
-        _this2.loading = false;
+        _this3.search = '';
+        _this3.selected = [];
+        _this3.loading = false;
       }, 2000);
     }
   },
   mounted: function mounted() {
-    var _this3 = this;
+    var _this4 = this;
 
     _services_UploadFilesService__WEBPACK_IMPORTED_MODULE_0__["default"].getFiles().then(function (response) {
-      _this3.items = response.data;
+      _this4.items = response.data;
     });
   },
   computed: {
@@ -4915,7 +4957,8 @@ var render = function() {
               "show-size": "",
               accept: "video/*",
               label: "File input",
-              "prepend-icon": "mdi-file-video"
+              "prepend-icon": "mdi-file-video",
+              rules: [_vm.rules.required]
             },
             on: { change: _vm.selectFile },
             model: {
@@ -4928,7 +4971,12 @@ var render = function() {
           }),
           _vm._v(" "),
           _c("v-text-field", {
-            attrs: { label: "Video Name", "prepend-icon": "mdi-rename-box" },
+            attrs: {
+              label: "Video Name",
+              "prepend-icon": "mdi-rename-box",
+              rules: [_vm.rules.required],
+              suffix: "required"
+            },
             model: {
               value: _vm.vname,
               callback: function($$v) {
@@ -5016,8 +5064,6 @@ var render = function() {
               1
             ),
             _vm._v(" "),
-            !_vm.allSelected ? _c("v-divider") : _vm._e(),
-            _vm._v(" "),
             _c(
               "v-list",
               { staticClass: "result" },
@@ -5047,7 +5093,7 @@ var render = function() {
                                 },
                                 on: {
                                   click: function($event) {
-                                    return _vm.openLink(item.path)
+                                    return _vm.openClip(item.path)
                                   }
                                 }
                               },
@@ -5072,6 +5118,27 @@ var render = function() {
                                 ])
                               ],
                               1
+                            ),
+                            _vm._v(" "),
+                            _c("v-spacer"),
+                            _vm._v(" "),
+                            _c(
+                              "v-btn",
+                              {
+                                staticClass: "ma-2",
+                                attrs: {
+                                  outlined: "",
+                                  dense: "",
+                                  color: "red",
+                                  dark: ""
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.deleteClip(item.id)
+                                  }
+                                }
+                              },
+                              [_vm._v("\n              Delete\n            ")]
                             )
                           ],
                           1
@@ -6044,7 +6111,7 @@ function _defineProperties(target, props) { for (var i = 0; i < props.length; i+
 function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
 
 var http = axios.create({
-  baseURL: "https://sm.local/",
+  baseURL: "https://".concat(window.location.hostname),
   headers: {
     "Content-type": "application/json"
   }

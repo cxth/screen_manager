@@ -4,18 +4,24 @@ namespace App\Http\Controllers;
 
 use App\Model\File;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class FileController extends Controller
 {
     /**
-     * Upload File
+     * AJAX // Upload File
      *
      * @return \Illuminate\Http\Response
      */
     public function upload(Request $request)
     {
       
+      // if (!Auth::user())
+      // {
+      //   return 'invalid user';
+      // }
+
       $upload = $request->file->store('public');
       $f = explode('public/',$upload);
       $filename = $f[1];
@@ -43,13 +49,17 @@ class FileController extends Controller
 
 
     /**
-     * Get Files
+     * AJAX // Get Files
      *
      * @return \Illuminate\Http\Response
      */
     public function get()
     {
-        return File::all();
+      // if (!Auth::user())
+      // {
+      //   return 'invalid user';
+      // }  
+      return File::all();
     }
 
     /**
@@ -60,16 +70,34 @@ class FileController extends Controller
     public function watch()
     {
       $request = $_REQUEST;
-
       if (!isset($request['v']))
       {
         return ['Invalid request parameter'];
       }
-
       $data['video'] = asset($request['v']);
-
       return view('player', $data);
     }
+
+    /**
+     * AJAX // Delete video clip
+     *
+     * @return response
+     */
+    public function delete(File $file)
+    {
+      // if (!Auth::user())
+      // {
+      //   return 'invalid user';
+      // }
+
+      $path = str_replace('storage', 'public', $file->path);
+      Storage::delete($path);
+
+      $file->delete();
+
+    }
+
+
 
 
     // Helper
