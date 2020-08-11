@@ -13,28 +13,30 @@
       </div>
     </div>
     <v-container class="ma-5">
-      <v-file-input 
-        show-size 
-        v-model="vfile"
-        accept="video/*" 
-        label="File input"
-        prepend-icon="mdi-file-video"
-        ref="file" 
-        @change="selectFile"
-        :rules="[rules.required]"
-      >
-      </v-file-input>
-      <v-text-field
-        label="Video Name"
-        v-model="vname"
-        prepend-icon="mdi-rename-box"
-        :rules="[rules.required]"
-        suffix="required"
-      >
-      </v-text-field>
-      <div class="text-center">
-        <v-btn rounded color="primary" dark @click="upload">Upload</v-btn>
-      </div>
+      <v-form ref="form">
+        <v-file-input 
+          show-size 
+          v-model="vfile"
+          accept="video/*" 
+          label="File input"
+          prepend-icon="mdi-file-video"
+          ref="file" 
+          @change="selectFile"
+          :rules="[rules.required]"
+        >
+        </v-file-input>
+        <v-text-field
+          label="Video Name"
+          v-model="vname"
+          prepend-icon="mdi-rename-box"
+          :rules="[rules.required]"
+          suffix="required"
+        >
+        </v-text-field>
+        <div class="text-center">
+          <v-btn rounded color="primary" dark @click="upload">Upload</v-btn>
+        </div>
+      </v-form>
     </v-container>
     <div class="alert alert-light" role="alert">{{ message }}</div>
     <v-divider></v-divider>
@@ -139,7 +141,15 @@ export default {
   },
   methods: {
     selectFile() {
+      if (this.vfile.size > 20880694)
+      {
+        alert('Please select video clip size 20MB or less')
+        this.vfile = []
+        return
+      }
+
       this.selectedFiles = this.vfile;
+      console.log(this.selectedFiles.size)
     },
     upload() {
 
@@ -160,8 +170,8 @@ export default {
         this.progress = Math.round((100 * event.loaded) / event.total);
       })
       .then(response => {
-        console.log('im uploading')
-        console.log(response.data)
+        // console.log('im uploading')
+        // console.log(response.data)
         this.message = response.data.message;
         return UploadService.getFiles();
       })
@@ -169,9 +179,10 @@ export default {
         //this.fileInfos = files.data;
         this.items = files.data;
         alert('File uploaded')
-        this.selectedFiles = undefined;
+        this.selectedFiles = [];
         this.vfile = []
         this.vname = ''
+        //this.$refs.form.reset()
       })
       .catch(() => {
         this.progress = 0;
@@ -186,10 +197,10 @@ export default {
       if (!confirm('Are you sure you like to delete this clip?')) {
         return;
       }
-      console.log(id)
+      // console.log(id)
       axios.delete(`${ this.siteURL }/api/clip/delete/${ id }`)
       .then(response => {
-        console.log(response.data)
+        // console.log(response.data)
         alert('Clip deleted')
         UploadService.getFiles().then(response => {
           this.items = response.data;

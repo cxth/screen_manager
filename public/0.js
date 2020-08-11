@@ -2279,6 +2279,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "upload-files",
@@ -2304,7 +2306,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
   },
   methods: {
     selectFile: function selectFile() {
+      if (this.vfile.size > 20880694) {
+        alert('Please select video clip size 20MB or less');
+        this.vfile = [];
+        return;
+      }
+
       this.selectedFiles = this.vfile;
+      console.log(this.selectedFiles.size);
     },
     upload: function upload() {
       var _this = this;
@@ -2322,17 +2331,17 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       _services_UploadFilesService__WEBPACK_IMPORTED_MODULE_0__["default"].upload(this.currentFile, this.vname, function (event) {
         _this.progress = Math.round(100 * event.loaded / event.total);
       }).then(function (response) {
-        console.log('im uploading');
-        console.log(response.data);
+        // console.log('im uploading')
+        // console.log(response.data)
         _this.message = response.data.message;
         return _services_UploadFilesService__WEBPACK_IMPORTED_MODULE_0__["default"].getFiles();
       }).then(function (files) {
         //this.fileInfos = files.data;
         _this.items = files.data;
         alert('File uploaded');
-        _this.selectedFiles = undefined;
+        _this.selectedFiles = [];
         _this.vfile = [];
-        _this.vname = '';
+        _this.vname = ''; //this.$refs.form.reset()
       })["catch"](function () {
         _this.progress = 0;
         _this.message = "Could not upload the file!";
@@ -2347,11 +2356,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       if (!confirm('Are you sure you like to delete this clip?')) {
         return;
-      }
+      } // console.log(id)
 
-      console.log(id);
+
       axios["delete"]("".concat(this.siteURL, "/api/clip/delete/").concat(id)).then(function (response) {
-        console.log(response.data);
+        // console.log(response.data)
         alert('Clip deleted');
         _services_UploadFilesService__WEBPACK_IMPORTED_MODULE_0__["default"].getFiles().then(function (response) {
           _this2.items = response.data;
@@ -4951,52 +4960,59 @@ var render = function() {
         "v-container",
         { staticClass: "ma-5" },
         [
-          _c("v-file-input", {
-            ref: "file",
-            attrs: {
-              "show-size": "",
-              accept: "video/*",
-              label: "File input",
-              "prepend-icon": "mdi-file-video",
-              rules: [_vm.rules.required]
-            },
-            on: { change: _vm.selectFile },
-            model: {
-              value: _vm.vfile,
-              callback: function($$v) {
-                _vm.vfile = $$v
-              },
-              expression: "vfile"
-            }
-          }),
-          _vm._v(" "),
-          _c("v-text-field", {
-            attrs: {
-              label: "Video Name",
-              "prepend-icon": "mdi-rename-box",
-              rules: [_vm.rules.required],
-              suffix: "required"
-            },
-            model: {
-              value: _vm.vname,
-              callback: function($$v) {
-                _vm.vname = $$v
-              },
-              expression: "vname"
-            }
-          }),
-          _vm._v(" "),
           _c(
-            "div",
-            { staticClass: "text-center" },
+            "v-form",
+            { ref: "form" },
             [
-              _c(
-                "v-btn",
-                {
-                  attrs: { rounded: "", color: "primary", dark: "" },
-                  on: { click: _vm.upload }
+              _c("v-file-input", {
+                ref: "file",
+                attrs: {
+                  "show-size": "",
+                  accept: "video/*",
+                  label: "File input",
+                  "prepend-icon": "mdi-file-video",
+                  rules: [_vm.rules.required]
                 },
-                [_vm._v("Upload")]
+                on: { change: _vm.selectFile },
+                model: {
+                  value: _vm.vfile,
+                  callback: function($$v) {
+                    _vm.vfile = $$v
+                  },
+                  expression: "vfile"
+                }
+              }),
+              _vm._v(" "),
+              _c("v-text-field", {
+                attrs: {
+                  label: "Video Name",
+                  "prepend-icon": "mdi-rename-box",
+                  rules: [_vm.rules.required],
+                  suffix: "required"
+                },
+                model: {
+                  value: _vm.vname,
+                  callback: function($$v) {
+                    _vm.vname = $$v
+                  },
+                  expression: "vname"
+                }
+              }),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "text-center" },
+                [
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { rounded: "", color: "primary", dark: "" },
+                      on: { click: _vm.upload }
+                    },
+                    [_vm._v("Upload")]
+                  )
+                ],
+                1
               )
             ],
             1
