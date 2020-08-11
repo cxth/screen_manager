@@ -22,6 +22,9 @@ use Illuminate\Support\Facades\Artisan;
 
 // Web Route
 Route::get('/','ScheduleController@default'); 
+Route::get('/client','ScheduleController@clientLogin');
+Route::get('/watch','FileController@watch');
+
 // API use
 Route::get('/logout','HomeController@logout');
 Route::get('/bye','HomeController@bye');
@@ -31,11 +34,8 @@ Route::get('/request','ScheduleController@getUrl');
 
 // Test routes
 Route::get('/test','ScheduleController@test');
-Route::get('/client','ScheduleController@clientLogin');
-
 
 // Admin
-
 Route::get('/admin/{screen}','ScheduleController@viewScreen');
 Route::get('/admin','ScheduleController@admin');
 

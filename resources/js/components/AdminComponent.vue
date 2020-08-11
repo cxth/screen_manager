@@ -17,7 +17,27 @@
         @linkSelect="
           screen=$event,
           clearnewURL($event)"
-        @setLinkName="refreshLinks($event)"></media_asset_component>
+        @setLinkName="refreshLinks($event)">
+      </media_asset_component>
+
+      <upload_file_component
+        :file_upload_dialog="file_upload_dialog"
+        @setUploadDialog="closeDialog()"
+      ></upload_file_component>
+
+      <template v-slot:append>
+        <div class="pa-2">
+          <v-btn 
+            class="grey darken-3"
+            block
+            v-on:click="file_upload_dialog = true"
+          >
+            <v-icon left>mdi-upload</v-icon> 
+            Upload Clip
+          </v-btn>
+        </div>
+      </template>
+
     </v-navigation-drawer>
 
     <v-app-bar
@@ -193,6 +213,7 @@ import outlets_component from './OutletsComponent'
 import screensched_component from './ScreenSchedComponent'
 import info_component from './InfoComponent'
 import add_outlet_component from './AddOutletComponent'
+import upload_file_component from './UploadFileComponent'
 
   export default {
     props: {
@@ -205,7 +226,8 @@ import add_outlet_component from './AddOutletComponent'
       outlets_component,
       screensched_component,
       info_component,
-      add_outlet_component
+      add_outlet_component,
+      upload_file_component
     },
     data: () => ({
       screen_autologin: null,
@@ -256,7 +278,10 @@ import add_outlet_component from './AddOutletComponent'
       calendar: {
         today: '2020-01-01',
         events: []
-      }
+      },
+
+      // Upload File
+      file_upload_dialog: false
     }),
     mounted () {
       //this.$refs.calendar.scrollToTime('08:00')
@@ -579,6 +604,10 @@ import add_outlet_component from './AddOutletComponent'
               this.errors.push(e)
             })
         }
+      },
+
+      closeDialog: function() {
+        this.file_upload_dialog = false
       },
 
       // Helpers =================

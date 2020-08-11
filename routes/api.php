@@ -24,18 +24,16 @@ Route::apiResource('/outlet','OutletController');
 Route::get('/countscreens/{outlet_id}','OutletController@countScreens');
 Route::get('/getscreens/{outlet_id}','OutletController@getScreens');
 
-Route::apiResource('/{outlet}/screen','ScreenController');
-
 Route::get('/media/all','MediaAssetController@listAll');
 Route::apiResource('/media','MediaAssetController');
 
+Route::apiResource('/{outlet}/screen','ScreenController');
 Route::get('/getscreen/{screen}','ScreenController@getData');
 Route::post('/getscreen','ScreenController@updateData');
 Route::get('/screen/all','ScreenController@listAll');
 Route::get('/screen/active','ScreenController@getActive');
 Route::post('/screen/login','ScheduleController@getScreenAutologin');
 Route::delete('/screen/{screen}','ScreenController@destroy');
-
 
 //Route::apiResource('/m/{medium}/link','LinkController');
 Route::get('/m/{medium}/link','LinkController@index');
@@ -65,5 +63,9 @@ Route::post('/schedule/group/{group}','ScheduleController@onGroup');
 Route::delete('/schedule/{schedule}','ScheduleController@destroy');
 
 Route::get('/schedule/now/{screen}','ScheduleController@nowShowing');
+
+Route::post('/upload','FileController@upload');
+Route::get('/get','FileController@get');
+Route::delete('/clip/delete/{file}','FileController@delete');
 
 
