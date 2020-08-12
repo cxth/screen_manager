@@ -20,6 +20,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 */
 
+//Route::post('/login', 'AuthController@login');
+Route::middleware(['auth:sanctum'])->group(function () {
+  //Route::get('/users', 'UserController@index');
+  Route::get('/screen/all','ScreenController@listAll');
+});
+
 Route::apiResource('/outlet','OutletController');
 Route::get('/countscreens/{outlet_id}','OutletController@countScreens');
 Route::get('/getscreens/{outlet_id}','OutletController@getScreens');
@@ -30,7 +36,7 @@ Route::apiResource('/media','MediaAssetController');
 Route::apiResource('/{outlet}/screen','ScreenController');
 Route::get('/getscreen/{screen}','ScreenController@getData');
 Route::post('/getscreen','ScreenController@updateData');
-Route::get('/screen/all','ScreenController@listAll');
+//Route::get('/screen/all','ScreenController@listAll');
 Route::get('/screen/active','ScreenController@getActive');
 Route::post('/screen/login','ScheduleController@getScreenAutologin');
 Route::delete('/screen/{screen}','ScreenController@destroy');
