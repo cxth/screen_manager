@@ -513,9 +513,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 
 
+axios__WEBPACK_IMPORTED_MODULE_0___default.a.defaults.withCredentials = true;
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
-    source: String
+    source: String,
+    token: String
   },
   components: {
     calendar: _CalendarComponent__WEBPACK_IMPORTED_MODULE_1__["default"],
@@ -574,12 +576,19 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         events: []
       },
       // Upload File
-      file_upload_dialog: false
+      file_upload_dialog: false // token
+      // auth = {
+      //   headers: { Authorization: `Bearer ${this.token}` 
+      //     }
+      // }
+
     };
   },
   mounted: function mounted() {//this.$refs.calendar.scrollToTime('08:00')
   },
   created: function created() {
+    //console.log('thisss token')
+    //console.log(config)
     this.$vuetify.theme.dark = true;
     this.getOutlets();
     this.getMediaAssets();
@@ -587,6 +596,14 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     this.calendar.today = this.momentNow('date');
   },
   methods: {
+    getAuth: function getAuth() {
+      return {
+        headers: {
+          Authorization: "Bearer ".concat(this.token)
+        }
+      };
+    },
+
     /**
      * @attached to LinkSelect()
      * @used to enable `custom URL` fields
@@ -614,7 +631,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     getOutlets: function getOutlets() {
       var _this = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/screen/all")).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/screen/all"), this.getAuth()).then(function (response) {
         var combined = {};
         response.data.forEach(function (arrayItem) {
           if (!(Object.keys(arrayItem) in combined)) {
@@ -642,7 +659,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     getMediaAssets: function getMediaAssets() {
       var _this2 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/media/all")).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/media/all"), this.getAuth()).then(function (response) {
         _this2.media_assets = response.data;
       })["catch"](function (e) {
         _this2.errors.push(e);
@@ -802,19 +819,25 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     getScreenAutologin: function getScreenAutologin() {
       var _this7 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default()({
-        method: 'post',
-        url: "".concat(this.siteURL, "/api/screen/login"),
-        data: {
-          screen_id: this.selected.screen
-        }
-      }).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("".concat(this.siteURL, "/api/screen/login"), {
+        screen_id: this.selected.screen
+      }, this.getAuth()).then(function (response) {
         _this7.screen_autologin = "".concat(_this7.siteURL, "/client?r=").concat(response.data);
-      })["catch"](function (e) {
-        _this7.errors.push(e);
-
-        console.log('error getting auto login');
-      });
+      })["catch"](function (error) {
+        console.log(error);
+      }); // axios({
+      //     method: 'post',
+      //     url: `${ this.siteURL }/api/screen/login`,
+      //     data: {
+      //       screen_id: this.selected.screen
+      //     },
+      // }).then(response => {
+      //       this.screen_autologin = `${ this.siteURL }/client?r=${ response.data }`;
+      //   })
+      //   .catch(e => {
+      //       this.errors.push(e)
+      //       console.log('error getting auto login')
+      //   });
     },
 
     /**

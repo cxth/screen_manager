@@ -24,15 +24,23 @@ Route::apiResource('/outlet','OutletController');
 Route::get('/countscreens/{outlet_id}','OutletController@countScreens');
 Route::get('/getscreens/{outlet_id}','OutletController@getScreens');
 
-Route::get('/media/all','MediaAssetController@listAll');
+//Route::get('/media/all','MediaAssetController@listAll');
+Route::middleware('auth:sanctum')->get('/media/all','MediaAssetController@listAll');
 Route::apiResource('/media','MediaAssetController');
 
 Route::apiResource('/{outlet}/screen','ScreenController');
 Route::get('/getscreen/{screen}','ScreenController@getData');
 Route::post('/getscreen','ScreenController@updateData');
-Route::get('/screen/all','ScreenController@listAll');
+
+//Route::get('/screen/all','ScreenController@listAll');
+Route::middleware('auth:sanctum')->get('/screen/all','ScreenController@listAll');
+
 Route::get('/screen/active','ScreenController@getActive');
+//Route::post('/screen/login','ScheduleController@getScreenAutologin');
 Route::post('/screen/login','ScheduleController@getScreenAutologin');
+
+
+
 Route::delete('/screen/{screen}','ScreenController@destroy');
 
 //Route::apiResource('/m/{medium}/link','LinkController');

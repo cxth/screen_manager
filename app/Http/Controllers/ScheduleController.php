@@ -490,7 +490,13 @@ class ScheduleController extends Controller
             return redirect('/');
         }
         //setcookie('cross-site-cookie', 'name', time()+3600);
+
+        $user = Auth::user();
+        // Revoke all tokens...
+        $user->tokens()->delete();
+        $bearer = $user->createToken('token-name')->plainTextToken;
         
-        return view('admin');
+        $data['token'] = json_encode($bearer);
+        return view('admin', $data);
     }
 }

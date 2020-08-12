@@ -215,9 +215,12 @@ import info_component from './InfoComponent'
 import add_outlet_component from './AddOutletComponent'
 import upload_file_component from './UploadFileComponent'
 
+axios.defaults.withCredentials = true;
+
   export default {
     props: {
       source: String,
+      token: String
     },
     components: {
       calendar,
@@ -281,19 +284,37 @@ import upload_file_component from './UploadFileComponent'
       },
 
       // Upload File
-      file_upload_dialog: false
+      file_upload_dialog: false,
+
+      // token
+      // auth = {
+      //   headers: { Authorization: `Bearer ${this.token}` 
+      //     }
+      // }
+
+
     }),
     mounted () {
       //this.$refs.calendar.scrollToTime('08:00')
     },
     created () {
+      //console.log('thisss token')
+      //console.log(config)
+
       this.$vuetify.theme.dark = true;
       this.getOutlets()
       this.getMediaAssets()
       this.getLinks()
       this.calendar.today = this.momentNow('date');
+      
     },
     methods: {
+
+      getAuth: function() {
+        return {
+            headers: { Authorization: `Bearer ${this.token}` }
+        };
+      },
 
       /**
        * @attached to LinkSelect()
@@ -319,7 +340,7 @@ import upload_file_component from './UploadFileComponent'
        */
       getOutlets() {
 
-        axios.get(`${ this.siteURL }/api/screen/all`)
+        axios.get(`${ this.siteURL }/api/screen/all`, this.getAuth())
         .then(response => {
             let combined = {};
             response.data.forEach(function (arrayItem) {
@@ -349,7 +370,7 @@ import upload_file_component from './UploadFileComponent'
        * @return this.media_assets Array
        */
       getMediaAssets() {
-        axios.get(`${ this.siteURL }/api/media/all`)
+        axios.get(`${ this.siteURL }/api/media/all`, this.getAuth())
           .then(response => {
               this.media_assets = response.data
           })
@@ -502,19 +523,31 @@ import upload_file_component from './UploadFileComponent'
        * @return screen_autologin
        */
       getScreenAutologin: function() {
-        axios({
-            method: 'post',
-            url: `${ this.siteURL }/api/screen/login`,
-            data: {
-              screen_id: this.selected.screen
-            }
-        }).then(response => {
-              this.screen_autologin = `${ this.siteURL }/client?r=${ response.data }`;
-          })
-          .catch(e => {
-              this.errors.push(e)
-              console.log('error getting auto login')
-          });
+
+        axios.post(`${ this.siteURL }/api/screen/login`, {
+          screen_id: this.selected.screen
+        }, this.getAuth())
+        .then(response => {
+          this.screen_autologin = `${ this.siteURL }/client?r=${ response.data }`;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+
+        // axios({
+        //     method: 'post',
+        //     url: `${ this.siteURL }/api/screen/login`,
+        //     data: {
+        //       screen_id: this.selected.screen
+        //     },
+        // }).then(response => {
+        //       this.screen_autologin = `${ this.siteURL }/client?r=${ response.data }`;
+        //   })
+        //   .catch(e => {
+        //       this.errors.push(e)
+        //       console.log('error getting auto login')
+        //   });
       },
 
       /**
