@@ -8,16 +8,17 @@ use App\Model\Link;
 use App\Model\Outlet;
 use App\Model\Screen;
 use App\Model\Schedule;
+use App\Model\Media_Asset;
+use App\Model\Session_Log;
 use App\Model\Group_Screen;
 use Illuminate\Http\Request;
+use App\Model\Screen_Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Resources\ScheduleResource;
-use App\Model\Media_Asset;
-use App\Model\Screen_Session;
-use App\Model\Session_Log;
 use App\Session_Log as AppSession_Log;
+use Illuminate\Support\Facades\Cookie;
 //use App\Http\Resources\ScheduleGroupResource;
+use App\Http\Resources\ScheduleResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class ScheduleController extends Controller
@@ -65,12 +66,18 @@ class ScheduleController extends Controller
         // admin view
         if (Auth::user()->username == 'admin')
         {
-            // catch view screen from admin 
+           
+          // @debug
+          // test cookie
+          //return Cookie::get('cscreen');
+          
+          
+          // catch view screen from admin 
             $uscreen = session('uscreen');
             $screen = Screen::find($uscreen);
 
             // @debug
-            return ['uscreen' => $uscreen, 'screen' => $screen];
+            //return ['uscreen' => $uscreen, 'screen' => $screen];
 
             if (!$screen)
             {
@@ -89,7 +96,7 @@ class ScheduleController extends Controller
         }
         
         // @debug
-        return $screen;
+        //return $screen;
 
         // log request
         $this->logSession($screen->id);
@@ -230,6 +237,9 @@ class ScheduleController extends Controller
         }
 
         session(['uscreen' => $screen]);
+
+        // set cookie instead
+        Cookie::make('cscreen', $screen, 120);
 
         // @debug
         // return session('uscreen');
@@ -502,6 +512,9 @@ class ScheduleController extends Controller
         $data['token'] = json_encode($bearer);
 
         $data['uscreen'] = session('uscreen');
+
+        // test cookie
+        $data['cscreen'] = Cookie::get('cscreen');
 
         return view('admin', $data);
     }

@@ -46,10 +46,11 @@ __webpack_require__.r(__webpack_exports__);
 
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/request")).then(function (response) {
         // --- debugging ----
-        console.log('fetchURL response: ');
-        console.log(response.data);
-        return; // -------------------
-
+        // console.log('fetchURL response: ')
+        // console.log(response.data);
+        // return
+        //
+        // -------------------
         if (response.data[0] == 'invalid-user') {
           setTimeout(function () {
             location.reload();

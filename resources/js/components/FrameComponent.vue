@@ -37,9 +37,10 @@ export default {
             .then(response => {
 
                 // --- debugging ----
-                console.log('fetchURL response: ')
-                console.log(response.data);
-                return
+                // console.log('fetchURL response: ')
+                // console.log(response.data);
+                // return
+                //
                 // -------------------
             
                 if (response.data[0] == 'invalid-user')
