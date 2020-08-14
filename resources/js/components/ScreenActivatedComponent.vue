@@ -33,7 +33,8 @@
   export default {
     props: [
       'screen_activation_date',
-      'selected'
+      'selected',
+      'getAuth'
     ],
     data: () => ({
       menu: false,
@@ -46,20 +47,33 @@
     methods: {
       save (date) {
         
-        axios({
-          method: 'post',
-          url: `${ this.siteURL }/api/getscreen`,
-          data: {
+        // axios({
+        //   method: 'post',
+        //   url: `${ this.siteURL }/api/getscreen`,
+        //   data: {
+        //     id: this.selected.screen,
+        //     activation_date: date
+        //   }
+        // }).then(response => {
+
+        // })
+        // .catch(e => {
+        //     this.errors.push(e)
+        //     console.log('error getting auto login')
+        // });
+
+        axios.post(`${ this.siteURL }/api/getscreen`, {
             id: this.selected.screen,
             activation_date: date
-          }
-        }).then(response => {
-
+        }, this.getAuth)
+        .then(response => {
+          
         })
-        .catch(e => {
-            this.errors.push(e)
-            console.log('error getting auto login')
+        .catch(function (error) {
+          this.errors.push(e)
+          console.log('error getting auto login')
         });
+
         this.$refs.menu.save(date)
         this.$emit('save', date)
       },

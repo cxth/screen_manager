@@ -22,15 +22,26 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::apiResource('/outlet','OutletController');
 Route::get('/countscreens/{outlet_id}','OutletController@countScreens');
-Route::get('/getscreens/{outlet_id}','OutletController@getScreens');
+//Route::get('/getscreens/{outlet_id}','OutletController@getScreens'); <- //////////////////////
+Route::middleware('auth:sanctum')->get('/getscreens/{outlet_id}','OutletController@getScreens');
 
 //Route::get('/media/all','MediaAssetController@listAll'); <- //////////////////////////
 Route::middleware('auth:sanctum')->get('/media/all','MediaAssetController@listAll');
 Route::apiResource('/media','MediaAssetController');
 
-Route::apiResource('/{outlet}/screen','ScreenController');
-Route::get('/getscreen/{screen}','ScreenController@getData');
-Route::post('/getscreen','ScreenController@updateData');
+// Route::apiResource('/{outlet}/screen','ScreenController'); <- //////////////////////////
+Route::middleware('auth:sanctum')->apiResource('/{outlet}/screen','ScreenController');
+
+
+
+//Route::get('/getscreen/{screen}','ScreenController@getData'); <- /////////////////////////
+//Route::post('/getscreen','ScreenController@updateData'); <- /////////////////////////
+
+Route::middleware('auth:sanctum')->get('/getscreen/{screen}','ScreenController@getData');
+Route::middleware('auth:sanctum')->post('/getscreen','ScreenController@updateData');
+
+
+
 
 //Route::get('/screen/all','ScreenController@listAll'); <- //////////////////////////
 Route::middleware('auth:sanctum')->get('/screen/all','ScreenController@listAll');

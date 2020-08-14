@@ -40,7 +40,7 @@
                     Delete Screen
                   </v-btn>
                 </template>
-                <span>delete this screen</span>
+                <span></span>
               </v-tooltip>
             </template>
 
@@ -58,7 +58,7 @@
                     Deactivate Outlet
                   </v-btn>
                 </template>
-                <span>delete this screen</span>
+                <span></span>
               </v-tooltip>
             </template>
 
@@ -221,6 +221,7 @@
                     <active_screen_component
                     :screen_activation_date="screen_activation_date"
                     :selected="selected"
+                    :getAuth="getAuth"
                     @save="refreshActivationDate($event)"
                     ></active_screen_component>
                   </v-card>
@@ -249,7 +250,8 @@ export default {
     'screen_activation_date',
     'screen_equipment_model_installed',
     'screen_teamviewer_details',
-    'selected'
+    'selected',
+    'getAuth'
   ],
   data: () => ({
     int_resolution: '',
@@ -266,11 +268,27 @@ export default {
         equipment_model_installed: this.int_equipment_model ? this.int_equipment_model : this.screen_equipment_model_installed,
         teamviewer_details: this.int_teamviewer ? this.int_teamviewer : this.screen_teamviewer_details
       }
-      axios({
-          method: 'post',
-          url: `${ this.siteURL }/api/getscreen`,
-          data: mydata
-      }).then(response => {
+
+      // axios({
+      //     method: 'post',
+      //     url: `${ this.siteURL }/api/getscreen`,
+      //     data: mydata
+      // }).then(response => {
+      //     if (response.data != "no-request")
+      //     {
+      //     }
+
+      //     this.int_resolution = ''
+      //     this.int_equipment_model = ''
+      //     this.int_teamviewer = ''
+      //     this.int_screen_name = ''
+      // })
+      // .catch(e => {
+      //     this.errors.push(e)
+      // });
+
+      axios.post(`${ this.siteURL }/api/getscreen`, mydata, this.getAuth)
+      .then(response => {
           if (response.data != "no-request")
           {
           }
@@ -280,9 +298,11 @@ export default {
           this.int_teamviewer = ''
           this.int_screen_name = ''
       })
-      .catch(e => {
-          this.errors.push(e)
+      .catch(function (error) {
+        console.log(error);
+        this.errors.push(e)
       });
+
       this.$emit('saveScreenNotes',mydata.description)
     },
     
@@ -330,7 +350,7 @@ export default {
       }
 
         // get screen IDs
-        axios.get(`${ this.siteURL }/api/getscreens/${ this.selected.outlet_id }`)
+        axios.get(`${ this.siteURL }/api/getscreens/${ this.selected.outlet_id }`,this.getAuth)
         .then(response => {
 
           var screens = response.data

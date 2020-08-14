@@ -76,6 +76,7 @@
         :getScreenAutologin="getScreenAutologin"
         :getScreenNotes="getScreenNotes"
         :getOutlets="getOutlets"
+        :getAuth="getAuth"
         @screenSelect="getSelectedScreenInfo($event)"
         ></outlets_component>
 
@@ -171,6 +172,7 @@
                       :screen_equipment_model_installed="screen_equipment_model_installed"
                       :screen_teamviewer_details="screen_teamviewer_details"
                       :selected="selected"
+                      :getAuth="getAuth"
                       @saveScreenNotes="refreshScreen($event)"
                       @refreshActivationDate="refreshScreenActivation($event)"
                     ></info_component>
@@ -562,10 +564,26 @@ axios.defaults.withCredentials = true;
         this.screen_equipment_model_installed = ''
         this.screen_teamviewer_details = ''
         this.screen_activation_date = ''
-        axios({
-            method: 'get',
-            url: `${ this.siteURL }/api/getscreen/${ this.selected.screen }`,
-        }).then(response => {
+        // axios({
+        //     method: 'get',
+        //     url: `${ this.siteURL }/api/getscreen/${ this.selected.screen }`,
+        // }).then(response => {
+        //     if (response.data)
+        //     {
+        //       this.screen_resolution = response.data.resolution
+        //       this.screen_activation_date = response.data.activation_date
+        //       this.screen_equipment_model_installed = response.data.equipment_model_installed
+        //       this.screen_teamviewer_details = response.data.teamviewer_details
+        //     }
+        //   })
+        //   .catch(e => {
+        //       this.errors.push(e)
+        //       console.log('error getting schedule')
+        //   });
+
+        // new axios get
+        axios.get(`${ this.siteURL }/api/getscreen/${ this.selected.screen }`, this.getAuth())
+        .then(response => {
             if (response.data)
             {
               this.screen_resolution = response.data.resolution
@@ -573,11 +591,12 @@ axios.defaults.withCredentials = true;
               this.screen_equipment_model_installed = response.data.equipment_model_installed
               this.screen_teamviewer_details = response.data.teamviewer_details
             }
-          })
-          .catch(e => {
-              this.errors.push(e)
-              console.log('error getting schedule')
-          });
+        })
+        .catch(e => {
+            this.errors.push(e)
+            console.log('error getting schedule')
+        })
+
       },
 
       

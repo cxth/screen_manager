@@ -504,6 +504,8 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
 
 
 
@@ -853,11 +855,25 @@ axios__WEBPACK_IMPORTED_MODULE_0___default.a.defaults.withCredentials = true;
       this.screen_resolution = '';
       this.screen_equipment_model_installed = '';
       this.screen_teamviewer_details = '';
-      this.screen_activation_date = '';
-      axios__WEBPACK_IMPORTED_MODULE_0___default()({
-        method: 'get',
-        url: "".concat(this.siteURL, "/api/getscreen/").concat(this.selected.screen)
-      }).then(function (response) {
+      this.screen_activation_date = ''; // axios({
+      //     method: 'get',
+      //     url: `${ this.siteURL }/api/getscreen/${ this.selected.screen }`,
+      // }).then(response => {
+      //     if (response.data)
+      //     {
+      //       this.screen_resolution = response.data.resolution
+      //       this.screen_activation_date = response.data.activation_date
+      //       this.screen_equipment_model_installed = response.data.equipment_model_installed
+      //       this.screen_teamviewer_details = response.data.teamviewer_details
+      //     }
+      //   })
+      //   .catch(e => {
+      //       this.errors.push(e)
+      //       console.log('error getting schedule')
+      //   });
+      // new axios get
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/getscreen/").concat(this.selected.screen), this.getAuth()).then(function (response) {
         if (response.data) {
           _this8.screen_resolution = response.data.resolution;
           _this8.screen_activation_date = response.data.activation_date;
@@ -1288,12 +1304,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     active_screen_component: _ScreenActivatedComponent__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
-  props: ['screen_autologin', 'screen_now_showing', 'screen_resolution', 'screen_activation_date', 'screen_equipment_model_installed', 'screen_teamviewer_details', 'selected'],
+  props: ['screen_autologin', 'screen_now_showing', 'screen_resolution', 'screen_activation_date', 'screen_equipment_model_installed', 'screen_teamviewer_details', 'selected', 'getAuth'],
   data: function data() {
     return {
       int_resolution: '',
@@ -1312,20 +1329,33 @@ __webpack_require__.r(__webpack_exports__);
         resolution: this.int_resolution ? this.int_resolution : this.screen_resolution,
         equipment_model_installed: this.int_equipment_model ? this.int_equipment_model : this.screen_equipment_model_installed,
         teamviewer_details: this.int_teamviewer ? this.int_teamviewer : this.screen_teamviewer_details
-      };
-      axios({
-        method: 'post',
-        url: "".concat(this.siteURL, "/api/getscreen"),
-        data: mydata
-      }).then(function (response) {
+      }; // axios({
+      //     method: 'post',
+      //     url: `${ this.siteURL }/api/getscreen`,
+      //     data: mydata
+      // }).then(response => {
+      //     if (response.data != "no-request")
+      //     {
+      //     }
+      //     this.int_resolution = ''
+      //     this.int_equipment_model = ''
+      //     this.int_teamviewer = ''
+      //     this.int_screen_name = ''
+      // })
+      // .catch(e => {
+      //     this.errors.push(e)
+      // });
+
+      axios.post("".concat(this.siteURL, "/api/getscreen"), mydata, this.getAuth).then(function (response) {
         if (response.data != "no-request") {}
 
         _this.int_resolution = '';
         _this.int_equipment_model = '';
         _this.int_teamviewer = '';
         _this.int_screen_name = '';
-      })["catch"](function (e) {
-        _this.errors.push(e);
+      })["catch"](function (error) {
+        console.log(error);
+        this.errors.push(e);
       });
       this.$emit('saveScreenNotes', mydata.description);
     },
@@ -1366,7 +1396,7 @@ __webpack_require__.r(__webpack_exports__);
       } // get screen IDs
 
 
-      axios.get("".concat(this.siteURL, "/api/getscreens/").concat(this.selected.outlet_id)).then(function (response) {
+      axios.get("".concat(this.siteURL, "/api/getscreens/").concat(this.selected.outlet_id), this.getAuth).then(function (response) {
         var screens = response.data;
         screens.forEach(function (val, key, map) {
           _this2.deleteScreen(val.id);
@@ -1701,7 +1731,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['outlets', 'selected', 'getScreenSched', 'getScreenAutologin', 'getScreenNotes', 'getOutlets'],
+  props: ['outlets', 'selected', 'getScreenSched', 'getScreenAutologin', 'getScreenNotes', 'getOutlets', 'getAuth'],
   data: function data() {
     return {
       deleted: 'BB-401SS6',
@@ -1730,21 +1760,36 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
-      var i = event.currentTarget.id.split('**');
-      axios({
-        method: 'post',
-        url: "".concat(this.siteURL, "/api/").concat(i[0], "/screen"),
-        data: {
-          outlet_id: i[0],
-          outlet_intid: i[1],
-          screen_description: this.newScreen
-        }
-      }).then(function (response) {
+      var i = event.currentTarget.id.split('**'); // axios({
+      //   method: 'post',
+      //   url: `${ this.siteURL }/api/${ i[0] }/screen`,
+      //   data: {
+      //       outlet_id: i[0],
+      //       outlet_intid: i[1],
+      //       screen_description: this.newScreen
+      //     }
+      //   }).then(response => {
+      //       if (response.data == "Saved")
+      //       {
+      //         this.getOutlets()
+      //       }
+      //     })
+      //     .catch(e => {
+      //         this.errors.push(e)
+      //     });
+      // new post format for auth token
+
+      axios.post("".concat(this.siteURL, "/api/").concat(i[0], "/screen"), {
+        outlet_id: i[0],
+        outlet_intid: i[1],
+        screen_description: this.newScreen
+      }, this.getAuth).then(function (response) {
         if (response.data == "Saved") {
           _this.getOutlets();
         }
-      })["catch"](function (e) {
-        _this.errors.push(e);
+      })["catch"](function (error) {
+        console.log(error);
+        this.errors.push(e);
       });
     },
     screenSelect: function screenSelect(event) {
@@ -1811,7 +1856,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['screen_activation_date', 'selected'],
+  props: ['screen_activation_date', 'selected', 'getAuth'],
   data: function data() {
     return {
       menu: false
@@ -1828,18 +1873,24 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     save: function save(date) {
-      var _this2 = this;
-
-      axios({
-        method: 'post',
-        url: "".concat(this.siteURL, "/api/getscreen"),
-        data: {
-          id: this.selected.screen,
-          activation_date: date
-        }
-      }).then(function (response) {})["catch"](function (e) {
-        _this2.errors.push(e);
-
+      // axios({
+      //   method: 'post',
+      //   url: `${ this.siteURL }/api/getscreen`,
+      //   data: {
+      //     id: this.selected.screen,
+      //     activation_date: date
+      //   }
+      // }).then(response => {
+      // })
+      // .catch(e => {
+      //     this.errors.push(e)
+      //     console.log('error getting auto login')
+      // });
+      axios.post("".concat(this.siteURL, "/api/getscreen"), {
+        id: this.selected.screen,
+        activation_date: date
+      }, this.getAuth).then(function (response) {})["catch"](function (error) {
+        this.errors.push(e);
         console.log('error getting auto login');
       });
       this.$refs.menu.save(date);
@@ -3018,7 +3069,8 @@ var render = function() {
               getScreenSched: _vm.getScreenSched,
               getScreenAutologin: _vm.getScreenAutologin,
               getScreenNotes: _vm.getScreenNotes,
-              getOutlets: _vm.getOutlets
+              getOutlets: _vm.getOutlets,
+              getAuth: _vm.getAuth
             },
             on: {
               screenSelect: function($event) {
@@ -3198,7 +3250,8 @@ var render = function() {
                                               _vm.screen_equipment_model_installed,
                                             screen_teamviewer_details:
                                               _vm.screen_teamviewer_details,
-                                            selected: _vm.selected
+                                            selected: _vm.selected,
+                                            getAuth: _vm.getAuth
                                           },
                                           on: {
                                             saveScreenNotes: function($event) {
@@ -3475,10 +3528,7 @@ var render = function() {
                                   3633734366
                                 )
                               },
-                              [
-                                _vm._v(" "),
-                                _c("span", [_vm._v("delete this screen")])
-                              ]
+                              [_vm._v(" "), _c("span")]
                             )
                           ]
                         : _vm._e(),
@@ -3529,10 +3579,7 @@ var render = function() {
                               }
                             ])
                           },
-                          [
-                            _vm._v(" "),
-                            _c("span", [_vm._v("delete this screen")])
-                          ]
+                          [_vm._v(" "), _c("span")]
                         )
                       ]
                     ],
@@ -3942,7 +3989,8 @@ var render = function() {
                                       attrs: {
                                         screen_activation_date:
                                           _vm.screen_activation_date,
-                                        selected: _vm.selected
+                                        selected: _vm.selected,
+                                        getAuth: _vm.getAuth
                                       },
                                       on: {
                                         save: function($event) {
