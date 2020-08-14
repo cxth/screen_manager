@@ -68,6 +68,10 @@ class ScheduleController extends Controller
             // catch view screen from admin 
             $uscreen = session('uscreen');
             $screen = Screen::find($uscreen);
+
+            // @debug
+            return ['uscreen' => $uscreen, 'screen' => $screen];
+
             if (!$screen)
             {
               session(['uscreen' => null]);
@@ -84,6 +88,9 @@ class ScheduleController extends Controller
           }
         }
         
+        // @debug
+        return $screen;
+
         // log request
         $this->logSession($screen->id);
 
@@ -106,7 +113,7 @@ class ScheduleController extends Controller
      * @return null
      * 
      */
-    public function logSession($screen_id)
+    private function logSession($screen_id)
     {
       Screen_Session::updateOrCreate(
         ['screen_id' => $screen_id],
@@ -120,7 +127,7 @@ class ScheduleController extends Controller
      * @return null
      * 
      */
-    public function logSessionHistory(Screen $screen, Schedule $schedule)
+    private function logSessionHistory(Screen $screen, Schedule $schedule)
     {
       $screen_id = $screen->id;
       $outlet_id = $screen->outlet_id;
@@ -143,18 +150,7 @@ class ScheduleController extends Controller
 
     }
 
-    /**
-     * Test controller
-     */
-    public function test()
-    {
-        echo "<pre>";
-        print_r('HWweQhgLK0V+AmrWt9HrZA==');
-        echo "<br/>";
-        print_r($this->encryptText('AH-001SS4'));
-        echo "</pre>";
-    }
-
+    
     /**
      * API // get encrypted string
      * 
@@ -211,8 +207,6 @@ class ScheduleController extends Controller
           return redirect('/');
         }
 
-        //http://sm.local/client?r=BrCbp9TN/k72XHk6DHm/WQ==__AC-102SS1
-        //http://sm.local/client?r=BrCbp9TN/k72XHk6DHm/WQ==__AC-102SS1x
       }
       
       return redirect('/bye');
@@ -234,7 +228,12 @@ class ScheduleController extends Controller
         {
             return redirect('/');
         }
+
         session(['uscreen' => $screen]);
+
+        // @debug
+        // return session('uscreen');
+
         $data['user'] = $screen;
         echo "<pre></pre>";
         // @goto 
@@ -492,11 +491,18 @@ class ScheduleController extends Controller
         //setcookie('cross-site-cookie', 'name', time()+3600);
 
         $user = Auth::user();
-        // Revoke all tokens...
+
+        // flush and regenerate session
+        // session()->flush();
+        // session()->regenerate();
+
+        // regenerate tokens
         $user->tokens()->delete();
         $bearer = $user->createToken('token-name')->plainTextToken;
-        
         $data['token'] = json_encode($bearer);
+
+        $data['uscreen'] = session('uscreen');
+
         return view('admin', $data);
     }
 }

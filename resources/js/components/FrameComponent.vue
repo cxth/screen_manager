@@ -35,8 +35,12 @@ export default {
         fetchURL() {
             axios.get(`${ this.siteURL }/request`)
             .then(response => {
-                console.log('fetch URL response: ')
+
+                // --- debugging ----
+                console.log('fetchURL response: ')
                 console.log(response.data);
+                return
+                // -------------------
             
                 if (response.data[0] == 'invalid-user')
                 {

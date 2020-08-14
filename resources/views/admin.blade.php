@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>
+    {{ $uscreen }}
     {{ config('app.env', '') }}
     Admin &ndash;
     {{ config('app.release', '') }}
