@@ -102,7 +102,9 @@
       :width="300"
     >
     
-    <active_screens_component></active_screens_component>
+    <active_screens_component
+      :getAuth="getAuth">
+    </active_screens_component>
 
     </v-navigation-drawer>
 

@@ -46,7 +46,11 @@ Route::middleware('auth:sanctum')->post('/getscreen','ScreenController@updateDat
 //Route::get('/screen/all','ScreenController@listAll'); <- //////////////////////////
 Route::middleware('auth:sanctum')->get('/screen/all','ScreenController@listAll');
 
-Route::get('/screen/active','ScreenController@getActive');
+//Route::get('/screen/active','ScreenController@getActive'); <- //////////////////////////
+Route::middleware('auth:sanctum')->get('/screen/active','ScreenController@getActive');
+
+
+
 //Route::post('/screen/login','ScheduleController@getScreenAutologin');
 Route::post('/screen/login','ScheduleController@getScreenAutologin');
 

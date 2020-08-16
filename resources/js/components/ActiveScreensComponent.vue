@@ -48,6 +48,7 @@
 <script>
 import axios from 'axios'
   export default {
+    props: ['getAuth'],
     data: () => ({
       no_content: 'No active screen',
       screens: [],
@@ -68,7 +69,7 @@ import axios from 'axios'
     methods: {
       getActiveScreens: function(event) {
 
-        axios.get(`${ this.siteURL }/api/screen/active`)
+        axios.get(`${ this.siteURL }/api/screen/active`,this.getAuth)
         .then(response => {
             if (response.data.length > 0) {
               let data = []
