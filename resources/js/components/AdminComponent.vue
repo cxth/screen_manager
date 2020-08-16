@@ -14,6 +14,7 @@
         :form="form"
         :deleteLink="deleteLink"
         :getLinks="getLinks"
+        :getAuth="getAuth"
         @linkSelect="
           screen=$event,
           clearnewURL($event)"
@@ -393,7 +394,7 @@ axios.defaults.withCredentials = true;
        * @return this.links Array
        */
       getLinks() {
-        axios.get(`${ this.siteURL }/api/l`)
+        axios.get(`${ this.siteURL }/api/l`, this.getAuth())
           .then(response => {
             
               let newlinks = {};
@@ -611,7 +612,7 @@ axios.defaults.withCredentials = true;
        */
       deleteLink: function(event) {
         if(confirm("DANGER! Are you sure you like to DELETE this link?")) {        
-          axios.delete(`${ this.siteURL }/api/l/${ event }`)
+          axios.delete(`${ this.siteURL }/api/l/${ event }`, this.getAuth())
           .then(response => {
               alert("link deleted");
               this.getSelectedScreenInfo([this.selected.screen,this.screen_key])

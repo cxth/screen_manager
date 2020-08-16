@@ -72,6 +72,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['getAuth'],
   data: function data() {
     return {
       no_content: 'No active screen',
@@ -96,7 +97,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     getActiveScreens: function getActiveScreens(event) {
       var _this2 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/screen/active")).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/screen/active"), this.getAuth).then(function (response) {
         if (response.data.length > 0) {
           var data = [];
           var active_outlets = [];
@@ -506,6 +507,9 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
 
 
 
@@ -681,7 +685,7 @@ axios__WEBPACK_IMPORTED_MODULE_0___default.a.defaults.withCredentials = true;
     getLinks: function getLinks() {
       var _this3 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/l")).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/l"), this.getAuth()).then(function (response) {
         var newlinks = {};
         response.data.forEach(function (arrayItem) {
           newlinks[arrayItem.id] = arrayItem;
@@ -897,7 +901,7 @@ axios__WEBPACK_IMPORTED_MODULE_0___default.a.defaults.withCredentials = true;
       var _this9 = this;
 
       if (confirm("DANGER! Are you sure you like to DELETE this link?")) {
-        axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("".concat(this.siteURL, "/api/l/").concat(event)).then(function (response) {
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("".concat(this.siteURL, "/api/l/").concat(event), this.getAuth()).then(function (response) {
           alert("link deleted");
 
           _this9.getSelectedScreenInfo([_this9.selected.screen, _this9.screen_key]);
@@ -1415,7 +1419,7 @@ __webpack_require__.r(__webpack_exports__);
     deleteScreen: function deleteScreen(screen) {
       var _this3 = this;
 
-      axios["delete"]("".concat(this.siteURL, "/api/screen/").concat(screen)).then(function (response) {})["catch"](function (e) {
+      axios["delete"]("".concat(this.siteURL, "/api/screen/").concat(screen), this.getAuth).then(function (response) {})["catch"](function (e) {
         _this3.errors.push(e);
       });
     },
@@ -1549,7 +1553,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['media_assets', 'selected', 'links', 'form', 'deleteLink', 'getLinks'],
+  props: ['media_assets', 'selected', 'links', 'form', 'deleteLink', 'getLinks', 'getAuth'],
   data: function data() {
     return {
       rename_field: false,
@@ -1586,22 +1590,33 @@ __webpack_require__.r(__webpack_exports__);
         if (!confirm('Are you sure you like rename this link?')) {
           this.rename_field = false;
           return;
-        }
+        } // axios({
+        //   method: 'patch',
+        //   url: `${ this.siteURL }/api/l/${ this.int_link_id }`,
+        //   data: {
+        //     name: this.int_newlink_name,
+        //   }
+        // }).then(response => {
+        //     if (response.data == "updated") {
+        //       this.selected.link_name = this.int_newlink_name
+        //       this.$emit('setLinkName', this.int_newlink_name)
+        //     }
+        // })
+        //   .catch(e => {
+        //     this.errors.push(e)
+        // });
 
-        axios({
-          method: 'patch',
-          url: "".concat(this.siteURL, "/api/l/").concat(this.int_link_id),
-          data: {
-            name: this.int_newlink_name
-          }
-        }).then(function (response) {
+
+        axios.patch("".concat(this.siteURL, "/api/l/").concat(this.int_link_id), {
+          name: this.int_newlink_name
+        }, this.getAuth).then(function (response) {
           if (response.data == "updated") {
             _this.selected.link_name = _this.int_newlink_name;
 
             _this.$emit('setLinkName', _this.int_newlink_name);
           }
-        })["catch"](function (e) {
-          _this.errors.push(e);
+        })["catch"](function (error) {
+          console.log(error);
         });
       }
 
@@ -2917,7 +2932,8 @@ var render = function() {
                   links: _vm.links,
                   form: _vm.form,
                   deleteLink: _vm.deleteLink,
-                  getLinks: _vm.getLinks
+                  getLinks: _vm.getLinks,
+                  getAuth: _vm.getAuth
                 },
                 on: {
                   linkSelect: function($event) {
@@ -3094,7 +3110,7 @@ var render = function() {
             expression: "left"
           }
         },
-        [_c("active_screens_component")],
+        [_c("active_screens_component", { attrs: { getAuth: _vm.getAuth } })],
         1
       ),
       _vm._v(" "),

@@ -61,11 +61,22 @@ Route::middleware('auth:sanctum')->delete('/screen/{screen}','ScreenController@d
 
 
 Route::get('/m/{medium}/link','LinkController@index');
-Route::post('/l','LinkController@store');
-Route::get('/l','LinkController@showAll');
-Route::get('/l/{link}','LinkController@show');
-Route::patch('/l/{link}','LinkController@update');
-Route::delete('/l/{link}','LinkController@deleteLinkSched');
+
+
+//Route::post('/l','LinkController@store'); <--- ////////////////////////
+Route::middleware('auth:sanctum')->post('/l','LinkController@store');
+
+//Route::get('/l','LinkController@showAll'); <---- /////////////////////
+Route::middleware('auth:sanctum')->get('/l','LinkController@showAll');
+
+//Route::get('/l/{link}','LinkController@show');  <---- /////////////////////
+Route::middleware('auth:sanctum')->get('/l/{link}','LinkController@show');
+
+//Route::patch('/l/{link}','LinkController@update'); <---- /////////////////////
+Route::middleware('auth:sanctum')->patch('/l/{link}','LinkController@update');
+
+//Route::delete('/l/{link}','LinkController@deleteLinkSched'); <---- /////////////////////
+Route::middleware('auth:sanctum')->delete('/l/{link}','LinkController@deleteLinkSched');
 
 
 Route::get('/g/{group}/id','GroupScreenController@index');

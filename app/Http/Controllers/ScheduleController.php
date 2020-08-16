@@ -28,6 +28,13 @@ class ScheduleController extends Controller
     {
       header('Set-Cookie: cross-site-cookie=bar; SameSite=None; Secure', false);
     }
+
+    public function test()
+    {
+      //dd(Screen::first('id'));
+      $screen = Screen::first();
+      return $screen['id'];
+    }
   
     /**
      * Web // Default controller for front-end display
@@ -73,7 +80,12 @@ class ScheduleController extends Controller
           
           
           // catch view screen from admin 
+
             $uscreen = session('uscreen');
+
+            // @debug
+            //return ['uscreen' => $uscreen, 'cookie' => Cookie::get('cscreen')];
+
             $screen = Screen::find($uscreen);
 
             // @debug
@@ -236,6 +248,8 @@ class ScheduleController extends Controller
             return redirect('/');
         }
 
+        // set session for admin
+        sleep(2);
         session(['uscreen' => $screen]);
 
         // set cookie instead
@@ -511,6 +525,13 @@ class ScheduleController extends Controller
         $bearer = $user->createToken('token-name')->plainTextToken;
         $data['token'] = json_encode($bearer);
 
+        // regenerate session if null
+        if (session('uscreen') === null)
+        {
+          session()->regenerate();
+          $screen = Screen::first();
+          session(['uscreen' => $screen['id']]);
+        }
         $data['uscreen'] = session('uscreen');
 
         // test cookie
