@@ -372,7 +372,7 @@ export default {
 
     deleteScreen: function(screen) {
       
-      axios.delete(`${ this.siteURL }/api/screen/${ screen }`)
+      axios.delete(`${ this.siteURL }/api/screen/${ screen }`,this.getAuth)
       .then(response => {
 
       })

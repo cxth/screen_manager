@@ -51,12 +51,13 @@ Route::middleware('auth:sanctum')->get('/screen/active','ScreenController@getAct
 
 
 
-//Route::post('/screen/login','ScheduleController@getScreenAutologin');
-Route::post('/screen/login','ScheduleController@getScreenAutologin');
+//Route::post('/screen/login','ScheduleController@getScreenAutologin'); <- //////////////////////////
+Route::middleware('auth:sanctum')->post('/screen/login','ScheduleController@getScreenAutologin');
 
 
 
-Route::delete('/screen/{screen}','ScreenController@destroy');
+//Route::delete('/screen/{screen}','ScreenController@destroy');  <- //////////////////////////
+Route::middleware('auth:sanctum')->delete('/screen/{screen}','ScreenController@destroy');
 
 
 Route::get('/m/{medium}/link','LinkController@index');
