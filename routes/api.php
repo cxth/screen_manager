@@ -20,7 +20,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 */
 
-Route::apiResource('/outlet','OutletController');
+//Route::apiResource('/outlet','OutletController'); <- //////////////////////
+Route::middleware('auth:sanctum')->apiResource('/outlet','OutletController');
+
+
 Route::get('/countscreens/{outlet_id}','OutletController@countScreens');
 //Route::get('/getscreens/{outlet_id}','OutletController@getScreens'); <- //////////////////////
 Route::middleware('auth:sanctum')->get('/getscreens/{outlet_id}','OutletController@getScreens');

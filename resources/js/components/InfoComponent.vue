@@ -383,7 +383,7 @@ export default {
 
     deactivateOutlet: function(outlet) {
 
-      axios.delete(`${ this.siteURL }/api/outlet/${ outlet }`)
+      axios.delete(`${ this.siteURL }/api/outlet/${ outlet }`, this.getAuth)
       .then(response => {
 
       })

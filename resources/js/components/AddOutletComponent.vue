@@ -47,7 +47,10 @@
 
 <script>
 export default {
-  props: ['getOutlets'],
+  props: [
+    'getOutlets',
+    'getAuth'
+    ],
   data: () => ({
     newOutlet_name: "",
     newOutlet_id: "",

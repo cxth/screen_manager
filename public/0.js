@@ -192,7 +192,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['getOutlets'],
+  props: ['getOutlets', 'getAuth'],
   data: function data() {
     return {
       newOutlet_name: "",
@@ -318,6 +318,7 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
+//
 //
 //
 //
@@ -1453,7 +1454,7 @@ __webpack_require__.r(__webpack_exports__);
     deactivateOutlet: function deactivateOutlet(outlet) {
       var _this4 = this;
 
-      axios["delete"]("".concat(this.siteURL, "/api/outlet/").concat(outlet)).then(function (response) {})["catch"](function (e) {
+      axios["delete"]("".concat(this.siteURL, "/api/outlet/").concat(outlet), this.getAuth).then(function (response) {})["catch"](function (e) {
         _this4.errors.push(e);
       });
     }
@@ -3337,7 +3338,10 @@ var render = function() {
                                   "v-tab-item",
                                   [
                                     _c("add_outlet_component", {
-                                      attrs: { getOutlets: _vm.getOutlets }
+                                      attrs: {
+                                        getOutlets: _vm.getOutlets,
+                                        getAuth: _vm.getAuth
+                                      }
                                     })
                                   ],
                                   1

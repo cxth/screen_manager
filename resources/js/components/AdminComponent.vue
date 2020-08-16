@@ -188,6 +188,7 @@
 
                     <add_outlet_component
                       :getOutlets="getOutlets"
+                      :getAuth="getAuth"
                     ></add_outlet_component>
 
                   </v-tab-item>
