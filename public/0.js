@@ -226,16 +226,34 @@ __webpack_require__.r(__webpack_exports__);
       if (!this.validOutletID(this.newOutlet_id)) {
         this.errors.push('Valid Outlet ID required.');
         return;
-      }
+      } // axios({
+      //     method: 'post',
+      //     url: `${ this.siteURL }/api/outlet`,
+      //     data: {
+      //       outlet_name: this.newOutlet_name,
+      //       outlet_id: this.newOutlet_id,
+      //     }
+      // }).then(response => {
+      //     if (response.data == 'outlet-exist')
+      //     {
+      //       alert('Outlet ID: ' + this.newOutlet_id + ' already exist');
+      //     }
+      //     else
+      //     {
+      //       alert('Outlet successfully added');
+      //     }
+      //     this.getOutlets();
+      //     this.clearNewOutlet()
+      //   })
+      //   .catch(e => {
+      //       this.errors.push(e)
+      //   });
 
-      axios({
-        method: 'post',
-        url: "".concat(this.siteURL, "/api/outlet"),
-        data: {
-          outlet_name: this.newOutlet_name,
-          outlet_id: this.newOutlet_id
-        }
-      }).then(function (response) {
+
+      axios.post("".concat(this.siteURL, "/api/outlet"), {
+        outlet_name: this.newOutlet_name,
+        outlet_id: this.newOutlet_id
+      }, this.getAuth).then(function (response) {
         if (response.data == 'outlet-exist') {
           alert('Outlet ID: ' + _this.newOutlet_id + ' already exist');
         } else {
@@ -245,8 +263,9 @@ __webpack_require__.r(__webpack_exports__);
         _this.getOutlets();
 
         _this.clearNewOutlet();
-      })["catch"](function (e) {
-        _this.errors.push(e);
+      })["catch"](function (error) {
+        console.log(error);
+        this.errors.push(e);
       });
 
       if (!this.errors.length) {
@@ -299,6 +318,9 @@ function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToAr
 
 function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
+//
+//
+//
 //
 //
 //
@@ -607,6 +629,11 @@ axios__WEBPACK_IMPORTED_MODULE_0___default.a.defaults.withCredentials = true;
         headers: {
           Authorization: "Bearer ".concat(this.token)
         }
+      };
+    },
+    basicAuth: function basicAuth() {
+      return {
+        Authorization: "Bearer ".concat(this.token)
       };
     },
 
@@ -2040,7 +2067,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['selected', 'media_assets', 'form', 'is_form_valid', 'clear_URL', 'momentNow', 'resetData', 'getSelectedScreenInfo', 'screen_key', 'getScreenSched', 'getMediaAssets', 'getLinks'],
+  props: ['selected', 'media_assets', 'form', 'is_form_valid', 'clear_URL', 'momentNow', 'resetData', 'getSelectedScreenInfo', 'screen_key', 'getScreenSched', 'getMediaAssets', 'getLinks', 'getAuth'],
   data: function data() {
     return {
       media_asset_id: 100,
@@ -2116,12 +2143,25 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       console.log('saving schedule: ');
-      console.log(mydata);
-      axios({
-        method: 'post',
-        url: "".concat(this.siteURL, "/api/schedule/screen/").concat(this.selected.screen),
-        data: mydata
-      }).then(function (response) {
+      console.log(mydata); // axios({
+      //     method: 'post',
+      //     url: `${ this.siteURL }/api/schedule/screen/${ this.selected.screen }`,
+      //     data: mydata
+      // }).then(response => {
+      //     console.log(response);
+      //     alert("Schedule saved");
+      //     this.getSelectedScreenInfo([this.selected.screen,this.screen_key])
+      //     this.getScreenSched()
+      //     // refresh for custom URL
+      //     this.getMediaAssets()
+      //     this.getLinks()
+      //     this.intclearURL()
+      //   })
+      //   .catch(e => {
+      //     this.errors.push(e)
+      //   });
+
+      axios.post("".concat(this.siteURL, "/api/schedule/screen/").concat(this.selected.screen), mydata, this.getAuth).then(function (response) {
         console.log(response);
         alert("Schedule saved");
 
@@ -2135,8 +2175,9 @@ __webpack_require__.r(__webpack_exports__);
         _this.getLinks();
 
         _this.intclearURL();
-      })["catch"](function (e) {
-        _this.errors.push(e);
+      })["catch"](function (error) {
+        this.errors.push(e);
+        console.log(error);
       });
     },
     intclearURL: function intclearURL() {
@@ -2373,6 +2414,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "upload-files",
+  props: ['basicAuth'],
   data: function data() {
     return {
       selectedFiles: '',
@@ -2417,7 +2459,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       this.progress = 0;
       this.currentFile = this.selectedFiles;
-      _services_UploadFilesService__WEBPACK_IMPORTED_MODULE_0__["default"].upload(this.currentFile, this.vname, function (event) {
+      _services_UploadFilesService__WEBPACK_IMPORTED_MODULE_0__["default"].upload(this.currentFile, this.vname, this.basicAuth, function (event) {
         _this.progress = Math.round(100 * event.loaded / event.total);
       }).then(function (response) {
         // console.log('im uploading')
@@ -2946,7 +2988,10 @@ var render = function() {
               }),
               _vm._v(" "),
               _c("upload_file_component", {
-                attrs: { file_upload_dialog: _vm.file_upload_dialog },
+                attrs: {
+                  file_upload_dialog: _vm.file_upload_dialog,
+                  basicAuth: _vm.basicAuth
+                },
                 on: {
                   setUploadDialog: function($event) {
                     return _vm.closeDialog()
@@ -3218,7 +3263,8 @@ var render = function() {
                                             screen_key: _vm.screen_key,
                                             getScreenSched: _vm.getScreenSched,
                                             getMediaAssets: _vm.getMediaAssets,
-                                            getLinks: _vm.getLinks
+                                            getLinks: _vm.getLinks,
+                                            getAuth: _vm.getAuth
                                           }
                                         })
                                       ],
@@ -6227,13 +6273,14 @@ var UploadFilesService = /*#__PURE__*/function () {
 
   _createClass(UploadFilesService, [{
     key: "upload",
-    value: function upload(file, name, onUploadProgress) {
+    value: function upload(file, name, basicAuth, onUploadProgress) {
       var formData = new FormData();
       formData.append("file", file);
       formData.append("name", name);
       return http.post("/api/upload", formData, {
         headers: {
-          "Content-Type": "multipart/form-data"
+          "Content-Type": "multipart/form-data",
+          basicAuth: basicAuth
         },
         onUploadProgress: onUploadProgress
       });

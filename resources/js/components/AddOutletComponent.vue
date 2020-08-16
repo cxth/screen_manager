@@ -76,15 +76,36 @@ export default {
         return;
       }
 
-      axios({
-          method: 'post',
-          url: `${ this.siteURL }/api/outlet`,
-          data: {
-            outlet_name: this.newOutlet_name,
-            outlet_id: this.newOutlet_id,
-          }
-      }).then(response => {
+      // axios({
+      //     method: 'post',
+      //     url: `${ this.siteURL }/api/outlet`,
+      //     data: {
+      //       outlet_name: this.newOutlet_name,
+      //       outlet_id: this.newOutlet_id,
+      //     }
+      // }).then(response => {
 
+      //     if (response.data == 'outlet-exist')
+      //     {
+      //       alert('Outlet ID: ' + this.newOutlet_id + ' already exist');
+      //     }
+      //     else
+      //     {
+      //       alert('Outlet successfully added');
+      //     }
+      //     this.getOutlets();
+      //     this.clearNewOutlet()
+      //   })
+      //   .catch(e => {
+      //       this.errors.push(e)
+      //   });
+
+      axios.post(`${ this.siteURL }/api/outlet`, {
+          outlet_name: this.newOutlet_name,
+          outlet_id: this.newOutlet_id,
+        }, this.getAuth)
+        .then(response => {
+          
           if (response.data == 'outlet-exist')
           {
             alert('Outlet ID: ' + this.newOutlet_id + ' already exist');
@@ -95,9 +116,11 @@ export default {
           }
           this.getOutlets();
           this.clearNewOutlet()
+
         })
-        .catch(e => {
-            this.errors.push(e)
+        .catch(function (error) {
+          console.log(error);
+           this.errors.push(e)
         });
 
         if (!this.errors.length) {

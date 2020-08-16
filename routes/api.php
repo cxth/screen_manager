@@ -106,18 +106,23 @@ Route::get('/schedule/group/{group}','ScheduleController@showGroup');
 //Route::get('/schedule/link/{link}','ScheduleController@showLink'); <- ///////////////////
 Route::middleware('auth:sanctum')->get('/schedule/link/{link}','ScheduleController@showLink');
 
-Route::post('/schedule/screen/{screen}','ScheduleController@onScreen');
+//Route::post('/schedule/screen/{screen}','ScheduleController@onScreen'); <- ///////////////////
+Route::middleware('auth:sanctum')->post('/schedule/screen/{screen}','ScheduleController@onScreen');
+
 Route::post('/schedule/group/{group}','ScheduleController@onGroup');
+
 Route::delete('/schedule/{schedule}','ScheduleController@destroy');
 
-Route::get('/schedule/now/{screen}','ScheduleController@nowShowing');
+Route::middleware('auth:sanctum')->get('/schedule/now/{screen}','ScheduleController@nowShowing');
 
-Route::post('/upload','FileController@upload');
+//Route::post('/upload','FileController@upload'); <- ///////////////////
+Route::middleware('auth:sanctum')->post('/upload','FileController@upload');
 
 
 Route::middleware('auth:sanctum')->get('/get','FileController@get');
 
 
-Route::delete('/clip/delete/{file}','FileController@delete');
+//Route::delete('/clip/delete/{file}','FileController@delete'); <- ///////////////////
+Route::middleware('auth:sanctum')->delete('/clip/delete/{file}','FileController@delete');
 
 

@@ -121,6 +121,7 @@
 import UploadService from "../services/UploadFilesService";
 export default {
   name: "upload-files",
+  props: ['basicAuth'],
   data() {
     return {
       selectedFiles: '',
@@ -166,7 +167,7 @@ export default {
 
       this.progress = 0;
       this.currentFile = this.selectedFiles;
-      UploadService.upload(this.currentFile, this.vname, event => {
+      UploadService.upload(this.currentFile, this.vname, this.basicAuth, event => {
         this.progress = Math.round((100 * event.loaded) / event.total);
       })
       .then(response => {

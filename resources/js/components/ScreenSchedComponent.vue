@@ -115,7 +115,8 @@ export default {
     'screen_key',
     'getScreenSched',
     'getMediaAssets',
-    'getLinks'
+    'getLinks',
+    'getAuth'
   ],
   data: () => ({
     media_asset_id: 100, //default for 'custom links'
@@ -191,11 +192,27 @@ export default {
         console.log('saving schedule: ');
         console.log(mydata);
         
-        axios({
-            method: 'post',
-            url: `${ this.siteURL }/api/schedule/screen/${ this.selected.screen }`,
-            data: mydata
-        }).then(response => {
+        // axios({
+        //     method: 'post',
+        //     url: `${ this.siteURL }/api/schedule/screen/${ this.selected.screen }`,
+        //     data: mydata
+        // }).then(response => {
+        //     console.log(response);
+        //     alert("Schedule saved");
+        //     this.getSelectedScreenInfo([this.selected.screen,this.screen_key])
+        //     this.getScreenSched()
+        //     // refresh for custom URL
+        //     this.getMediaAssets()
+        //     this.getLinks()
+        //     this.intclearURL()
+        //   })
+        //   .catch(e => {
+        //     this.errors.push(e)
+        //   });
+
+        axios.post(`${ this.siteURL }/api/schedule/screen/${ this.selected.screen }`, 
+            mydata, this.getAuth)
+        .then(response => {
             console.log(response);
             alert("Schedule saved");
             this.getSelectedScreenInfo([this.selected.screen,this.screen_key])
@@ -204,10 +221,13 @@ export default {
             this.getMediaAssets()
             this.getLinks()
             this.intclearURL()
-          })
-          .catch(e => {
-            this.errors.push(e)
-          });
+        })
+        .catch(function (error) {
+          this.errors.push(e)
+          console.log(error);
+        });
+
+
       },
       intclearURL: function() {
         this.newURL = ''

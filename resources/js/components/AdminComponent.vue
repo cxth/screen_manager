@@ -23,6 +23,7 @@
 
       <upload_file_component
         :file_upload_dialog="file_upload_dialog"
+        :basicAuth="basicAuth"
         @setUploadDialog="closeDialog()"
       ></upload_file_component>
 
@@ -155,7 +156,9 @@
                       :screen_key="screen_key"
                       :getScreenSched="getScreenSched"
                       :getMediaAssets="getMediaAssets"
-                      :getLinks="getLinks">
+                      :getLinks="getLinks"
+                      :getAuth="getAuth"
+                    >
                     </screensched_component>
                   </v-tab-item>
                   <v-tab-item v-if="selected.screen">
@@ -319,6 +322,10 @@ axios.defaults.withCredentials = true;
         return {
             headers: { Authorization: `Bearer ${this.token}` }
         };
+      },
+
+      basicAuth: function() {
+        return { Authorization: `Bearer ${this.token}` }
       },
 
       /**
