@@ -533,6 +533,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
 
 
 
@@ -2421,7 +2422,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "upload-files",
-  props: ['basicAuth'],
+  props: ['basicAuth', 'getAuth'],
   data: function data() {
     return {
       selectedFiles: '',
@@ -2497,7 +2498,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       } // console.log(id)
 
 
-      axios["delete"]("".concat(this.siteURL, "/api/clip/delete/").concat(id)).then(function (response) {
+      axios["delete"]("".concat(this.siteURL, "/api/clip/delete/").concat(id), this.getAuth).then(function (response) {
         // console.log(response.data)
         alert('Clip deleted');
         _services_UploadFilesService__WEBPACK_IMPORTED_MODULE_0__["default"].getFiles().then(function (response) {
@@ -2997,7 +2998,8 @@ var render = function() {
               _c("upload_file_component", {
                 attrs: {
                   file_upload_dialog: _vm.file_upload_dialog,
-                  basicAuth: _vm.basicAuth
+                  basicAuth: _vm.basicAuth,
+                  getAuth: _vm.getAuth
                 },
                 on: {
                   setUploadDialog: function($event) {

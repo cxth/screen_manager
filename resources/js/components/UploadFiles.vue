@@ -121,7 +121,10 @@
 import UploadService from "../services/UploadFilesService";
 export default {
   name: "upload-files",
-  props: ['basicAuth'],
+  props: [
+    'basicAuth',
+    'getAuth'
+  ],
   data() {
     return {
       selectedFiles: '',
@@ -199,7 +202,7 @@ export default {
         return;
       }
       // console.log(id)
-      axios.delete(`${ this.siteURL }/api/clip/delete/${ id }`)
+      axios.delete(`${ this.siteURL }/api/clip/delete/${ id }`,this.getAuth)
       .then(response => {
         // console.log(response.data)
         alert('Clip deleted')

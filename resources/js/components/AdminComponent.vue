@@ -24,6 +24,7 @@
       <upload_file_component
         :file_upload_dialog="file_upload_dialog"
         :basicAuth="basicAuth"
+        :getAuth="getAuth"
         @setUploadDialog="closeDialog()"
       ></upload_file_component>
 
