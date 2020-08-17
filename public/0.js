@@ -773,10 +773,16 @@ axios__WEBPACK_IMPORTED_MODULE_0___default.a.defaults.withCredentials = true;
     countOutletScreens: function countOutletScreens() {
       var _this5 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default()({
-        method: 'get',
-        url: "".concat(this.siteURL, "/api/countscreens/").concat(this.selected.outlet_id)
-      }).then(function (response) {
+      // axios({
+      //     method: 'get',
+      //     url: `${ this.siteURL }/api/countscreens/${ this.selected.outlet_id }`,
+      // }).then(response => {
+      //     this.selected.outlet_screen = response.data
+      // }).catch(e => {
+      //     this.errors.push(e)
+      //     console.log('error countOutletScreens')
+      // });
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/countscreens/").concat(this.selected.outlet_id), this.getAuth()).then(function (response) {
         _this5.selected.outlet_screen = response.data;
       })["catch"](function (e) {
         _this5.errors.push(e);

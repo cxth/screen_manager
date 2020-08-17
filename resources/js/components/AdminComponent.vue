@@ -461,15 +461,24 @@ axios.defaults.withCredentials = true;
        * @return int
        */
       countOutletScreens: function() {
-        axios({
-            method: 'get',
-            url: `${ this.siteURL }/api/countscreens/${ this.selected.outlet_id }`,
-        }).then(response => {
+        // axios({
+        //     method: 'get',
+        //     url: `${ this.siteURL }/api/countscreens/${ this.selected.outlet_id }`,
+        // }).then(response => {
+        //     this.selected.outlet_screen = response.data
+        // }).catch(e => {
+        //     this.errors.push(e)
+        //     console.log('error countOutletScreens')
+        // });
+
+        axios.get(`${ this.siteURL }/api/countscreens/${ this.selected.outlet_id }`, this.getAuth())
+        .then(response => {
             this.selected.outlet_screen = response.data
-        }).catch(e => {
+        })
+        .catch(e => {
             this.errors.push(e)
             console.log('error countOutletScreens')
-        });
+        })
       },
 
       /**
