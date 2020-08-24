@@ -105,7 +105,8 @@ export default {
     'getScreenSched',
     'getScreenAutologin',
     'getScreenNotes',
-    'getOutlets'
+    'getOutlets',
+    'getAuth'
   ],
   data() {
     return {
@@ -134,23 +135,43 @@ export default {
       }
 
       var i = event.currentTarget.id.split('**');
-      axios({
-        method: 'post',
-        url: `${ this.siteURL }/api/${ i[0] }/screen`,
-        data: {
-            outlet_id: i[0],
-            outlet_intid: i[1],
-            screen_description: this.newScreen
-          }
-        }).then(response => {
-            if (response.data == "Saved")
-            {
-              this.getOutlets()
-            }
-          })
-          .catch(e => {
-              this.errors.push(e)
-          });
+      // axios({
+      //   method: 'post',
+      //   url: `${ this.siteURL }/api/${ i[0] }/screen`,
+      //   data: {
+      //       outlet_id: i[0],
+      //       outlet_intid: i[1],
+      //       screen_description: this.newScreen
+      //     }
+      //   }).then(response => {
+      //       if (response.data == "Saved")
+      //       {
+      //         this.getOutlets()
+      //       }
+      //     })
+      //     .catch(e => {
+      //         this.errors.push(e)
+      //     });
+
+      // new post format for auth token
+      axios.post(`${ this.siteURL }/api/${ i[0] }/screen`, {
+        outlet_id: i[0],
+        outlet_intid: i[1],
+        screen_description: this.newScreen
+      }, this.getAuth)
+      .then(response => {
+        if (response.data == "Saved")
+        {
+          this.getOutlets()
+        }
+      })
+      .catch(function (error) {
+        console.log(error);
+        this.errors.push(e)
+      });
+
+
+
     },
 
     screenSelect: function (event) {

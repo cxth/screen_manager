@@ -75,7 +75,8 @@ export default {
     'links',
     'form',
     'deleteLink',
-    'getLinks'
+    'getLinks',
+    'getAuth'
   ],
   data: () => ({
     rename_field: false,
@@ -112,21 +113,34 @@ export default {
           return
         }
     
-        axios({
-          method: 'patch',
-          url: `${ this.siteURL }/api/l/${ this.int_link_id }`,
-          data: {
-            name: this.int_newlink_name,
-          }
-        }).then(response => {
+        // axios({
+        //   method: 'patch',
+        //   url: `${ this.siteURL }/api/l/${ this.int_link_id }`,
+        //   data: {
+        //     name: this.int_newlink_name,
+        //   }
+        // }).then(response => {
      
-            if (response.data == "updated") {
+        //     if (response.data == "updated") {
+        //       this.selected.link_name = this.int_newlink_name
+        //       this.$emit('setLinkName', this.int_newlink_name)
+        //     }
+        // })
+        //   .catch(e => {
+        //     this.errors.push(e)
+        // });
+
+        axios.patch(`${ this.siteURL }/api/l/${ this.int_link_id }`, {
+          name: this.int_newlink_name
+        }, this.getAuth)
+        .then(response => {
+          if (response.data == "updated") {
               this.selected.link_name = this.int_newlink_name
               this.$emit('setLinkName', this.int_newlink_name)
             }
         })
-          .catch(e => {
-            this.errors.push(e)
+        .catch(function (error) {
+          console.log(error);
         });
 
       }

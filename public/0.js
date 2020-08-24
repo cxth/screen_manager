@@ -72,6 +72,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['getAuth'],
   data: function data() {
     return {
       no_content: 'No active screen',
@@ -96,7 +97,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     getActiveScreens: function getActiveScreens(event) {
       var _this2 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/screen/active")).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/screen/active"), this.getAuth).then(function (response) {
         if (response.data.length > 0) {
           var data = [];
           var active_outlets = [];
@@ -191,7 +192,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['getOutlets'],
+  props: ['getOutlets', 'getAuth'],
   data: function data() {
     return {
       newOutlet_name: "",
@@ -225,16 +226,34 @@ __webpack_require__.r(__webpack_exports__);
       if (!this.validOutletID(this.newOutlet_id)) {
         this.errors.push('Valid Outlet ID required.');
         return;
-      }
+      } // axios({
+      //     method: 'post',
+      //     url: `${ this.siteURL }/api/outlet`,
+      //     data: {
+      //       outlet_name: this.newOutlet_name,
+      //       outlet_id: this.newOutlet_id,
+      //     }
+      // }).then(response => {
+      //     if (response.data == 'outlet-exist')
+      //     {
+      //       alert('Outlet ID: ' + this.newOutlet_id + ' already exist');
+      //     }
+      //     else
+      //     {
+      //       alert('Outlet successfully added');
+      //     }
+      //     this.getOutlets();
+      //     this.clearNewOutlet()
+      //   })
+      //   .catch(e => {
+      //       this.errors.push(e)
+      //   });
 
-      axios({
-        method: 'post',
-        url: "".concat(this.siteURL, "/api/outlet"),
-        data: {
-          outlet_name: this.newOutlet_name,
-          outlet_id: this.newOutlet_id
-        }
-      }).then(function (response) {
+
+      axios.post("".concat(this.siteURL, "/api/outlet"), {
+        outlet_name: this.newOutlet_name,
+        outlet_id: this.newOutlet_id
+      }, this.getAuth).then(function (response) {
         if (response.data == 'outlet-exist') {
           alert('Outlet ID: ' + _this.newOutlet_id + ' already exist');
         } else {
@@ -244,8 +263,9 @@ __webpack_require__.r(__webpack_exports__);
         _this.getOutlets();
 
         _this.clearNewOutlet();
-      })["catch"](function (e) {
-        _this.errors.push(e);
+      })["catch"](function (error) {
+        console.log(error);
+        this.errors.push(e);
       });
 
       if (!this.errors.length) {
@@ -504,6 +524,16 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -513,9 +543,11 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 
 
+axios__WEBPACK_IMPORTED_MODULE_0___default.a.defaults.withCredentials = true;
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
-    source: String
+    source: String,
+    token: String
   },
   components: {
     calendar: _CalendarComponent__WEBPACK_IMPORTED_MODULE_1__["default"],
@@ -574,12 +606,19 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         events: []
       },
       // Upload File
-      file_upload_dialog: false
+      file_upload_dialog: false // token
+      // auth = {
+      //   headers: { Authorization: `Bearer ${this.token}` 
+      //     }
+      // }
+
     };
   },
   mounted: function mounted() {//this.$refs.calendar.scrollToTime('08:00')
   },
   created: function created() {
+    //console.log('thisss token')
+    //console.log(config)
     this.$vuetify.theme.dark = true;
     this.getOutlets();
     this.getMediaAssets();
@@ -587,6 +626,19 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     this.calendar.today = this.momentNow('date');
   },
   methods: {
+    getAuth: function getAuth() {
+      return {
+        headers: {
+          Authorization: "Bearer ".concat(this.token)
+        }
+      };
+    },
+    basicAuth: function basicAuth() {
+      return {
+        Authorization: "Bearer ".concat(this.token)
+      };
+    },
+
     /**
      * @attached to LinkSelect()
      * @used to enable `custom URL` fields
@@ -614,7 +666,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     getOutlets: function getOutlets() {
       var _this = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/screen/all")).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/screen/all"), this.getAuth()).then(function (response) {
         var combined = {};
         response.data.forEach(function (arrayItem) {
           if (!(Object.keys(arrayItem) in combined)) {
@@ -642,7 +694,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     getMediaAssets: function getMediaAssets() {
       var _this2 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/media/all")).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/media/all"), this.getAuth()).then(function (response) {
         _this2.media_assets = response.data;
       })["catch"](function (e) {
         _this2.errors.push(e);
@@ -662,7 +714,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     getLinks: function getLinks() {
       var _this3 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/l")).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/l"), this.getAuth()).then(function (response) {
         var newlinks = {};
         response.data.forEach(function (arrayItem) {
           newlinks[arrayItem.id] = arrayItem;
@@ -722,10 +774,16 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     countOutletScreens: function countOutletScreens() {
       var _this5 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default()({
-        method: 'get',
-        url: "".concat(this.siteURL, "/api/countscreens/").concat(this.selected.outlet_id)
-      }).then(function (response) {
+      // axios({
+      //     method: 'get',
+      //     url: `${ this.siteURL }/api/countscreens/${ this.selected.outlet_id }`,
+      // }).then(response => {
+      //     this.selected.outlet_screen = response.data
+      // }).catch(e => {
+      //     this.errors.push(e)
+      //     console.log('error countOutletScreens')
+      // });
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/countscreens/").concat(this.selected.outlet_id), this.getAuth()).then(function (response) {
         _this5.selected.outlet_screen = response.data;
       })["catch"](function (e) {
         _this5.errors.push(e);
@@ -802,19 +860,25 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     getScreenAutologin: function getScreenAutologin() {
       var _this7 = this;
 
-      axios__WEBPACK_IMPORTED_MODULE_0___default()({
-        method: 'post',
-        url: "".concat(this.siteURL, "/api/screen/login"),
-        data: {
-          screen_id: this.selected.screen
-        }
-      }).then(function (response) {
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.post("".concat(this.siteURL, "/api/screen/login"), {
+        screen_id: this.selected.screen
+      }, this.getAuth()).then(function (response) {
         _this7.screen_autologin = "".concat(_this7.siteURL, "/client?r=").concat(response.data);
-      })["catch"](function (e) {
-        _this7.errors.push(e);
-
-        console.log('error getting auto login');
-      });
+      })["catch"](function (error) {
+        console.log(error);
+      }); // axios({
+      //     method: 'post',
+      //     url: `${ this.siteURL }/api/screen/login`,
+      //     data: {
+      //       screen_id: this.selected.screen
+      //     },
+      // }).then(response => {
+      //       this.screen_autologin = `${ this.siteURL }/client?r=${ response.data }`;
+      //   })
+      //   .catch(e => {
+      //       this.errors.push(e)
+      //       console.log('error getting auto login')
+      //   });
     },
 
     /**
@@ -830,11 +894,25 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       this.screen_resolution = '';
       this.screen_equipment_model_installed = '';
       this.screen_teamviewer_details = '';
-      this.screen_activation_date = '';
-      axios__WEBPACK_IMPORTED_MODULE_0___default()({
-        method: 'get',
-        url: "".concat(this.siteURL, "/api/getscreen/").concat(this.selected.screen)
-      }).then(function (response) {
+      this.screen_activation_date = ''; // axios({
+      //     method: 'get',
+      //     url: `${ this.siteURL }/api/getscreen/${ this.selected.screen }`,
+      // }).then(response => {
+      //     if (response.data)
+      //     {
+      //       this.screen_resolution = response.data.resolution
+      //       this.screen_activation_date = response.data.activation_date
+      //       this.screen_equipment_model_installed = response.data.equipment_model_installed
+      //       this.screen_teamviewer_details = response.data.teamviewer_details
+      //     }
+      //   })
+      //   .catch(e => {
+      //       this.errors.push(e)
+      //       console.log('error getting schedule')
+      //   });
+      // new axios get
+
+      axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("".concat(this.siteURL, "/api/getscreen/").concat(this.selected.screen), this.getAuth()).then(function (response) {
         if (response.data) {
           _this8.screen_resolution = response.data.resolution;
           _this8.screen_activation_date = response.data.activation_date;
@@ -858,7 +936,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       var _this9 = this;
 
       if (confirm("DANGER! Are you sure you like to DELETE this link?")) {
-        axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("".concat(this.siteURL, "/api/l/").concat(event)).then(function (response) {
+        axios__WEBPACK_IMPORTED_MODULE_0___default.a["delete"]("".concat(this.siteURL, "/api/l/").concat(event), this.getAuth()).then(function (response) {
           alert("link deleted");
 
           _this9.getSelectedScreenInfo([_this9.selected.screen, _this9.screen_key]);
@@ -1265,12 +1343,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     active_screen_component: _ScreenActivatedComponent__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
-  props: ['screen_autologin', 'screen_now_showing', 'screen_resolution', 'screen_activation_date', 'screen_equipment_model_installed', 'screen_teamviewer_details', 'selected'],
+  props: ['screen_autologin', 'screen_now_showing', 'screen_resolution', 'screen_activation_date', 'screen_equipment_model_installed', 'screen_teamviewer_details', 'selected', 'getAuth'],
   data: function data() {
     return {
       int_resolution: '',
@@ -1289,20 +1368,33 @@ __webpack_require__.r(__webpack_exports__);
         resolution: this.int_resolution ? this.int_resolution : this.screen_resolution,
         equipment_model_installed: this.int_equipment_model ? this.int_equipment_model : this.screen_equipment_model_installed,
         teamviewer_details: this.int_teamviewer ? this.int_teamviewer : this.screen_teamviewer_details
-      };
-      axios({
-        method: 'post',
-        url: "".concat(this.siteURL, "/api/getscreen"),
-        data: mydata
-      }).then(function (response) {
+      }; // axios({
+      //     method: 'post',
+      //     url: `${ this.siteURL }/api/getscreen`,
+      //     data: mydata
+      // }).then(response => {
+      //     if (response.data != "no-request")
+      //     {
+      //     }
+      //     this.int_resolution = ''
+      //     this.int_equipment_model = ''
+      //     this.int_teamviewer = ''
+      //     this.int_screen_name = ''
+      // })
+      // .catch(e => {
+      //     this.errors.push(e)
+      // });
+
+      axios.post("".concat(this.siteURL, "/api/getscreen"), mydata, this.getAuth).then(function (response) {
         if (response.data != "no-request") {}
 
         _this.int_resolution = '';
         _this.int_equipment_model = '';
         _this.int_teamviewer = '';
         _this.int_screen_name = '';
-      })["catch"](function (e) {
-        _this.errors.push(e);
+      })["catch"](function (error) {
+        console.log(error);
+        this.errors.push(e);
       });
       this.$emit('saveScreenNotes', mydata.description);
     },
@@ -1343,7 +1435,7 @@ __webpack_require__.r(__webpack_exports__);
       } // get screen IDs
 
 
-      axios.get("".concat(this.siteURL, "/api/getscreens/").concat(this.selected.outlet_id)).then(function (response) {
+      axios.get("".concat(this.siteURL, "/api/getscreens/").concat(this.selected.outlet_id), this.getAuth).then(function (response) {
         var screens = response.data;
         screens.forEach(function (val, key, map) {
           _this2.deleteScreen(val.id);
@@ -1362,14 +1454,14 @@ __webpack_require__.r(__webpack_exports__);
     deleteScreen: function deleteScreen(screen) {
       var _this3 = this;
 
-      axios["delete"]("".concat(this.siteURL, "/api/screen/").concat(screen)).then(function (response) {})["catch"](function (e) {
+      axios["delete"]("".concat(this.siteURL, "/api/screen/").concat(screen), this.getAuth).then(function (response) {})["catch"](function (e) {
         _this3.errors.push(e);
       });
     },
     deactivateOutlet: function deactivateOutlet(outlet) {
       var _this4 = this;
 
-      axios["delete"]("".concat(this.siteURL, "/api/outlet/").concat(outlet)).then(function (response) {})["catch"](function (e) {
+      axios["delete"]("".concat(this.siteURL, "/api/outlet/").concat(outlet), this.getAuth).then(function (response) {})["catch"](function (e) {
         _this4.errors.push(e);
       });
     }
@@ -1496,7 +1588,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['media_assets', 'selected', 'links', 'form', 'deleteLink', 'getLinks'],
+  props: ['media_assets', 'selected', 'links', 'form', 'deleteLink', 'getLinks', 'getAuth'],
   data: function data() {
     return {
       rename_field: false,
@@ -1533,22 +1625,33 @@ __webpack_require__.r(__webpack_exports__);
         if (!confirm('Are you sure you like rename this link?')) {
           this.rename_field = false;
           return;
-        }
+        } // axios({
+        //   method: 'patch',
+        //   url: `${ this.siteURL }/api/l/${ this.int_link_id }`,
+        //   data: {
+        //     name: this.int_newlink_name,
+        //   }
+        // }).then(response => {
+        //     if (response.data == "updated") {
+        //       this.selected.link_name = this.int_newlink_name
+        //       this.$emit('setLinkName', this.int_newlink_name)
+        //     }
+        // })
+        //   .catch(e => {
+        //     this.errors.push(e)
+        // });
 
-        axios({
-          method: 'patch',
-          url: "".concat(this.siteURL, "/api/l/").concat(this.int_link_id),
-          data: {
-            name: this.int_newlink_name
-          }
-        }).then(function (response) {
+
+        axios.patch("".concat(this.siteURL, "/api/l/").concat(this.int_link_id), {
+          name: this.int_newlink_name
+        }, this.getAuth).then(function (response) {
           if (response.data == "updated") {
             _this.selected.link_name = _this.int_newlink_name;
 
             _this.$emit('setLinkName', _this.int_newlink_name);
           }
-        })["catch"](function (e) {
-          _this.errors.push(e);
+        })["catch"](function (error) {
+          console.log(error);
         });
       }
 
@@ -1678,7 +1781,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['outlets', 'selected', 'getScreenSched', 'getScreenAutologin', 'getScreenNotes', 'getOutlets'],
+  props: ['outlets', 'selected', 'getScreenSched', 'getScreenAutologin', 'getScreenNotes', 'getOutlets', 'getAuth'],
   data: function data() {
     return {
       deleted: 'BB-401SS6',
@@ -1707,21 +1810,36 @@ __webpack_require__.r(__webpack_exports__);
         return;
       }
 
-      var i = event.currentTarget.id.split('**');
-      axios({
-        method: 'post',
-        url: "".concat(this.siteURL, "/api/").concat(i[0], "/screen"),
-        data: {
-          outlet_id: i[0],
-          outlet_intid: i[1],
-          screen_description: this.newScreen
-        }
-      }).then(function (response) {
+      var i = event.currentTarget.id.split('**'); // axios({
+      //   method: 'post',
+      //   url: `${ this.siteURL }/api/${ i[0] }/screen`,
+      //   data: {
+      //       outlet_id: i[0],
+      //       outlet_intid: i[1],
+      //       screen_description: this.newScreen
+      //     }
+      //   }).then(response => {
+      //       if (response.data == "Saved")
+      //       {
+      //         this.getOutlets()
+      //       }
+      //     })
+      //     .catch(e => {
+      //         this.errors.push(e)
+      //     });
+      // new post format for auth token
+
+      axios.post("".concat(this.siteURL, "/api/").concat(i[0], "/screen"), {
+        outlet_id: i[0],
+        outlet_intid: i[1],
+        screen_description: this.newScreen
+      }, this.getAuth).then(function (response) {
         if (response.data == "Saved") {
           _this.getOutlets();
         }
-      })["catch"](function (e) {
-        _this.errors.push(e);
+      })["catch"](function (error) {
+        console.log(error);
+        this.errors.push(e);
       });
     },
     screenSelect: function screenSelect(event) {
@@ -1788,7 +1906,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['screen_activation_date', 'selected'],
+  props: ['screen_activation_date', 'selected', 'getAuth'],
   data: function data() {
     return {
       menu: false
@@ -1805,18 +1923,24 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     save: function save(date) {
-      var _this2 = this;
-
-      axios({
-        method: 'post',
-        url: "".concat(this.siteURL, "/api/getscreen"),
-        data: {
-          id: this.selected.screen,
-          activation_date: date
-        }
-      }).then(function (response) {})["catch"](function (e) {
-        _this2.errors.push(e);
-
+      // axios({
+      //   method: 'post',
+      //   url: `${ this.siteURL }/api/getscreen`,
+      //   data: {
+      //     id: this.selected.screen,
+      //     activation_date: date
+      //   }
+      // }).then(response => {
+      // })
+      // .catch(e => {
+      //     this.errors.push(e)
+      //     console.log('error getting auto login')
+      // });
+      axios.post("".concat(this.siteURL, "/api/getscreen"), {
+        id: this.selected.screen,
+        activation_date: date
+      }, this.getAuth).then(function (response) {})["catch"](function (error) {
+        this.errors.push(e);
         console.log('error getting auto login');
       });
       this.$refs.menu.save(date);
@@ -1951,7 +2075,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 /* harmony default export */ __webpack_exports__["default"] = ({
-  props: ['selected', 'media_assets', 'form', 'is_form_valid', 'clear_URL', 'momentNow', 'resetData', 'getSelectedScreenInfo', 'screen_key', 'getScreenSched', 'getMediaAssets', 'getLinks'],
+  props: ['selected', 'media_assets', 'form', 'is_form_valid', 'clear_URL', 'momentNow', 'resetData', 'getSelectedScreenInfo', 'screen_key', 'getScreenSched', 'getMediaAssets', 'getLinks', 'getAuth'],
   data: function data() {
     return {
       media_asset_id: 100,
@@ -2027,12 +2151,25 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       console.log('saving schedule: ');
-      console.log(mydata);
-      axios({
-        method: 'post',
-        url: "".concat(this.siteURL, "/api/schedule/screen/").concat(this.selected.screen),
-        data: mydata
-      }).then(function (response) {
+      console.log(mydata); // axios({
+      //     method: 'post',
+      //     url: `${ this.siteURL }/api/schedule/screen/${ this.selected.screen }`,
+      //     data: mydata
+      // }).then(response => {
+      //     console.log(response);
+      //     alert("Schedule saved");
+      //     this.getSelectedScreenInfo([this.selected.screen,this.screen_key])
+      //     this.getScreenSched()
+      //     // refresh for custom URL
+      //     this.getMediaAssets()
+      //     this.getLinks()
+      //     this.intclearURL()
+      //   })
+      //   .catch(e => {
+      //     this.errors.push(e)
+      //   });
+
+      axios.post("".concat(this.siteURL, "/api/schedule/screen/").concat(this.selected.screen), mydata, this.getAuth).then(function (response) {
         console.log(response);
         alert("Schedule saved");
 
@@ -2046,8 +2183,9 @@ __webpack_require__.r(__webpack_exports__);
         _this.getLinks();
 
         _this.intclearURL();
-      })["catch"](function (e) {
-        _this.errors.push(e);
+      })["catch"](function (error) {
+        this.errors.push(e);
+        console.log(error);
       });
     },
     intclearURL: function intclearURL() {
@@ -2284,6 +2422,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "upload-files",
+  props: ['basicAuth', 'getAuth'],
   data: function data() {
     return {
       selectedFiles: '',
@@ -2328,7 +2467,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
       this.progress = 0;
       this.currentFile = this.selectedFiles;
-      _services_UploadFilesService__WEBPACK_IMPORTED_MODULE_0__["default"].upload(this.currentFile, this.vname, function (event) {
+      _services_UploadFilesService__WEBPACK_IMPORTED_MODULE_0__["default"].upload(this.currentFile, this.vname, this.basicAuth, function (event) {
         _this.progress = Math.round(100 * event.loaded / event.total);
       }).then(function (response) {
         // console.log('im uploading')
@@ -2359,7 +2498,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       } // console.log(id)
 
 
-      axios["delete"]("".concat(this.siteURL, "/api/clip/delete/").concat(id)).then(function (response) {
+      axios["delete"]("".concat(this.siteURL, "/api/clip/delete/").concat(id), this.getAuth).then(function (response) {
         // console.log(response.data)
         alert('Clip deleted');
         _services_UploadFilesService__WEBPACK_IMPORTED_MODULE_0__["default"].getFiles().then(function (response) {
@@ -2843,7 +2982,8 @@ var render = function() {
                   links: _vm.links,
                   form: _vm.form,
                   deleteLink: _vm.deleteLink,
-                  getLinks: _vm.getLinks
+                  getLinks: _vm.getLinks,
+                  getAuth: _vm.getAuth
                 },
                 on: {
                   linkSelect: function($event) {
@@ -2856,7 +2996,11 @@ var render = function() {
               }),
               _vm._v(" "),
               _c("upload_file_component", {
-                attrs: { file_upload_dialog: _vm.file_upload_dialog },
+                attrs: {
+                  file_upload_dialog: _vm.file_upload_dialog,
+                  basicAuth: _vm.basicAuth,
+                  getAuth: _vm.getAuth
+                },
                 on: {
                   setUploadDialog: function($event) {
                     return _vm.closeDialog()
@@ -2995,7 +3139,8 @@ var render = function() {
               getScreenSched: _vm.getScreenSched,
               getScreenAutologin: _vm.getScreenAutologin,
               getScreenNotes: _vm.getScreenNotes,
-              getOutlets: _vm.getOutlets
+              getOutlets: _vm.getOutlets,
+              getAuth: _vm.getAuth
             },
             on: {
               screenSelect: function($event) {
@@ -3019,7 +3164,7 @@ var render = function() {
             expression: "left"
           }
         },
-        [_c("active_screens_component")],
+        [_c("active_screens_component", { attrs: { getAuth: _vm.getAuth } })],
         1
       ),
       _vm._v(" "),
@@ -3127,7 +3272,8 @@ var render = function() {
                                             screen_key: _vm.screen_key,
                                             getScreenSched: _vm.getScreenSched,
                                             getMediaAssets: _vm.getMediaAssets,
-                                            getLinks: _vm.getLinks
+                                            getLinks: _vm.getLinks,
+                                            getAuth: _vm.getAuth
                                           }
                                         })
                                       ],
@@ -3175,7 +3321,8 @@ var render = function() {
                                               _vm.screen_equipment_model_installed,
                                             screen_teamviewer_details:
                                               _vm.screen_teamviewer_details,
-                                            selected: _vm.selected
+                                            selected: _vm.selected,
+                                            getAuth: _vm.getAuth
                                           },
                                           on: {
                                             saveScreenNotes: function($event) {
@@ -3199,7 +3346,10 @@ var render = function() {
                                   "v-tab-item",
                                   [
                                     _c("add_outlet_component", {
-                                      attrs: { getOutlets: _vm.getOutlets }
+                                      attrs: {
+                                        getOutlets: _vm.getOutlets,
+                                        getAuth: _vm.getAuth
+                                      }
                                     })
                                   ],
                                   1
@@ -3452,10 +3602,7 @@ var render = function() {
                                   3633734366
                                 )
                               },
-                              [
-                                _vm._v(" "),
-                                _c("span", [_vm._v("delete this screen")])
-                              ]
+                              [_vm._v(" "), _c("span")]
                             )
                           ]
                         : _vm._e(),
@@ -3506,10 +3653,7 @@ var render = function() {
                               }
                             ])
                           },
-                          [
-                            _vm._v(" "),
-                            _c("span", [_vm._v("delete this screen")])
-                          ]
+                          [_vm._v(" "), _c("span")]
                         )
                       ]
                     ],
@@ -3919,7 +4063,8 @@ var render = function() {
                                       attrs: {
                                         screen_activation_date:
                                           _vm.screen_activation_date,
-                                        selected: _vm.selected
+                                        selected: _vm.selected,
+                                        getAuth: _vm.getAuth
                                       },
                                       on: {
                                         save: function($event) {
@@ -6140,13 +6285,14 @@ var UploadFilesService = /*#__PURE__*/function () {
 
   _createClass(UploadFilesService, [{
     key: "upload",
-    value: function upload(file, name, onUploadProgress) {
+    value: function upload(file, name, basicAuth, onUploadProgress) {
       var formData = new FormData();
       formData.append("file", file);
       formData.append("name", name);
       return http.post("/api/upload", formData, {
         headers: {
-          "Content-Type": "multipart/form-data"
+          "Content-Type": "multipart/form-data",
+          basicAuth: basicAuth
         },
         onUploadProgress: onUploadProgress
       });

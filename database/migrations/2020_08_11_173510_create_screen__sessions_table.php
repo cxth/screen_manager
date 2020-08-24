@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSessionsTable extends Migration
+class CreateScreenSessionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateSessionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('sessions', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('screen_id')->unique();
-            $table->dateTime('request_log');
-            $table->timestamps();
+        Schema::create('screen__sessions', function (Blueprint $table) {
+          $table->increments('id');
+          $table->string('screen_id')->unique();
+          $table->dateTime('request_log');
+          $table->timestamps();
         });
     }
 
@@ -28,6 +28,6 @@ class CreateSessionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sessions');
+        Schema::dropIfExists('screen__sessions');
     }
 }

@@ -8,16 +8,17 @@ use App\Model\Link;
 use App\Model\Outlet;
 use App\Model\Screen;
 use App\Model\Schedule;
+use App\Model\Media_Asset;
+use App\Model\Session_Log;
 use App\Model\Group_Screen;
 use Illuminate\Http\Request;
+use App\Model\Screen_Session;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Resources\ScheduleResource;
-use App\Model\Media_Asset;
-use App\Model\Session;
-use App\Model\Session_Log;
 use App\Session_Log as AppSession_Log;
+use Illuminate\Support\Facades\Cookie;
 //use App\Http\Resources\ScheduleGroupResource;
+use App\Http\Resources\ScheduleResource;
 use Symfony\Component\HttpFoundation\Response;
 
 class ScheduleController extends Controller
@@ -26,6 +27,13 @@ class ScheduleController extends Controller
     public function __construct()
     {
       header('Set-Cookie: cross-site-cookie=bar; SameSite=None; Secure', false);
+    }
+
+    public function test()
+    {
+      //dd(Screen::first('id'));
+      $screen = Screen::first();
+      return $screen['id'];
     }
   
     /**
@@ -65,9 +73,24 @@ class ScheduleController extends Controller
         // admin view
         if (Auth::user()->username == 'admin')
         {
-            // catch view screen from admin 
+           
+          // @debug
+          // test cookie
+          //return Cookie::get('cscreen');
+          
+          
+          // catch view screen from admin 
+
             $uscreen = session('uscreen');
+
+            // @debug
+            //return ['uscreen' => $uscreen, 'cookie' => Cookie::get('cscreen')];
+
             $screen = Screen::find($uscreen);
+
+            // @debug
+            //return ['uscreen' => $uscreen, 'screen' => $screen];
+
             if (!$screen)
             {
               session(['uscreen' => null]);
@@ -84,6 +107,9 @@ class ScheduleController extends Controller
           }
         }
         
+        // @debug
+        //return $screen;
+
         // log request
         $this->logSession($screen->id);
 
@@ -106,9 +132,9 @@ class ScheduleController extends Controller
      * @return null
      * 
      */
-    public function logSession($screen_id)
+    private function logSession($screen_id)
     {
-      Session::updateOrCreate(
+      Screen_Session::updateOrCreate(
         ['screen_id' => $screen_id],
         ['request_log' => Carbon::now()]
       );
@@ -120,7 +146,7 @@ class ScheduleController extends Controller
      * @return null
      * 
      */
-    public function logSessionHistory(Screen $screen, Schedule $schedule)
+    private function logSessionHistory(Screen $screen, Schedule $schedule)
     {
       $screen_id = $screen->id;
       $outlet_id = $screen->outlet_id;
@@ -143,18 +169,7 @@ class ScheduleController extends Controller
 
     }
 
-    /**
-     * Test controller
-     */
-    public function test()
-    {
-        echo "<pre>";
-        print_r('HWweQhgLK0V+AmrWt9HrZA==');
-        echo "<br/>";
-        print_r($this->encryptText('AH-001SS4'));
-        echo "</pre>";
-    }
-
+    
     /**
      * API // get encrypted string
      * 
@@ -211,8 +226,6 @@ class ScheduleController extends Controller
           return redirect('/');
         }
 
-        //http://sm.local/client?r=BrCbp9TN/k72XHk6DHm/WQ==__AC-102SS1
-        //http://sm.local/client?r=BrCbp9TN/k72XHk6DHm/WQ==__AC-102SS1x
       }
       
       return redirect('/bye');
@@ -234,7 +247,17 @@ class ScheduleController extends Controller
         {
             return redirect('/');
         }
+
+        // set session for admin
+        sleep(2);
         session(['uscreen' => $screen]);
+
+        // set cookie instead
+        Cookie::make('cscreen', $screen, 120);
+
+        // @debug
+        // return session('uscreen');
+
         $data['user'] = $screen;
         echo "<pre></pre>";
         // @goto 
@@ -490,7 +513,30 @@ class ScheduleController extends Controller
             return redirect('/');
         }
         //setcookie('cross-site-cookie', 'name', time()+3600);
-        
-        return view('admin');
+
+        $user = Auth::user();
+
+        // flush and regenerate session
+        // session()->flush();
+        // session()->regenerate();
+
+        // regenerate tokens
+        $user->tokens()->delete();
+        $bearer = $user->createToken('token-name')->plainTextToken;
+        $data['token'] = json_encode($bearer);
+
+        // regenerate session if null
+        if (session('uscreen') === null)
+        {
+          session()->regenerate();
+          $screen = Screen::first();
+          session(['uscreen' => $screen['id']]);
+        }
+        $data['uscreen'] = session('uscreen');
+
+        // test cookie
+        $data['cscreen'] = Cookie::get('cscreen');
+
+        return view('admin', $data);
     }
 }

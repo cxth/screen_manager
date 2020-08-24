@@ -5,7 +5,7 @@ namespace App\Model;
 use App\Model\Screen;
 use Illuminate\Database\Eloquent\Model;
 
-class Session extends Model
+class Screen_Session extends Model
 {
   protected $fillable = [
       'id','screen_id','request_log'   

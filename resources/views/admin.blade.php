@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>
+    {{ $uscreen }}
     {{ config('app.env', '') }}
     Admin &ndash;
     {{ config('app.release', '') }}
@@ -13,10 +14,11 @@
   <!-- <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet"> -->
   
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <body>
   <div id="app">
-    <admin-component></admin-component>
+    <admin-component :token="{{ $token }}"></admin-component>
   </div>
     
 <script src="{{mix('js/app.js')}}" defer></script>

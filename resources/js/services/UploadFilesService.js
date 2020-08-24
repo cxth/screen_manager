@@ -6,7 +6,7 @@ var http = axios.create({
 });
 
 class UploadFilesService {
-  upload(file, name, onUploadProgress) {
+  upload(file, name, basicAuth, onUploadProgress) {
     let formData = new FormData();
 
     formData.append("file", file);
@@ -14,7 +14,8 @@ class UploadFilesService {
 
     return http.post("/api/upload", formData, {
       headers: {
-        "Content-Type": "multipart/form-data"
+        "Content-Type": "multipart/form-data",
+        basicAuth
       },
       onUploadProgress
     });

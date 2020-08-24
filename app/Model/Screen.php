@@ -3,7 +3,6 @@
 namespace App\Model;
 
 use App\Model\Outlet;
-use App\Model\Session;
 use App\Model\Schedule;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;

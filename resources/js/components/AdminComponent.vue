@@ -14,6 +14,7 @@
         :form="form"
         :deleteLink="deleteLink"
         :getLinks="getLinks"
+        :getAuth="getAuth"
         @linkSelect="
           screen=$event,
           clearnewURL($event)"
@@ -22,6 +23,8 @@
 
       <upload_file_component
         :file_upload_dialog="file_upload_dialog"
+        :basicAuth="basicAuth"
+        :getAuth="getAuth"
         @setUploadDialog="closeDialog()"
       ></upload_file_component>
 
@@ -76,6 +79,7 @@
         :getScreenAutologin="getScreenAutologin"
         :getScreenNotes="getScreenNotes"
         :getOutlets="getOutlets"
+        :getAuth="getAuth"
         @screenSelect="getSelectedScreenInfo($event)"
         ></outlets_component>
 
@@ -101,7 +105,9 @@
       :width="300"
     >
     
-    <active_screens_component></active_screens_component>
+    <active_screens_component
+      :getAuth="getAuth">
+    </active_screens_component>
 
     </v-navigation-drawer>
 
@@ -151,7 +157,9 @@
                       :screen_key="screen_key"
                       :getScreenSched="getScreenSched"
                       :getMediaAssets="getMediaAssets"
-                      :getLinks="getLinks">
+                      :getLinks="getLinks"
+                      :getAuth="getAuth"
+                    >
                     </screensched_component>
                   </v-tab-item>
                   <v-tab-item v-if="selected.screen">
@@ -171,6 +179,7 @@
                       :screen_equipment_model_installed="screen_equipment_model_installed"
                       :screen_teamviewer_details="screen_teamviewer_details"
                       :selected="selected"
+                      :getAuth="getAuth"
                       @saveScreenNotes="refreshScreen($event)"
                       @refreshActivationDate="refreshScreenActivation($event)"
                     ></info_component>
@@ -180,6 +189,7 @@
 
                     <add_outlet_component
                       :getOutlets="getOutlets"
+                      :getAuth="getAuth"
                     ></add_outlet_component>
 
                   </v-tab-item>
@@ -215,9 +225,12 @@ import info_component from './InfoComponent'
 import add_outlet_component from './AddOutletComponent'
 import upload_file_component from './UploadFileComponent'
 
+axios.defaults.withCredentials = true;
+
   export default {
     props: {
       source: String,
+      token: String
     },
     components: {
       calendar,
@@ -281,19 +294,41 @@ import upload_file_component from './UploadFileComponent'
       },
 
       // Upload File
-      file_upload_dialog: false
+      file_upload_dialog: false,
+
+      // token
+      // auth = {
+      //   headers: { Authorization: `Bearer ${this.token}` 
+      //     }
+      // }
+
+
     }),
     mounted () {
       //this.$refs.calendar.scrollToTime('08:00')
     },
     created () {
+      //console.log('thisss token')
+      //console.log(config)
+
       this.$vuetify.theme.dark = true;
       this.getOutlets()
       this.getMediaAssets()
       this.getLinks()
       this.calendar.today = this.momentNow('date');
+      
     },
     methods: {
+
+      getAuth: function() {
+        return {
+            headers: { Authorization: `Bearer ${this.token}` }
+        };
+      },
+
+      basicAuth: function() {
+        return { Authorization: `Bearer ${this.token}` }
+      },
 
       /**
        * @attached to LinkSelect()
@@ -319,7 +354,7 @@ import upload_file_component from './UploadFileComponent'
        */
       getOutlets() {
 
-        axios.get(`${ this.siteURL }/api/screen/all`)
+        axios.get(`${ this.siteURL }/api/screen/all`, this.getAuth())
         .then(response => {
             let combined = {};
             response.data.forEach(function (arrayItem) {
@@ -349,7 +384,7 @@ import upload_file_component from './UploadFileComponent'
        * @return this.media_assets Array
        */
       getMediaAssets() {
-        axios.get(`${ this.siteURL }/api/media/all`)
+        axios.get(`${ this.siteURL }/api/media/all`, this.getAuth())
           .then(response => {
               this.media_assets = response.data
           })
@@ -368,7 +403,7 @@ import upload_file_component from './UploadFileComponent'
        * @return this.links Array
        */
       getLinks() {
-        axios.get(`${ this.siteURL }/api/l`)
+        axios.get(`${ this.siteURL }/api/l`, this.getAuth())
           .then(response => {
             
               let newlinks = {};
@@ -427,15 +462,24 @@ import upload_file_component from './UploadFileComponent'
        * @return int
        */
       countOutletScreens: function() {
-        axios({
-            method: 'get',
-            url: `${ this.siteURL }/api/countscreens/${ this.selected.outlet_id }`,
-        }).then(response => {
+        // axios({
+        //     method: 'get',
+        //     url: `${ this.siteURL }/api/countscreens/${ this.selected.outlet_id }`,
+        // }).then(response => {
+        //     this.selected.outlet_screen = response.data
+        // }).catch(e => {
+        //     this.errors.push(e)
+        //     console.log('error countOutletScreens')
+        // });
+
+        axios.get(`${ this.siteURL }/api/countscreens/${ this.selected.outlet_id }`, this.getAuth())
+        .then(response => {
             this.selected.outlet_screen = response.data
-        }).catch(e => {
+        })
+        .catch(e => {
             this.errors.push(e)
             console.log('error countOutletScreens')
-        });
+        })
       },
 
       /**
@@ -502,19 +546,31 @@ import upload_file_component from './UploadFileComponent'
        * @return screen_autologin
        */
       getScreenAutologin: function() {
-        axios({
-            method: 'post',
-            url: `${ this.siteURL }/api/screen/login`,
-            data: {
-              screen_id: this.selected.screen
-            }
-        }).then(response => {
-              this.screen_autologin = `${ this.siteURL }/client?r=${ response.data }`;
-          })
-          .catch(e => {
-              this.errors.push(e)
-              console.log('error getting auto login')
-          });
+
+        axios.post(`${ this.siteURL }/api/screen/login`, {
+          screen_id: this.selected.screen
+        }, this.getAuth())
+        .then(response => {
+          this.screen_autologin = `${ this.siteURL }/client?r=${ response.data }`;
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+
+        // axios({
+        //     method: 'post',
+        //     url: `${ this.siteURL }/api/screen/login`,
+        //     data: {
+        //       screen_id: this.selected.screen
+        //     },
+        // }).then(response => {
+        //       this.screen_autologin = `${ this.siteURL }/client?r=${ response.data }`;
+        //   })
+        //   .catch(e => {
+        //       this.errors.push(e)
+        //       console.log('error getting auto login')
+        //   });
       },
 
       /**
@@ -529,10 +585,26 @@ import upload_file_component from './UploadFileComponent'
         this.screen_equipment_model_installed = ''
         this.screen_teamviewer_details = ''
         this.screen_activation_date = ''
-        axios({
-            method: 'get',
-            url: `${ this.siteURL }/api/getscreen/${ this.selected.screen }`,
-        }).then(response => {
+        // axios({
+        //     method: 'get',
+        //     url: `${ this.siteURL }/api/getscreen/${ this.selected.screen }`,
+        // }).then(response => {
+        //     if (response.data)
+        //     {
+        //       this.screen_resolution = response.data.resolution
+        //       this.screen_activation_date = response.data.activation_date
+        //       this.screen_equipment_model_installed = response.data.equipment_model_installed
+        //       this.screen_teamviewer_details = response.data.teamviewer_details
+        //     }
+        //   })
+        //   .catch(e => {
+        //       this.errors.push(e)
+        //       console.log('error getting schedule')
+        //   });
+
+        // new axios get
+        axios.get(`${ this.siteURL }/api/getscreen/${ this.selected.screen }`, this.getAuth())
+        .then(response => {
             if (response.data)
             {
               this.screen_resolution = response.data.resolution
@@ -540,11 +612,12 @@ import upload_file_component from './UploadFileComponent'
               this.screen_equipment_model_installed = response.data.equipment_model_installed
               this.screen_teamviewer_details = response.data.teamviewer_details
             }
-          })
-          .catch(e => {
-              this.errors.push(e)
-              console.log('error getting schedule')
-          });
+        })
+        .catch(e => {
+            this.errors.push(e)
+            console.log('error getting schedule')
+        })
+
       },
 
       
@@ -557,7 +630,7 @@ import upload_file_component from './UploadFileComponent'
        */
       deleteLink: function(event) {
         if(confirm("DANGER! Are you sure you like to DELETE this link?")) {        
-          axios.delete(`${ this.siteURL }/api/l/${ event }`)
+          axios.delete(`${ this.siteURL }/api/l/${ event }`, this.getAuth())
           .then(response => {
               alert("link deleted");
               this.getSelectedScreenInfo([this.selected.screen,this.screen_key])

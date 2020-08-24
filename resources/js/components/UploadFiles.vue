@@ -121,6 +121,10 @@
 import UploadService from "../services/UploadFilesService";
 export default {
   name: "upload-files",
+  props: [
+    'basicAuth',
+    'getAuth'
+  ],
   data() {
     return {
       selectedFiles: '',
@@ -166,7 +170,7 @@ export default {
 
       this.progress = 0;
       this.currentFile = this.selectedFiles;
-      UploadService.upload(this.currentFile, this.vname, event => {
+      UploadService.upload(this.currentFile, this.vname, this.basicAuth, event => {
         this.progress = Math.round((100 * event.loaded) / event.total);
       })
       .then(response => {
@@ -198,7 +202,7 @@ export default {
         return;
       }
       // console.log(id)
-      axios.delete(`${ this.siteURL }/api/clip/delete/${ id }`)
+      axios.delete(`${ this.siteURL }/api/clip/delete/${ id }`,this.getAuth)
       .then(response => {
         // console.log(response.data)
         alert('Clip deleted')
