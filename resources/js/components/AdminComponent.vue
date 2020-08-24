@@ -308,8 +308,8 @@ axios.defaults.withCredentials = true;
       //this.$refs.calendar.scrollToTime('08:00')
     },
     created () {
-      //console.log('thisss token')
-      //console.log(config)
+      console.log('auth token')
+      console.log(this.token)
 
       this.$vuetify.theme.dark = true;
       this.getOutlets()

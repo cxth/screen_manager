@@ -617,8 +617,8 @@ axios__WEBPACK_IMPORTED_MODULE_0___default.a.defaults.withCredentials = true;
   mounted: function mounted() {//this.$refs.calendar.scrollToTime('08:00')
   },
   created: function created() {
-    //console.log('thisss token')
-    //console.log(config)
+    console.log('auth token');
+    console.log(this.token);
     this.$vuetify.theme.dark = true;
     this.getOutlets();
     this.getMediaAssets();
