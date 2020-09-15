@@ -2074,6 +2074,77 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['selected', 'media_assets', 'form', 'is_form_valid', 'clear_URL', 'momentNow', 'resetData', 'getSelectedScreenInfo', 'screen_key', 'getScreenSched', 'getMediaAssets', 'getLinks', 'getAuth'],
   data: function data() {
@@ -2090,7 +2161,11 @@ __webpack_require__.r(__webpack_exports__);
           var pattern = /^https:\/\//;
           return pattern.test(value) || 'URL should start in https://';
         }
-      }
+      },
+      fav: true,
+      menu: false,
+      message: false,
+      hints: true
     };
   },
   watch: {
@@ -2117,6 +2192,8 @@ __webpack_require__.r(__webpack_exports__);
   methods: {
     addSched: function addSched(event) {
       var _this = this;
+
+      this.menu = false;
 
       if (this.selected.screen == null) {
         alert('No screen selected');
@@ -4927,17 +5004,220 @@ var render = function() {
                         { attrs: { align: "center", justify: "center" } },
                         [
                           _c(
-                            "v-btn",
+                            "v-menu",
                             {
-                              staticClass: "mr-2",
                               attrs: {
-                                rounded: "",
-                                color: "primary",
-                                dark: ""
+                                "close-on-content-click": false,
+                                "nudge-width": 200,
+                                "offset-x": ""
                               },
-                              on: { click: _vm.addSched }
+                              scopedSlots: _vm._u([
+                                {
+                                  key: "activator",
+                                  fn: function(ref) {
+                                    var on = ref.on
+                                    var attrs = ref.attrs
+                                    return [
+                                      _c(
+                                        "v-btn",
+                                        _vm._g(
+                                          _vm._b(
+                                            {
+                                              staticClass: "mr-2",
+                                              attrs: {
+                                                rounded: "",
+                                                color: "primary",
+                                                dark: ""
+                                              }
+                                            },
+                                            "v-btn",
+                                            attrs,
+                                            false
+                                          ),
+                                          on
+                                        ),
+                                        [
+                                          _vm._v(
+                                            "\n                    SAVE\n                  "
+                                          )
+                                        ]
+                                      )
+                                    ]
+                                  }
+                                }
+                              ]),
+                              model: {
+                                value: _vm.menu,
+                                callback: function($$v) {
+                                  _vm.menu = $$v
+                                },
+                                expression: "menu"
+                              }
                             },
-                            [_vm._v("SAVE")]
+                            [
+                              _vm._v(" "),
+                              _c(
+                                "v-card",
+                                [
+                                  _c(
+                                    "v-list",
+                                    [
+                                      _c(
+                                        "v-list-item",
+                                        [
+                                          _c("v-list-item-avatar", [
+                                            _c("img", {
+                                              attrs: {
+                                                src:
+                                                  "https://cdn.vuetifyjs.com/images/john.jpg",
+                                                alt: "John"
+                                              }
+                                            })
+                                          ]),
+                                          _vm._v(" "),
+                                          _c(
+                                            "v-list-item-content",
+                                            [
+                                              _c("v-list-item-title", [
+                                                _vm._v("John Leider")
+                                              ]),
+                                              _vm._v(" "),
+                                              _c("v-list-item-subtitle", [
+                                                _vm._v("Founder of Vuetify.js")
+                                              ])
+                                            ],
+                                            1
+                                          ),
+                                          _vm._v(" "),
+                                          _c(
+                                            "v-list-item-action",
+                                            [
+                                              _c(
+                                                "v-btn",
+                                                {
+                                                  class: _vm.fav
+                                                    ? "red--text"
+                                                    : "",
+                                                  attrs: { icon: "" },
+                                                  on: {
+                                                    click: function($event) {
+                                                      _vm.fav = !_vm.fav
+                                                    }
+                                                  }
+                                                },
+                                                [
+                                                  _c("v-icon", [
+                                                    _vm._v("mdi-heart")
+                                                  ])
+                                                ],
+                                                1
+                                              )
+                                            ],
+                                            1
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c("v-divider"),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-list",
+                                    [
+                                      _c(
+                                        "v-list-item",
+                                        [
+                                          _c(
+                                            "v-list-item-action",
+                                            [
+                                              _c("v-switch", {
+                                                attrs: { color: "purple" },
+                                                model: {
+                                                  value: _vm.message,
+                                                  callback: function($$v) {
+                                                    _vm.message = $$v
+                                                  },
+                                                  expression: "message"
+                                                }
+                                              })
+                                            ],
+                                            1
+                                          ),
+                                          _vm._v(" "),
+                                          _c("v-list-item-title", [
+                                            _vm._v("Enable messages")
+                                          ])
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-list-item",
+                                        [
+                                          _c(
+                                            "v-list-item-action",
+                                            [
+                                              _c("v-switch", {
+                                                attrs: { color: "purple" },
+                                                model: {
+                                                  value: _vm.hints,
+                                                  callback: function($$v) {
+                                                    _vm.hints = $$v
+                                                  },
+                                                  expression: "hints"
+                                                }
+                                              })
+                                            ],
+                                            1
+                                          ),
+                                          _vm._v(" "),
+                                          _c("v-list-item-title", [
+                                            _vm._v("Enable hints")
+                                          ])
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-card-actions",
+                                    [
+                                      _c("v-spacer"),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          attrs: { text: "" },
+                                          on: {
+                                            click: function($event) {
+                                              _vm.menu = false
+                                            }
+                                          }
+                                        },
+                                        [_vm._v("Cancel")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          attrs: { color: "primary", text: "" },
+                                          on: { click: _vm.addSched }
+                                        },
+                                        [_vm._v("Save Sched")]
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              )
+                            ],
+                            1
                           ),
                           _vm._v(" "),
                           _c(

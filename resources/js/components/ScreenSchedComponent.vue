@@ -91,7 +91,78 @@
                 align="center"
                 justify="center"
               >
-                <v-btn rounded color="primary" dark @click="addSched" class="mr-2">SAVE</v-btn>
+                
+                <v-menu
+                  v-model="menu"
+                  :close-on-content-click="false"
+                  :nudge-width="200"
+                  offset-x
+                >
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn 
+                      rounded 
+                      color="primary" 
+                      dark
+                      v-bind="attrs"
+                      v-on="on"
+                      
+                      class="mr-2">
+                      SAVE
+                    </v-btn>
+                  </template>
+                  <v-card>
+                    <v-list>
+                      <v-list-item>
+                        <v-list-item-avatar>
+                          <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John">
+                        </v-list-item-avatar>
+
+                        <v-list-item-content>
+                          <v-list-item-title>John Leider</v-list-item-title>
+                          <v-list-item-subtitle>Founder of Vuetify.js</v-list-item-subtitle>
+                        </v-list-item-content>
+
+                        <v-list-item-action>
+                          <v-btn
+                            :class="fav ? 'red--text' : ''"
+                            icon
+                            @click="fav = !fav"
+                          >
+                            <v-icon>mdi-heart</v-icon>
+                          </v-btn>
+                        </v-list-item-action>
+                      </v-list-item>
+                    </v-list>
+
+                    <v-divider></v-divider>
+
+                    <v-list>
+                      <v-list-item>
+                        <v-list-item-action>
+                          <v-switch v-model="message" color="purple"></v-switch>
+                        </v-list-item-action>
+                        <v-list-item-title>Enable messages</v-list-item-title>
+                      </v-list-item>
+
+                      <v-list-item>
+                        <v-list-item-action>
+                          <v-switch v-model="hints" color="purple"></v-switch>
+                        </v-list-item-action>
+                        <v-list-item-title>Enable hints</v-list-item-title>
+                      </v-list-item>
+                    </v-list>
+
+                    <v-card-actions>
+                      <v-spacer></v-spacer>
+
+                      <v-btn text @click="menu = false">Cancel</v-btn>
+                      <v-btn color="primary" @click="addSched" text >Save Sched</v-btn>
+                    </v-card-actions>
+                  </v-card>
+                </v-menu>
+                
+                
+                
                 <v-btn rounded color="primary" dark @click="disableMedia" class="ml-2">CLEAR</v-btn>
               </v-col>
             </v-row>
@@ -128,7 +199,11 @@ export default {
         const pattern = /^https:\/\//
         return pattern.test(value) || 'URL should start in https://'
       },
-    }
+    },
+    fav: true,
+    menu: false,
+    message: false,
+    hints: true,
   }),
   watch: {
     clear_URL: function (event) {
@@ -151,6 +226,8 @@ export default {
   },
   methods: {
       addSched: function(event) {
+
+        this.menu = false
 
         if (this.selected.screen == null)
         {
