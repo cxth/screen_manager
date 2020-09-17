@@ -525,10 +525,13 @@ axios.defaults.withCredentials = true;
       getScreenSched: function() {
         axios({
             method: 'get',
-            url: `${ this.siteURL }/api/schedule/ss/${ this.selected.screen }`,
+            url: `${ this.siteURL }/api/schedule/calendar/${ this.selected.screen }`,
         }).then(response => {
             if (response.data)
             {
+              console.log('schedule calendar')
+              console.log(response.data)
+              
               this.selected.screen_schedule = response.data;
               this.calendar.events = this.eventsFormat() 
             }
@@ -685,9 +688,17 @@ axios.defaults.withCredentials = true;
 
       // Helpers =================
       momentNow: function(p) {
-        if (p) 
+        // if (p == 'ISO') 
+        // {
+        //   return dayjs().format('YYYY-MM-DD hh:mm a');
+        // }
+        if (p == 'date') 
         {
           return dayjs().format('YYYY-MM-DD');
+        }
+        if (p)
+        {
+          return dayjs(p).format('YYYY-MM-DD HH:mm:ss');
         }
         return dayjs().format('YYYY-MM-DD HH:mm:ss');
       },

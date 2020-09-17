@@ -47,6 +47,7 @@ Route::delete('/schedule/{schedule}','ScheduleController@destroy');
 Route::middleware('auth:sanctum')->get('/schedule','ScheduleController@index');
 Route::middleware('auth:sanctum')->get('/schedule/outlet/{outlet}','ScheduleController@showOutlet');
 Route::middleware('auth:sanctum')->get('/schedule/ss/{screen}','ScheduleController@showScreen')->name('schedule.screen');
+Route::middleware('auth:sanctum')->get('/schedule/calendar/{screen}','ScheduleController@showScreenCalendar')->name('schedule-calendar.screen');
 Route::middleware('auth:sanctum')->get('/schedule/link/{link}','ScheduleController@showLink');
 Route::middleware('auth:sanctum')->post('/schedule/screen/{screen}','ScheduleController@onScreen');
 Route::middleware('auth:sanctum')->get('/schedule/now/{screen}','ScheduleController@nowShowing');

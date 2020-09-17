@@ -838,9 +838,11 @@ axios__WEBPACK_IMPORTED_MODULE_0___default.a.defaults.withCredentials = true;
 
       axios__WEBPACK_IMPORTED_MODULE_0___default()({
         method: 'get',
-        url: "".concat(this.siteURL, "/api/schedule/ss/").concat(this.selected.screen)
+        url: "".concat(this.siteURL, "/api/schedule/calendar/").concat(this.selected.screen)
       }).then(function (response) {
         if (response.data) {
+          console.log('schedule calendar');
+          console.log(response.data);
           _this6.selected.screen_schedule = response.data;
           _this6.calendar.events = _this6.eventsFormat();
         }
@@ -993,8 +995,16 @@ axios__WEBPACK_IMPORTED_MODULE_0___default.a.defaults.withCredentials = true;
     },
     // Helpers =================
     momentNow: function momentNow(p) {
-      if (p) {
+      // if (p == 'ISO') 
+      // {
+      //   return dayjs().format('YYYY-MM-DD hh:mm a');
+      // }
+      if (p == 'date') {
         return dayjs().format('YYYY-MM-DD');
+      }
+
+      if (p) {
+        return dayjs(p).format('YYYY-MM-DD HH:mm:ss');
       }
 
       return dayjs().format('YYYY-MM-DD HH:mm:ss');
@@ -2145,6 +2155,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['selected', 'media_assets', 'form', 'is_form_valid', 'clear_URL', 'momentNow', 'resetData', 'getSelectedScreenInfo', 'screen_key', 'getScreenSched', 'getMediaAssets', 'getLinks', 'getAuth'],
   data: function data() {
@@ -2165,7 +2184,10 @@ __webpack_require__.r(__webpack_exports__);
       fav: true,
       menu: false,
       message: false,
-      hints: true
+      hints: true,
+      dtValue: '2019-03-06 8:20 pm',
+      minDate: '' //dtValue: this.momentNow()
+
     };
   },
   watch: {
@@ -2189,16 +2211,24 @@ __webpack_require__.r(__webpack_exports__);
       set: function set(newValue) {}
     }
   },
+  created: function created() {
+    this.dtValue = this.momentNow(); // this.minDate = this.momentNow('ISO')
+    // console.log('printing moment now p')
+    // console.log(this.momentNow('ISO'))
+  },
   methods: {
     addSched: function addSched(event) {
       var _this = this;
 
+      console.log('adding sched <<< the date');
+      console.log(this.dtValue);
       this.menu = false;
 
       if (this.selected.screen == null) {
         alert('No screen selected');
         return;
-      }
+      } // Using Custom URL
+
 
       if (this.selected.link == null) {
         if (this.newURL == "" || this.newURL_name == "") {
@@ -2216,19 +2246,23 @@ __webpack_require__.r(__webpack_exports__);
           link_name: this.newURL_name,
           url: this.newURL,
           media__asset_id: this.media_asset_id,
-          show_datetime: this.momentNow()
+          show_datetime: this.momentNow(this.dtValue) //show_datetime: this.dtValue
+
         };
-      } else {
-        var mydata = {
-          screen_id: this.selected.screen,
-          link_id: this.selected.link,
-          url: this.selected.link_url,
-          show_datetime: this.momentNow()
-        };
-      }
+      } // Using Media Link
+      else {
+          var mydata = {
+            screen_id: this.selected.screen,
+            link_id: this.selected.link,
+            url: this.selected.link_url,
+            show_datetime: this.momentNow(this.dtValue) //show_datetime: this.dtValue
+
+          };
+        }
 
       console.log('saving schedule: ');
-      console.log(mydata); // axios({
+      console.log(mydata); //return
+      // axios({
       //     method: 'post',
       //     url: `${ this.siteURL }/api/schedule/screen/${ this.selected.screen }`,
       //     data: mydata
@@ -5008,8 +5042,8 @@ var render = function() {
                             {
                               attrs: {
                                 "close-on-content-click": false,
-                                "nudge-width": 200,
-                                "offset-x": ""
+                                "nudge-width": 300,
+                                "offset-y": ""
                               },
                               scopedSlots: _vm._u([
                                 {
@@ -5038,7 +5072,7 @@ var render = function() {
                                         ),
                                         [
                                           _vm._v(
-                                            "\n                    SAVE\n                  "
+                                            "\n                    SET\n                  "
                                           )
                                         ]
                                       )
@@ -5058,6 +5092,10 @@ var render = function() {
                               _vm._v(" "),
                               _c(
                                 "v-card",
+                                {
+                                  staticClass: "mx-auto",
+                                  attrs: { height: "525", width: "428" }
+                                },
                                 [
                                   _c(
                                     "v-list",
@@ -5065,53 +5103,12 @@ var render = function() {
                                       _c(
                                         "v-list-item",
                                         [
-                                          _c("v-list-item-avatar", [
-                                            _c("img", {
-                                              attrs: {
-                                                src:
-                                                  "https://cdn.vuetifyjs.com/images/john.jpg",
-                                                alt: "John"
-                                              }
-                                            })
-                                          ]),
-                                          _vm._v(" "),
                                           _c(
                                             "v-list-item-content",
                                             [
                                               _c("v-list-item-title", [
-                                                _vm._v("John Leider")
-                                              ]),
-                                              _vm._v(" "),
-                                              _c("v-list-item-subtitle", [
-                                                _vm._v("Founder of Vuetify.js")
+                                                _vm._v("Select Date Time")
                                               ])
-                                            ],
-                                            1
-                                          ),
-                                          _vm._v(" "),
-                                          _c(
-                                            "v-list-item-action",
-                                            [
-                                              _c(
-                                                "v-btn",
-                                                {
-                                                  class: _vm.fav
-                                                    ? "red--text"
-                                                    : "",
-                                                  attrs: { icon: "" },
-                                                  on: {
-                                                    click: function($event) {
-                                                      _vm.fav = !_vm.fav
-                                                    }
-                                                  }
-                                                },
-                                                [
-                                                  _c("v-icon", [
-                                                    _vm._v("mdi-heart")
-                                                  ])
-                                                ],
-                                                1
-                                              )
                                             ],
                                             1
                                           )
@@ -5124,65 +5121,16 @@ var render = function() {
                                   _vm._v(" "),
                                   _c("v-divider"),
                                   _vm._v(" "),
-                                  _c(
-                                    "v-list",
-                                    [
-                                      _c(
-                                        "v-list-item",
-                                        [
-                                          _c(
-                                            "v-list-item-action",
-                                            [
-                                              _c("v-switch", {
-                                                attrs: { color: "purple" },
-                                                model: {
-                                                  value: _vm.message,
-                                                  callback: function($$v) {
-                                                    _vm.message = $$v
-                                                  },
-                                                  expression: "message"
-                                                }
-                                              })
-                                            ],
-                                            1
-                                          ),
-                                          _vm._v(" "),
-                                          _c("v-list-item-title", [
-                                            _vm._v("Enable messages")
-                                          ])
-                                        ],
-                                        1
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "v-list-item",
-                                        [
-                                          _c(
-                                            "v-list-item-action",
-                                            [
-                                              _c("v-switch", {
-                                                attrs: { color: "purple" },
-                                                model: {
-                                                  value: _vm.hints,
-                                                  callback: function($$v) {
-                                                    _vm.hints = $$v
-                                                  },
-                                                  expression: "hints"
-                                                }
-                                              })
-                                            ],
-                                            1
-                                          ),
-                                          _vm._v(" "),
-                                          _c("v-list-item-title", [
-                                            _vm._v("Enable hints")
-                                          ])
-                                        ],
-                                        1
-                                      )
-                                    ],
-                                    1
-                                  ),
+                                  _c("VueCtkDateTimePicker", {
+                                    attrs: { inline: true },
+                                    model: {
+                                      value: _vm.dtValue,
+                                      callback: function($$v) {
+                                        _vm.dtValue = $$v
+                                      },
+                                      expression: "dtValue"
+                                    }
+                                  }),
                                   _vm._v(" "),
                                   _c(
                                     "v-card-actions",
@@ -5205,10 +5153,13 @@ var render = function() {
                                       _c(
                                         "v-btn",
                                         {
-                                          attrs: { color: "primary", text: "" },
+                                          attrs: {
+                                            color: "primary",
+                                            rounded: ""
+                                          },
                                           on: { click: _vm.addSched }
                                         },
-                                        [_vm._v("Save Sched")]
+                                        [_vm._v("SAVE")]
                                       )
                                     ],
                                     1

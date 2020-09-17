@@ -28,6 +28,7 @@
     "dependencies": {
         "iframe-resizer": "^4.2.11",
         "vue-cookies": "^1.7.3",
+        "vue-ctk-date-time-picker": "^2.5.0",
         "vuetify": "^2.3.4"
     }
 }

@@ -341,7 +341,25 @@ class ScheduleController extends Controller
         return ScheduleResource::collection($result);
     }
 
-
+    /**
+     * API // Display a listing of todays schedule by ADMIN API.
+     *
+     * @url api/schedule/ss/CFANGSS03
+     * @return \Illuminate\Http\Response
+     */
+    public function showScreenCalendar(Screen $screen)
+    {               
+        // $result = $screen->schedule()
+        //     ->whereDate('show_datetime', Carbon::today())
+        //     ->orderBy('show_datetime', 'desc')
+        //     ->get();
+        $arr = [$screen->id];
+        $result = DB::table('schedules')
+            ->whereRaw('screen_id = ?
+                        ORDER BY show_datetime DESC', $arr)
+                        ->get();
+        return ScheduleResource::collection($result);
+    }
 
     /**
      * Display a listing of todays schedule for selected group.

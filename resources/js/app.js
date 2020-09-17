@@ -11,6 +11,8 @@ import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
 import {iframeResize} from 'iframe-resizer'
 import VueCookies from 'vue-cookies'
+import VueCtkDateTimePicker from 'vue-ctk-date-time-picker';
+import 'vue-ctk-date-time-picker/dist/vue-ctk-date-time-picker.css';
 
 
 window.Vue = require('vue');
@@ -61,6 +63,7 @@ const opts = {}
 
 Vue.component('frame-component', () => import('./components/FrameComponent'));
 Vue.component('admin-component', () => import("./components/AdminComponent"));
+Vue.component('VueCtkDateTimePicker', VueCtkDateTimePicker);
 
 
 //import App from './App'

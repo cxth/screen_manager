@@ -92,11 +92,12 @@
                 justify="center"
               >
                 
+           
                 <v-menu
                   v-model="menu"
                   :close-on-content-click="false"
-                  :nudge-width="200"
-                  offset-x
+                  :nudge-width="300"
+                  offset-y
                 >
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn 
@@ -105,24 +106,25 @@
                       dark
                       v-bind="attrs"
                       v-on="on"
-                      
                       class="mr-2">
-                      SAVE
+                      SET
                     </v-btn>
                   </template>
-                  <v-card>
+
+                  
+                  <v-card
+                    height="525"
+                    width="428"
+                    class="mx-auto"
+                  >
                     <v-list>
                       <v-list-item>
-                        <v-list-item-avatar>
-                          <img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="John">
-                        </v-list-item-avatar>
-
+                      
                         <v-list-item-content>
-                          <v-list-item-title>John Leider</v-list-item-title>
-                          <v-list-item-subtitle>Founder of Vuetify.js</v-list-item-subtitle>
+                          <v-list-item-title>Select Date Time</v-list-item-title>
                         </v-list-item-content>
 
-                        <v-list-item-action>
+                        <!-- <v-list-item-action>
                           <v-btn
                             :class="fav ? 'red--text' : ''"
                             icon
@@ -130,13 +132,13 @@
                           >
                             <v-icon>mdi-heart</v-icon>
                           </v-btn>
-                        </v-list-item-action>
+                        </v-list-item-action> -->
                       </v-list-item>
                     </v-list>
 
                     <v-divider></v-divider>
 
-                    <v-list>
+                    <!-- <v-list>
                       <v-list-item>
                         <v-list-item-action>
                           <v-switch v-model="message" color="purple"></v-switch>
@@ -150,16 +152,23 @@
                         </v-list-item-action>
                         <v-list-item-title>Enable hints</v-list-item-title>
                       </v-list-item>
-                    </v-list>
+                    </v-list> -->
+
+                    <VueCtkDateTimePicker 
+                      v-model="dtValue" 
+                      :inline=true />
 
                     <v-card-actions>
                       <v-spacer></v-spacer>
 
                       <v-btn text @click="menu = false">Cancel</v-btn>
-                      <v-btn color="primary" @click="addSched" text >Save Sched</v-btn>
+                      <v-btn color="primary" @click="addSched" rounded>SAVE</v-btn>
                     </v-card-actions>
                   </v-card>
+                  
+
                 </v-menu>
+            
                 
                 
                 
@@ -204,6 +213,9 @@ export default {
     menu: false,
     message: false,
     hints: true,
+    dtValue: '2019-03-06 8:20 pm',
+    minDate: ''
+    //dtValue: this.momentNow()
   }),
   watch: {
     clear_URL: function (event) {
@@ -224,8 +236,18 @@ export default {
       }
     }
   },
+  created() {
+    this.dtValue = this.momentNow()
+    // this.minDate = this.momentNow('ISO')
+    // console.log('printing moment now p')
+    // console.log(this.momentNow('ISO'))
+  },
   methods: {
       addSched: function(event) {
+
+        console.log('adding sched <<< the date')
+        console.log(this.dtValue)
+
 
         this.menu = false
 
@@ -235,6 +257,7 @@ export default {
           return;
         }
         
+        // Using Custom URL
         if (this.selected.link == null)
         {
           if (this.newURL=="" || this.newURL_name=="")
@@ -253,21 +276,25 @@ export default {
               link_name: this.newURL_name,
               url: this.newURL,
               media__asset_id: this.media_asset_id,
-              show_datetime: this.momentNow()
+              show_datetime: this.momentNow(this.dtValue)
+              //show_datetime: this.dtValue
           }
         }
+        // Using Media Link
         else
         {
           var mydata = {
               screen_id: this.selected.screen,
               link_id: this.selected.link,
               url: this.selected.link_url,
-              show_datetime: this.momentNow()
+              show_datetime: this.momentNow(this.dtValue)
+              //show_datetime: this.dtValue
           }
         }
         
         console.log('saving schedule: ');
         console.log(mydata);
+        //return
         
         // axios({
         //     method: 'post',
