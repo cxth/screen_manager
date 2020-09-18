@@ -5,7 +5,7 @@
       justify="center"
     >
       <v-sheet 
-        style="maxWidth: 500px"
+        style="maxWidth: 800px"
         :fullscreen="$vuetify.breakpoint.mobile"
         outlined
       >
@@ -14,11 +14,36 @@
             flat
             dense
             dark
+            
           >
-          <v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-toolbar-title
+           style="text-align: center; width: 100%"
+          >
             {{ selected.screen_name }}
           </v-toolbar-title>
-          <v-spacer></v-spacer>
+          
+          <v-btn
+            fab
+            small
+            absolute
+            left
+            color="primary"
+            @click="$refs.calendar.prev()"
+          >
+            <v-icon dark>mdi-chevron-left</v-icon>
+          </v-btn>
+          <v-btn
+            fab
+            small
+            absolute
+            right
+            color="primary"
+            @click="$refs.calendar.next()"
+          >
+            <v-icon dark>mdi-chevron-right</v-icon>
+          </v-btn>
+         
         </v-toolbar>
         <v-calendar
           ref="calendar"
@@ -27,7 +52,7 @@
           :value="calendar.today"
           :events="calendar.events"
           color="primary"
-          type="day"
+          type="4day"
         ></v-calendar>
       </v-sheet>
     </v-col>

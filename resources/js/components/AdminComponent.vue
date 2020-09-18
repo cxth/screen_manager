@@ -529,9 +529,6 @@ axios.defaults.withCredentials = true;
         }).then(response => {
             if (response.data)
             {
-              console.log('schedule calendar')
-              console.log(response.data)
-              
               this.selected.screen_schedule = response.data;
               this.calendar.events = this.eventsFormat() 
             }

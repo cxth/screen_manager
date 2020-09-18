@@ -841,8 +841,6 @@ axios__WEBPACK_IMPORTED_MODULE_0___default.a.defaults.withCredentials = true;
         url: "".concat(this.siteURL, "/api/schedule/calendar/").concat(this.selected.screen)
       }).then(function (response) {
         if (response.data) {
-          console.log('schedule calendar');
-          console.log(response.data);
           _this6.selected.screen_schedule = response.data;
           _this6.calendar.events = _this6.eventsFormat();
         }
@@ -1060,6 +1058,31 @@ axios__WEBPACK_IMPORTED_MODULE_0___default.a.defaults.withCredentials = true;
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3533,7 +3556,7 @@ var render = function() {
           _c(
             "v-sheet",
             {
-              staticStyle: { maxWidth: "500px" },
+              staticStyle: { maxWidth: "800px" },
               attrs: {
                 fullscreen: _vm.$vuetify.breakpoint.mobile,
                 outlined: ""
@@ -3547,15 +3570,67 @@ var render = function() {
                   attrs: { flat: "", dense: "", dark: "" }
                 },
                 [
-                  _c("v-toolbar-title", [
-                    _vm._v(
-                      "\n          " +
-                        _vm._s(_vm.selected.screen_name) +
-                        "\n        "
-                    )
-                  ]),
+                  _c("v-spacer"),
                   _vm._v(" "),
-                  _c("v-spacer")
+                  _c(
+                    "v-toolbar-title",
+                    { staticStyle: { "text-align": "center", width: "100%" } },
+                    [
+                      _vm._v(
+                        "\n          " +
+                          _vm._s(_vm.selected.screen_name) +
+                          "\n        "
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: {
+                        fab: "",
+                        small: "",
+                        absolute: "",
+                        left: "",
+                        color: "primary"
+                      },
+                      on: {
+                        click: function($event) {
+                          return _vm.$refs.calendar.prev()
+                        }
+                      }
+                    },
+                    [
+                      _c("v-icon", { attrs: { dark: "" } }, [
+                        _vm._v("mdi-chevron-left")
+                      ])
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: {
+                        fab: "",
+                        small: "",
+                        absolute: "",
+                        right: "",
+                        color: "primary"
+                      },
+                      on: {
+                        click: function($event) {
+                          return _vm.$refs.calendar.next()
+                        }
+                      }
+                    },
+                    [
+                      _c("v-icon", { attrs: { dark: "" } }, [
+                        _vm._v("mdi-chevron-right")
+                      ])
+                    ],
+                    1
+                  )
                 ],
                 1
               ),
@@ -3567,7 +3642,7 @@ var render = function() {
                   value: _vm.calendar.today,
                   events: _vm.calendar.events,
                   color: "primary",
-                  type: "day"
+                  type: "4day"
                 },
                 model: {
                   value: _vm.calendar.today,
