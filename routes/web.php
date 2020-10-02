@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,4 +56,8 @@ Route::get('/clear-cache', function() {
     Artisan::call('view:clear');
         $message .= " View is cleared <br/>";
     return $message;
+});
+
+Route::get('/clear-session-logs', function() {
+  DB::table('session__logs')->truncate();
 });
