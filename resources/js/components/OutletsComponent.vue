@@ -170,8 +170,6 @@ export default {
         this.errors.push(e)
       });
 
-
-
     },
 
     screenSelect: function (event) {

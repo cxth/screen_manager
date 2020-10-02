@@ -86,10 +86,18 @@ class ScreenController extends Controller
                      ->select(DB::raw('count(*) as count'))
                      ->where('outlet_id', '=', $request->outlet_id)
                      ->first();
-      
+  
         $screen_counter = $screen->count + 1;
         $oint_id = $request->outlet_intid;
         $id = $oint_id.'SS'.$screen_counter;
+        $count = Screen::where('id', $id)->count();
+
+        do {
+          $screen_counter++;
+          $id = $oint_id.'SS'.$screen_counter;
+          $count = Screen::where('id', $id)->count();
+        } while ($count > 0);
+
         $data = [
           'id' => $id,
           'outlet_id' => $request->outlet_id,
@@ -97,6 +105,7 @@ class ScreenController extends Controller
           'activation_date' => Carbon::today()
         ];
         //return $data;
+
         $row = Screen::create($data);
 
         //create login account
