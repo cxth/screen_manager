@@ -123,9 +123,12 @@ class ScheduleController extends Controller
         }
         else
         {
-            //dd($schedule[0]->id);
-            // active session history log
-            $this->logSessionHistory($screen, Schedule::find($schedule[0]->id));
+            if (Schedule::find($schedule[0]->id) != NULL)
+            {
+              //dd($schedule[0]->id);
+              // active session history log
+              $this->logSessionHistory($screen, Schedule::find($schedule[0]->id));
+            }
             return $schedule;
         }
     }
@@ -277,11 +280,11 @@ class ScheduleController extends Controller
         $arr = [$screen->id];
         $result = DB::table('schedules')
             ->leftJoin('links', 'schedules.link_id', '=', 'links.id')
-            ->whereRaw('screen_id = ?
-                        AND show_datetime < NOW() 
-                        AND (expire_datetime > NOW() 
-                        OR expire_datetime is NULL) 
-                        ORDER BY show_datetime DESC', $arr)
+            ->whereRaw('schedules.screen_id = ?
+                        AND schedules.show_datetime < NOW() 
+                        AND (schedules.expire_datetime > NOW() 
+                        OR schedules.expire_datetime is NULL) 
+                        ORDER BY schedules.show_datetime DESC', $arr)
                         ->get(); // `get` because of '->isEmpty()'
 
         // $result = DB::select('SELECT 
