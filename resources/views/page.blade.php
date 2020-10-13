@@ -45,7 +45,7 @@
 <script>
   setInterval(function() {
     window.location.reload();
-  }, 360000); // 120000 2 minutes
+  }, 21600000); // 6 hours
 </script>
 </body>
 </html>
