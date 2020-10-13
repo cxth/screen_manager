@@ -272,12 +272,28 @@ class ScheduleController extends Controller
     {    
         $arr = [$screen->id];
         $result = DB::table('schedules')
+            ->leftJoin('links', 'schedules.link_id', '=', 'links.id')
             ->whereRaw('screen_id = ?
                         AND show_datetime < NOW() 
                         AND (expire_datetime > NOW() 
                         OR expire_datetime is NULL) 
                         ORDER BY show_datetime DESC', $arr)
                         ->get(); // `get` because of '->isEmpty()'
+
+        // $result = DB::select('SELECT 
+        //             s.id AS id,
+        //             s.screen_id AS screen_id,
+        //             s.link_id AS link_id,
+        //             s.url AS url,
+        //             s.show_datetime AS show_datetime,
+        //             s.expire_datetime AS expire_datetime,
+        //             s.created_at AS created_at,
+        //             s.updated_at AS updated_at,
+        //             l.media__asset_id AS media_asset_id
+        //             FROM schedules AS s
+        //             LEFT JOIN links AS l
+        //             ON s.link_id = l.id
+        //             WHERE s.screen_id = ?', $arr);
         return $result;
     }
     

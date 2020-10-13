@@ -32,6 +32,7 @@ class ScheduleResource extends JsonResource
                 'group_screen_id' => $this->group__screen_id,
                 'link_id' => $this->link_id,
                 'media_asset_name' => $media_asset->name,
+                'media_asset_id' => $media_asset->id,
                 'link_name' => $link->name,
                 'url' => $this->url,
                 'show_datetime' => $this->show_datetime,

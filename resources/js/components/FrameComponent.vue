@@ -21,16 +21,19 @@ export default {
                 url_id: null,
                 //url: `../img/default-maintenance.png`,
                 url: `../img/default.jpg`,
-                timer: ''
+                timer: '',
+                media_asset_id: ''
             } 
         },
     
     // Fetches posts when the component is created.
     created() {
-        this.fetchURL()
-        this.timer = setInterval(this.fetchURL, this.fetchTimeout)
+      this.fetchURL()
+      this.timer = setInterval(this.fetchURL, this.fetchTimeout)
     },
-
+    mounted() {
+     
+    },
     methods: {
         fetchURL() {
             axios.get(`${ this.siteURL }/request`)
@@ -80,6 +83,9 @@ export default {
                 console.log('current url id ' + this.url_id)
                 console.log('sched url id ' + sched.id)
 
+                this.media_asset_id = sched.media__asset_id
+                console.log('media asset id ' + this.media_asset_id)
+
 
                 if (sched.id && sched.id != this.url_id) 
                 {
@@ -89,7 +95,23 @@ export default {
                 else
                 {
                     console.log(`(${ sched.id }) no change in content`);
-                }         
+                } 
+                
+                // -------------------
+                 // 1 = live sports
+                // console.log('IM MOUNTED')
+                // console.log(this.media_asset_id)
+                // if (this.media_asset_id == 1) {
+                //     setInterval(function() {
+                //       window.location.reload();
+                //   }, 4000); // 120000 2 minutes
+                //   console.log('I should be reloading...');
+                // }
+                // else {
+                //   console.log('NO RELOAD...');
+                // }
+                // ----------------------
+
             })
             .catch(e => {
 
