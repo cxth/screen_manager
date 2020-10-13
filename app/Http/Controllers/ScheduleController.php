@@ -114,19 +114,20 @@ class ScheduleController extends Controller
         $this->logSession($screen->id);
 
         $schedule = $this->nowShowing($screen);
-        return $schedule;
+        //return $schedule;
 
 
         if ($schedule->isEmpty()) {
             // @TODO: default image or URL here...
             return ['no-content'];
         }
-
-        //dd($schedule[0]->id);
-        // active session history log
-        $this->logSessionHistory($screen, Schedule::find($schedule[0]->id));
-        
-        return $schedule;
+        else
+        {
+            //dd($schedule[0]->id);
+            // active session history log
+            $this->logSessionHistory($screen, Schedule::find($schedule[0]->id));
+            return $schedule;
+        }
     }
 
     /**

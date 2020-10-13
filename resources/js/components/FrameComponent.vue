@@ -42,7 +42,7 @@ export default {
                 // --- debugging ----
                 console.log('fetchURL response: ')
                 console.log(response.data);
-                return
+                //return
                 //
                 // -------------------
             
