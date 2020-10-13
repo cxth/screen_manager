@@ -114,6 +114,9 @@ class ScheduleController extends Controller
         $this->logSession($screen->id);
 
         $schedule = $this->nowShowing($screen);
+        return $schedule;
+
+
         if ($schedule->isEmpty()) {
             // @TODO: default image or URL here...
             return ['no-content'];
