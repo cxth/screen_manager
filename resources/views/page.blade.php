@@ -43,9 +43,9 @@
 </div>
 <script src="{{ mix('js/app.js') }}" defer></script>
 <script>
-  setInterval(function() {
-    window.location.reload();
-  }, 360000); // 120000 2 minutes
+  // setInterval(function() {
+  //   window.location.reload();
+  // }, 360000); // 120000 2 minutes
 </script>
 </body>
 </html>
