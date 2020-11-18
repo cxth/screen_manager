@@ -32,10 +32,25 @@ export default {
       this.timer = setInterval(this.fetchURL, this.fetchTimeout)
     },
     mounted() {
-     
+
+    },
+    watch: {
+      media_asset_id: function() {
+        console.log('changed media asset id')
+        console.log(this.media_asset_id)
+
+        // exclude live stream media asset on 20 mins refresh
+        if (this.media_asset_id != 1)
+        {
+          setInterval(function() {
+            window.location.reload()
+          }, 1200000); // 1200000 = 20 mins
+        }
+      }
     },
     methods: {
         fetchURL() {
+
             axios.get(`${ this.siteURL }/request`)
             .then(response => {
 
