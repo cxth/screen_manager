@@ -44,7 +44,7 @@ export default {
         {
           setInterval(function() {
             window.location.reload()
-          }, 1200000); // 1200000 = 20 mins
+          }, 600000); // 1200000 = 20 mins; 600000 = 10 mins
         }
       }
     },
