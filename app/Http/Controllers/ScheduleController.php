@@ -462,8 +462,7 @@ class ScheduleController extends Controller
         if (Auth::user()->username != "admin") {
             return redirect('/');
         }
-        //setcookie('cross-site-cookie', 'name', time()+3600);
-
+        
         $user = Auth::user();
 
         // regenerate tokens
