@@ -26,3 +26,9 @@ php artisan route:cache
 php artisan optimize
 
 php artisan optimize:clear
+
+User Access:
+
+admin
+password??
+$2y$10$HMWWT3UpFQTXbFr2DzOa9.IKNHaWbcBkgmyP5fXctTEW78pIUkR5C
